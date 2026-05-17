@@ -1,0 +1,155 @@
+.login-contenedor {
+  display: flex;
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  width: 100%;
+}
+
+/* --- Lado Izquierdo (Naranja) --- */
+.login-branding {
+  flex: 1;
+  background-color: var(--naranja-brand, #F27427);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.login-branding h1 {
+  font-size: 4rem;
+  margin: 0;
+}
+
+.login-branding h1 span {
+  color: #333; /* El color del ampersand (&) */
+}
+
+.login-branding p {
+  font-size: 1.5rem;
+  margin-bottom: 40px;
+  color: #fff5eb;
+}
+
+.beneficios {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  width: 100%;
+  max-width: 400px;
+}
+
+.beneficio-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+.beneficio-item:last-child { margin-bottom: 0; }
+
+.beneficio-item span {
+  background: white;
+  color: var(--naranja-brand, #F27427);
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+/* --- Lado Derecho (Blanco) --- */
+.login-formulario-seccion {
+  flex: 1;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.formulario-caja {
+  width: 100%;
+  max-width: 400px;
+}
+
+.formulario-caja h2 {
+  font-size: 2.5rem;
+  color: #1E293B;
+  margin: 0 0 10px 0;
+}
+
+.subtitulo-form {
+  color: #64748B;
+  margin-bottom: 30px;
+}
+
+.grupo-input {
+  margin-bottom: 20px;
+}
+
+.grupo-input label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.grupo-input input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  background-color: #F8FAFC;
+  outline: none;
+}
+
+.grupo-input input:focus {
+  border-color: var(--naranja-brand, #F27427);
+  background-color: white;
+}
+
+.link-olvido {
+  display: block;
+  text-align: right;
+  color: var(--naranja-brand, #F27427);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.btn-principal {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--naranja-brand, #F27427);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-principal:hover {
+  background-color: #d96520;
+}
+
+.texto-cambio {
+  text-align: center;
+  margin-top: 30px;
+  color: #64748B;
+}
+
+.btn-texto {
+  background: none;
+  border: none;
+  color: var(--naranja-brand, #F27427);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+}
