@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './Inicio.css';
+import { useAuth } from '../context/AuthContext';
+
+
 
 function Inicio() {
   const [restaurantes, setRestaurantes] = useState([]);
   const [menuAbierto, setMenuAbierto] = useState(false); 
   const navigate = useNavigate(); // 
+  const { cerrarSesion } = useAuth();
 
   useEffect(() => {
     fetch('http://localhost:3000/api/restaurantes')
@@ -34,6 +38,7 @@ function Inicio() {
             <div className="menu-desplegable">
               <button onClick={() => navigate('/login')}>👤 Iniciar Sesión</button>
               <button onClick={() => navigate('/registro')}>📝 Registrarse</button>
+              <button onClick={() => { cerrarSesion(); navigate('/login'); }}>X Cerrar Sesión</button>
             </div>
           )}
         </div>
