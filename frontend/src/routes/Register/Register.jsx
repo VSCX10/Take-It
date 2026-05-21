@@ -82,18 +82,17 @@ function Registro() {
     }
 
     setCargando(true);
-    // Simulamos async (para cuando conectes el backend)
-    setTimeout(() => {
-      const resultado = registrar(campos);
-      setCargando(false);
+setTimeout(async () => {
+  const resultado = await registrar(campos);
+  setCargando(false);
 
-      if (!resultado.ok) {
-        setErrorGeneral(resultado.mensaje);
-        return;
-      }
+  if (!resultado.ok) {
+    setErrorGeneral(resultado.mensaje);
+    return;
+  }
 
-      navigate('/');
-    }, 600);
+  navigate('/');
+}, 600);
   };
 
   const fuerzaPassword = REGLAS_PASSWORD.filter((r) => r.test(campos.password)).length;

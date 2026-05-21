@@ -54,18 +54,18 @@ function Login() {
     }
 
     setCargando(true);
-    setTimeout(() => {
-      const resultado = iniciarSesion(campos.email, campos.password);
-      setCargando(false);
+setTimeout(async () => {
+  const resultado = await iniciarSesion(campos.email, campos.password);
+  setCargando(false);
 
-      if (!resultado.ok) {
-        setIntentos((v) => v + 1);
-        setErrorGeneral(resultado.mensaje);
-        return;
-      }
+  if (!resultado.ok) {
+    setIntentos((v) => v + 1);
+    setErrorGeneral(resultado.mensaje);
+    return;
+  }
 
-      navigate('/');
-    }, 500);
+  navigate('/');
+}, 500);
   };
 
   return (

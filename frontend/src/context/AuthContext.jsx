@@ -1,71 +1,83 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
+const API_URL = 'http://localhost:3000/api/auth';
 
 export function AuthProvider({ children }) {
   const [usuarioActual, setUsuarioActual] = useState(null);
+  const [cargando, setCargando] = useState(true);
 
-  // Al montar, verificar si hay sesión activa
+  // Al montar, verificar si hay token guardado
   useEffect(() => {
-    const sesion = localStorage.getItem('sesion_activa');
-    if (sesion) {
-      setUsuarioActual(JSON.parse(sesion));
+    const token = localStorage.getItem('token');
+    const usuario = localStorage.getItem('usuario');
+    
+    if (token && usuario) {
+      setUsuarioActual(JSON.parse(usuario));
     }
+    setCargando(false);
   }, []);
 
-  const registrar = (datosUsuario) => {
-    const usuarios = JSON.parse(localStorage.getItem('takeandit_usuarios') || '[]');
+  const registrar = async (datosUsuario) => {
+    try {
+      const respuesta = await fetch(`${API_URL}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datosUsuario)
+      });
 
-    // Verificar que el correo no esté registrado
-    const existe = usuarios.find(u => u.email === datosUsuario.email);
-    if (existe) {
-      return { ok: false, mensaje: 'Este correo ya está registrado.' };
+      const datos = await respuesta.json();
+
+      if (!datos.ok) {
+        return { ok: false, mensaje: datos.mensaje };
+      }
+
+      // Guardar token y usuario
+      localStorage.setItem('token', datos.token);
+      localStorage.setItem('usuario', JSON.stringify(datos.usuario));
+      setUsuarioActual(datos.usuario);
+
+      return { ok: true };
+    } catch (error) {
+      console.error('Error en registro:', error);
+      return { ok: false, mensaje: 'Error de conexión' };
     }
-
-    const nuevoUsuario = {
-      id: Date.now().toString(),
-      nombre: datosUsuario.nombre,
-      apellido: datosUsuario.apellido,
-      email: datosUsuario.email,
-      telefono: datosUsuario.telefono || '',
-      password: datosUsuario.password, // En prod: hashear
-      fechaRegistro: new Date().toISOString(),
-      avatar: null,
-    };
-
-    usuarios.push(nuevoUsuario);
-    localStorage.setItem('takeandit_usuarios', JSON.stringify(usuarios));
-
-    // Iniciar sesión automáticamente (sin la contraseña en sesión)
-    const { password, ...sesionData } = nuevoUsuario;
-    localStorage.setItem('sesion_activa', JSON.stringify(sesionData));
-    setUsuarioActual(sesionData);
-
-    return { ok: true };
   };
 
-  const iniciarSesion = (email, password) => {
-    const usuarios = JSON.parse(localStorage.getItem('takeandit_usuarios') || '[]');
-    const usuario = usuarios.find(u => u.email === email && u.password === password);
+  const iniciarSesion = async (email, password) => {
+    try {
+      const respuesta = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-    if (!usuario) {
-      return { ok: false, mensaje: 'Correo o contraseña incorrectos.' };
+      const datos = await respuesta.json();
+
+      if (!datos.ok) {
+        return { ok: false, mensaje: datos.mensaje };
+      }
+
+      // Guardar token y usuario
+      localStorage.setItem('token', datos.token);
+      localStorage.setItem('usuario', JSON.stringify(datos.usuario));
+      setUsuarioActual(datos.usuario);
+
+      return { ok: true };
+    } catch (error) {
+      console.error('Error en login:', error);
+      return { ok: false, mensaje: 'Error de conexión' };
     }
-
-    const { password: _, ...sesionData } = usuario;
-    localStorage.setItem('sesion_activa', JSON.stringify(sesionData));
-    setUsuarioActual(sesionData);
-
-    return { ok: true };
   };
 
   const cerrarSesion = () => {
-    localStorage.removeItem('sesion_activa');
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
     setUsuarioActual(null);
   };
 
   return (
-    <AuthContext.Provider value={{ usuarioActual, registrar, iniciarSesion, cerrarSesion }}>
+    <AuthContext.Provider value={{ usuarioActual, registrar, iniciarSesion, cerrarSesion, cargando }}>
       {children}
     </AuthContext.Provider>
   );

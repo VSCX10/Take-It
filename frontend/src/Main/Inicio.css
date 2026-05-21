@@ -210,3 +210,42 @@ body {
   background-color: var(--naranja-brand);
   color: white;
 }
+
+.filtros-categorias {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.btn-categoria {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1px solid #E2E8F0;
+  background: white;
+  color: var(--texto-claro);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-categoria:hover {
+  border-color: var(--naranja-brand);
+  color: var(--naranja-brand);
+}
+
+.btn-categoria.activo {
+  background-color: var(--naranja-brand);
+  color: white;
+  border-color: var(--naranja-brand);
+}
+
+.menu-saludo {
+  padding: 12px 20px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--texto-oscuro);
+  border-bottom: 1px solid #F1F5F9;
+}

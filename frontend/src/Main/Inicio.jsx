@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import './Inicio.css';
 import { useAuth } from '../context/AuthContext';
 
-
+const CATEGORIAS = ['Todos', 'Nikkei', 'Peruana', 'Pescados y Mariscos', 'Contemporánea'];
 
 function Inicio() {
   const [restaurantes, setRestaurantes] = useState([]);
   const [menuAbierto, setMenuAbierto] = useState(false); 
-  const navigate = useNavigate(); // 
-  const { cerrarSesion } = useAuth();
+  const [categoriaActiva, setCategoriaActiva] = useState('Todos');
+  const navigate = useNavigate();
+  const { cerrarSesion, usuarioActual } = useAuth();
 
   useEffect(() => {
     fetch('http://localhost:3000/api/restaurantes')
@@ -17,6 +18,10 @@ function Inicio() {
       .then((datos) => setRestaurantes(datos))
       .catch((error) => console.error("Error:", error));
   }, []);
+
+  const restaurantesFiltrados = categoriaActiva === 'Todos'
+    ? restaurantes
+    : restaurantes.filter(r => r.categoria === categoriaActiva);
 
   return (
     <div className="inicio-contenedor">
@@ -36,9 +41,19 @@ function Inicio() {
 
           {menuAbierto && (
             <div className="menu-desplegable">
-              <button onClick={() => navigate('/login')}>👤 Iniciar Sesión</button>
-              <button onClick={() => navigate('/registro')}>📝 Registrarse</button>
-              <button onClick={() => { cerrarSesion(); navigate('/login'); }}>X Cerrar Sesión</button>
+              {usuarioActual ? (
+                <>
+                  <p className="menu-saludo">👋 Hola, {usuarioActual.nombre}</p>
+                  <button onClick={() => { cerrarSesion(); navigate('/login'); }}>
+                    🚪 Cerrar Sesión
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button onClick={() => navigate('/login')}>👤 Iniciar Sesión</button>
+                  <button onClick={() => navigate('/registro')}>📝 Registrarse</button>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -50,17 +65,26 @@ function Inicio() {
             <h2>Restaurantes Destacados</h2>
             <p className="subtitulo">Explora opciones para reservar este mes</p>
           </div>
-          <div className="filtros">
-            <select><option>Noviembre</option><option>Diciembre</option></select>
-            <select><option>Categoría</option><option>Nikkei</option></select>
-          </div>
+        </div>
+
+        {/* FILTROS POR CATEGORÍA */}
+        <div className="filtros-categorias">
+          {CATEGORIAS.map((cat) => (
+            <button
+              key={cat}
+              className={`btn-categoria ${categoriaActiva === cat ? 'activo' : ''}`}
+              onClick={() => setCategoriaActiva(cat)}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
         <div className="grid-restaurantes">
-          {restaurantes.length === 0 ? (
+          {restaurantesFiltrados.length === 0 ? (
             <p>Cargando restaurantes desde el servidor...</p>
           ) : (
-            restaurantes.map((rest) => (
+            restaurantesFiltrados.map((rest) => (
               <div key={rest.id} className="tarjeta">
                 <div className="imagen-contenedor">
                   <img src={rest.img} alt={rest.nombre} className="imagen-restaurante" />
