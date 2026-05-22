@@ -1,18 +1,35 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../database');
 
-const usuarioSchema = new mongoose.Schema({
-  nombre: String,
-  apellido: String,
-  email: { type: String, unique: true },
-  telefono: { type: String, default: '' },
-  password: String,
-  avatar: { type: String, default: null },
-  fechaRegistro: { type: Date, default: Date.now }
+const Usuario = sequelize.define('Usuario', {
+  nombre: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  apellido: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  telefono: {
+    type: DataTypes.STRING,
+    defaultValue: ''
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+}, {
+  tableName: 'usuarios',
+  timestamps: false
 });
 
-// Método para comparar contraseñas
-usuarioSchema.methods.compararPassword = function(passwordIngresada) {
+Usuario.prototype.compararPassword = function(passwordIngresada) {
   return passwordIngresada === this.password;
 };
 
-module.exports = mongoose.model('Usuario', usuarioSchema);
+module.exports = Usuario;

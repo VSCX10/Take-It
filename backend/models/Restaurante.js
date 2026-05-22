@@ -1,55 +1,35 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../database');
 
-const restauranteSchema = new mongoose.Schema({
+const Restaurante = sequelize.define('Restaurante', {
   nombre: {
-    type: String,
-    required: [true, 'El nombre es obligatorio'],
-    trim: true,
+    type: DataTypes.STRING,
+    allowNull: false,
     unique: true
   },
   categoria: {
-    type: String,
-    required: [true, 'La categoría es obligatoria'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   rating: {
-    type: Number,
-    min: 0,
-    max: 5,
-    default: 4.5
+    type: DataTypes.FLOAT,
+    defaultValue: null
   },
   img: {
-    type: String,
-    default: null
+    type: DataTypes.STRING,
+    defaultValue: null
   },
   descripcion: {
-    type: String,
-    default: null
+    type: DataTypes.TEXT,
+    defaultValue: null
   },
   direccion: {
-    type: String,
-    required: [true, 'La dirección es obligatoria']
+    type: DataTypes.STRING,
+    defaultValue: null
   },
-  telefono: {
-    type: String,
-    default: null
-  },
-  horarioApertura: {
-    type: String,
-    default: '11:00'
-  },
-  horarioCierre: {
-    type: String,
-    default: '23:00'
-  },
-  capacidad: {
-    type: Number,
-    default: 50
-  },
-  fechaCreacion: {
-    type: Date,
-    default: Date.now
-  }
+}, {
+  tableName: 'restaurantes',
+  timestamps: false
 });
 
-module.exports = mongoose.model('Restaurante', restauranteSchema);
+module.exports = Restaurante;

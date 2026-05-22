@@ -1,251 +1,454 @@
-/* Variables de color de Take&It */
-:root {
-  --naranja-brand: #F27427;
-  --fondo-gris: #F8FAFC;
-  --texto-oscuro: #1E293B;
-  --texto-claro: #64748B;
-}
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
 
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--fondo-gris);
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.inicio-contenedor {
-  display: flex;
-  flex-direction: column;
+.ti-pagina {
+  font-family: 'DM Sans', sans-serif;
+  background: #faf9f7;
   min-height: 100vh;
+  color: #1a1714;
 }
 
-/* NAVBAR */
-.navbar {
+.ti-nav {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 15px 40px;
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  justify-content: space-between;
+  padding: 16px 40px;
+  background: #fff;
+  border-bottom: 0.5px solid #e8e3da;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 200;
 }
 
-.logo {
-  font-size: 28px;
-  margin: 0;
-  color: var(--texto-oscuro);
+.ti-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1714;
 }
+.ti-logo span { color: #c2440e; }
 
-.logo-acento {
-  color: var(--naranja-brand);
-}
-
-.buscador input {
-  padding: 12px 20px;
-  border-radius: 25px;
-  border: 1px solid #E2E8F0;
-  width: 350px;
-  background-color: #F1F5F9;
-  outline: none;
-}
-
-.buscador input:focus {
-  border-color: var(--naranja-brand);
-}
-
-/* --- MENÚ HAMBURGUESA --- */
-.menu-hamburguesa-contenedor {
-  position: relative; 
-}
-
-.btn-hamburguesa {
-  background: none;
-  border: none;
-  font-size: 28px;
-  cursor: pointer;
-  color: var(--texto-oscuro);
-  padding: 5px 10px;
-  transition: color 0.2s;
-}
-
-.btn-hamburguesa:hover {
-  color: var(--naranja-brand);
-}
-
-.menu-desplegable {
+.ti-nav-tagline {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: #c2440e;
+  text-transform: uppercase;
   position: absolute;
-  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ti-menu-wrap { position: relative; }
+
+.ti-btn-hamburguesa {
+  background: transparent;
+  border: 0.5px solid #e0dbd3;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+}
+.ti-btn-hamburguesa:hover { border-color: #c2440e; }
+
+.ti-hamburguesa-icon,
+.ti-hamburguesa-icon::before,
+.ti-hamburguesa-icon::after {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #1a1714;
+  border-radius: 2px;
+  transition: all 0.25s;
+  position: relative;
+}
+.ti-hamburguesa-icon::before,
+.ti-hamburguesa-icon::after {
+  content: '';
+  position: absolute;
+}
+.ti-hamburguesa-icon::before { top: -6px; }
+.ti-hamburguesa-icon::after  { top: 6px; }
+
+.ti-hamburguesa-icon.abierto { background: transparent; }
+.ti-hamburguesa-icon.abierto::before { transform: rotate(45deg); top: 0; }
+.ti-hamburguesa-icon.abierto::after  { transform: rotate(-45deg); top: 0; }
+
+.ti-menu-desplegable {
+  position: absolute;
   right: 0;
-  margin-top: 10px;
-  background-color: white;
+  top: calc(100% + 8px);
+  background: #fff;
+  border: 0.5px solid #e8e3da;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  width: 220px;
+  padding: 8px;
+  min-width: 180px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  z-index: 1000;
+  gap: 4px;
 }
-
-.menu-desplegable button {
-  padding: 15px 20px;
-  background: none;
+.ti-menu-desplegable button {
+  background: transparent;
   border: none;
-  border-bottom: 1px solid #F1F5F9;
   text-align: left;
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  color: var(--texto-oscuro);
+  color: #1a1714;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s, color 0.2s;
-  display: flex;
-  gap: 10px;
+  transition: background 0.15s;
+}
+.ti-menu-desplegable button:hover { background: #faf9f7; color: #c2440e; }
+
+.ti-menu-saludo {
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1714;
+  border-bottom: 0.5px solid #e8e3da;
+  margin-bottom: 4px;
 }
 
-.menu-desplegable button:last-child {
-  border-bottom: none;
-}
-
-.menu-desplegable button:hover {
-  background-color: #FFF7ED;
-  color: var(--naranja-brand);
-}
-
-/* CONTENIDO PRINCIPAL */
-.contenido {
-  padding: 40px;
-  /* Si quieres que ocupe de borde a borde en monitores gigantes, borra la línea de abajo */
-  max-width: 1200px; 
-  margin: 0 auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.cabecera-filtros {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-}
-
-.cabecera-filtros h2 { margin: 0; color: var(--texto-oscuro); }
-.subtitulo { margin: 5px 0 0 0; color: var(--texto-claro); font-size: 14px; }
-
-.filtros select {
-  padding: 10px 15px;
-  margin-left: 10px;
-  border-radius: 10px;
-  border: 1px solid #E2E8F0;
-  outline: none;
-}
-
-/* GRID DE RESTAURANTES */
-.grid-restaurantes {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 25px;
-}
-
-.tarjeta {
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.03);
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-}
-
-.tarjeta:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 15px rgba(0,0,0,0.05);
-}
-
-.imagen-contenedor {
+.ti-hero {
   position: relative;
-  height: 180px;
+  height: 500px;
+  overflow: hidden;
 }
 
-.imagen-restaurante {
+.ti-hero-slides {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.ti-hero-slide {
+  flex: 0 0 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.ti-hero-slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.etiqueta-rating {
+.ti-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.65) 100%);
+}
+
+.ti-hero-contenido {
+  position: absolute;
+  bottom: 100px;
+  left: 60px;
+  color: #fff;
+  max-width: 560px;
+}
+.ti-hero-tag {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #f0a070;
+  margin-bottom: 12px;
+}
+.ti-hero-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.ti-hero-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.8);
+  font-weight: 300;
+}
+
+.ti-hero-flechas {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  pointer-events: none;
+}
+.ti-flecha {
+  pointer-events: all;
+  background: rgba(255,255,255,0.15);
+  border: 0.5px solid rgba(255,255,255,0.3);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.ti-flecha:hover { background: rgba(255,255,255,0.3); }
+
+.ti-hero-dots {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+.ti-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s, width 0.3s;
+}
+.ti-dot.activo {
+  background: #fff;
+  width: 24px;
+  border-radius: 4px;
+}
+
+.ti-busqueda-seccion {
+  background: #fff;
+  padding: 24px 40px;
+  border-bottom: 0.5px solid #e8e3da;
+}
+.ti-busqueda-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  gap: 12px;
+}
+.ti-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #faf9f7;
+  border: 1.5px solid #e0dbd3;
+  border-radius: 12px;
+  padding: 12px 18px;
+  transition: border-color 0.2s;
+}
+.ti-input-wrap:focus-within { border-color: #c2440e; }
+.ti-search-icon { font-size: 16px; opacity: 0.5; flex-shrink: 0; }
+.ti-input-wrap input {
+  border: none;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: #1a1714;
+  width: 100%;
+  outline: none;
+}
+.ti-input-wrap input::placeholder { color: #b0aba4; }
+
+.ti-btn-buscar {
+  background: #c2440e;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0 28px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.ti-btn-buscar:hover { background: #a8370b; }
+
+.ti-main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 40px 60px;
+}
+
+.ti-cabecera-filtros {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.ti-section-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1714;
+}
+.ti-section-sub {
+  font-size: 13px;
+  color: #9a958e;
+  margin-top: 4px;
+}
+
+.ti-filtros {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ti-dropdown-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ti-filtro-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #9a958e;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.ti-dropdown {
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239a958e' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border: 1.5px solid #e0dbd3;
+  border-radius: 10px;
+  padding: 9px 36px 9px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #1a1714;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  min-width: 180px;
+}
+.ti-dropdown:hover { border-color: #c2440e; }
+.ti-dropdown:focus { outline: none; border-color: #c2440e; }
+
+.ti-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.ti-tarjeta {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 0.5px solid #e8e3da;
+  transition: transform 0.22s, box-shadow 0.22s;
+  cursor: pointer;
+}
+.ti-tarjeta:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.08);
+}
+
+.ti-tarjeta-img {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+.ti-tarjeta-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+  display: block;
+}
+.ti-tarjeta:hover .ti-tarjeta-img img { transform: scale(1.06); }
+
+.ti-badge-rating {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 5px 10px;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 12px;
-}
-
-.info-restaurante {
-  padding: 20px;
-}
-
-.info-restaurante h3 { margin: 0 0 5px 0; font-size: 18px; color: var(--texto-oscuro); }
-.info-restaurante p { margin: 0 0 15px 0; font-size: 14px; color: var(--texto-claro); }
-
-.btn-reserva {
-  width: 100%;
-  padding: 10px;
-  background-color: #fff7ed;
-  color: var(--naranja-brand);
-  border: 1px solid var(--naranja-brand);
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-reserva:hover {
-  background-color: var(--naranja-brand);
-  color: white;
-}
-
-.filtros-categorias {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 25px;
-  flex-wrap: wrap;
-}
-
-.btn-categoria {
-  padding: 8px 20px;
+  background: rgba(255,255,255,0.95);
   border-radius: 20px;
-  border: 1px solid #E2E8F0;
-  background: white;
-  color: var(--texto-claro);
-  font-size: 14px;
+  padding: 4px 10px;
+  font-size: 12px;
   font-weight: 500;
+  color: #1a1714;
+}
+.ti-badge-precio {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(194,68,14,0.9);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.ti-tarjeta-body { padding: 14px 16px 16px; }
+.ti-tarjeta-nombre {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1714;
+  margin-bottom: 4px;
+}
+.ti-tarjeta-categoria {
+  font-size: 12px;
+  color: #9a958e;
+  margin-bottom: 14px;
+}
+
+.ti-btn-reserva {
+  display: block;
+  width: 100%;
+  padding: 9px;
+  border: 1.5px solid #c2440e;
+  background: transparent;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #c2440e;
   cursor: pointer;
   transition: all 0.2s;
+  text-align: center;
+}
+.ti-btn-reserva:hover { background: #c2440e; color: #fff; }
+
+.ti-estado {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 56px 20px;
+  color: #9a958e;
+  font-size: 15px;
 }
 
-.btn-categoria:hover {
-  border-color: var(--naranja-brand);
-  color: var(--naranja-brand);
+@media (max-width: 1024px) {
+  .ti-grid { grid-template-columns: repeat(3, 1fr); }
+  .ti-hero-titulo { font-size: 38px; }
 }
-
-.btn-categoria.activo {
-  background-color: var(--naranja-brand);
-  color: white;
-  border-color: var(--naranja-brand);
+@media (max-width: 768px) {
+  .ti-nav { padding: 14px 20px; }
+  .ti-hero { height: 380px; }
+  .ti-hero-contenido { left: 24px; bottom: 80px; }
+  .ti-hero-titulo { font-size: 28px; }
+  .ti-busqueda-seccion { padding: 18px 20px; }
+  .ti-main { padding: 20px 20px 48px; }
+  .ti-cabecera-filtros { flex-direction: column; }
+  .ti-grid { grid-template-columns: repeat(2, 1fr); }
 }
-
-.menu-saludo {
-  padding: 12px 20px;
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--texto-oscuro);
-  border-bottom: 1px solid #F1F5F9;
+@media (max-width: 480px) {
+  .ti-grid { grid-template-columns: 1fr; }
+  .ti-filtros { gap: 6px; }
 }
