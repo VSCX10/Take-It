@@ -14,6 +14,10 @@ function Inicio() {
       .catch((error) => console.error("Error:", error));
   }, []);
 
+  const manejarEnvio = (id) => {
+    navigate(`/contenido/${id}`);
+  };
+
   return (
     <div className="inicio-contenedor">
       <header className="navbar">
@@ -64,7 +68,7 @@ function Inicio() {
                 <div className="info-restaurante">
                   <h3>{rest.nombre}</h3>
                   <p>{rest.categoria}</p>
-                  <button className="btn-reserva">Ver Disponibilidad</button>
+                  <button onClick={()=>manejarEnvio(rest.id)} className="btn-reserva">Ver Disponibilidad</button>
                 </div>
               </div>
             ))
