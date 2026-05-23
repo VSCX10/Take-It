@@ -82,6 +82,8 @@ function Registro() {
     }
 
     setCargando(true);
+
+    
 setTimeout(async () => {
   const resultado = await registrar(campos);
   setCargando(false);
@@ -91,7 +93,7 @@ setTimeout(async () => {
     return;
   }
 
-  navigate('/');
+  navigate('/inicio');  
 }, 600);
   };
 

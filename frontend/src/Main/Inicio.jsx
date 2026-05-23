@@ -208,7 +208,7 @@ function Inicio() {
                 <div className="ti-tarjeta-body">
                   <h3 className="ti-tarjeta-nombre">{rest.nombre}</h3>
                   <p className="ti-tarjeta-categoria">{rest.categoria}</p>
-                  <button className="ti-btn-reserva" onClick={() => navigate(`/restaurante/${rest.id}`)}>
+                  <button className="ti-btn-reserva" onClick={() => navigate(`/contenido/${rest.id}`)}>
                     Ver Disponibilidad
                   </button>
                 </div>

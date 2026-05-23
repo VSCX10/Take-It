@@ -1,0 +1,278 @@
+:root {
+  --naranja-brand: #c2440e;
+  --texto-oscuro: #1a1714;
+  --texto-claro: #9a958e;
+}
+
+/* BANNER */
+.banner-restaurante {
+    position: relative;
+    height: 350px;
+    overflow: hidden;
+}
+
+.imagen-banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay-banner {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px;
+    color: white;
+}
+
+.overlay-banner h1 {
+    font-size: 42px;
+    margin: 0 0 10px 0;
+}
+
+.datos-restaurante {
+    display: flex;
+    gap: 20px;
+    font-size: 16px;
+}
+
+/* LAYOUT */
+.layout-restaurante {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    padding: 40px 50px 50px;
+}
+
+/* CABECERA MENU */
+.cabecera-menu {
+    margin-bottom: 25px;
+}
+
+.cabecera-menu h2 {
+    font-size: 24px;
+    color: var(--texto-oscuro);
+    margin: 0 0 5px 0;
+}
+
+.cabecera-menu p {
+    color: var(--texto-claro);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* GRID PLATOS */
+.grid-platos {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* TARJETA PLATO */
+.tarjeta-plato {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 18px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    transition: 0.2s;
+}
+
+.tarjeta-plato:hover {
+    transform: translateY(-3px);
+}
+
+.contenedor-imagen-plato {
+    width: 120px;
+    height: 100px;
+    border-radius: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.imagen-plato {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* INFO PLATO */
+.info-plato {
+    width: 100%;
+    margin-left: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-plato h3 {
+    margin: 0 0 5px 0;
+    color: var(--texto-oscuro);
+}
+
+.descripcion-plato {
+    margin: 4px 0;
+    color: var(--texto-claro);
+    font-size: 14px;
+}
+
+.footer-plato {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+    margin-left: 20px;
+}
+
+.precio {
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--naranja-brand);
+}
+
+/* BOTON AGREGAR */
+.btn-agregar {
+    border: 1px solid var(--naranja-brand);
+    background-color: #FFF7ED;
+    color: var(--naranja-brand);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.btn-agregar:hover {
+    background-color: var(--naranja-brand);
+    color: white;
+}
+
+/* SIDEBAR */
+.sidebar-reserva {
+    position: relative;
+}
+
+.card-reserva {
+    position: sticky;
+    top: 100px;
+    background: white;
+    border-radius: 22px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.card-reserva h2 {
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    color: var(--texto-oscuro);
+}
+
+/* INPUTS */
+.grupo-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.grupo-input label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--texto-oscuro);
+}
+
+.grupo-input input,
+.grupo-input select {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1.5px solid #e0dbd3;
+    outline: none;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.grupo-input input:focus,
+.grupo-input select:focus {
+    border-color: var(--naranja-brand);
+}
+
+/* RESUMEN */
+.resumen-pedido {
+    margin-top: 20px;
+}
+
+.resumen-pedido h3 {
+    font-size: 15px;
+    color: var(--texto-oscuro);
+    margin: 0 0 12px 0;
+}
+
+.item-resumen {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--texto-claro);
+}
+
+/* TOTALES */
+.totales {
+    margin-top: 16px;
+    border-top: 1px solid #e8e3da;
+    padding-top: 16px;
+}
+
+.fila-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: var(--texto-claro);
+}
+
+.total-final {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--texto-oscuro);
+}
+
+/* BOTON RESERVAR */
+.btn-reservar {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background-color: var(--naranja-brand);
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-reservar:hover {
+    opacity: 0.9;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1000px) {
+    .layout-restaurante {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+
+    .card-reserva {
+        position: static;
+    }
+
+    .overlay-banner h1 {
+        font-size: 28px;
+    }
+}

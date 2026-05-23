@@ -5,6 +5,7 @@ require('dotenv').config();
 const sequelize = require('./database');
 const Usuario = require('./models/Usuario');
 const Restaurante = require('./models/Restaurante');
+const Menu = require('./models/Menu');        // ← aquí arriba
 const authRoutes = require('./routes/auth');
 
 const app = express();
@@ -23,6 +24,17 @@ app.get('/api/restaurantes', async (req, res) => {
     res.json(restaurantes);
   } catch (error) {
     res.status(500).json({ ok: false, mensaje: 'Error al obtener restaurantes' });
+  }
+});
+
+// Ruta menú por restaurante
+app.get('/api/restaurantes/:id/menu', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const platos = await Menu.findAll({ where: { restauranteId: id } });
+    res.json(platos);
+  } catch (error) {
+    res.status(500).json({ ok: false, mensaje: 'Error al obtener el menú' });
   }
 });
 

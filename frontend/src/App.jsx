@@ -1,26 +1,38 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './routes/Login/Login.jsx';
 import Registro from './routes/Register/Register.jsx';
 import Inicio from './Main/Inicio.jsx';
-
-function RutaProtegida({ children }) {
-  const { usuarioActual } = useAuth();
-  return usuarioActual ? children : <Navigate to="/login" replace />;
-}
+import ContenidoRestaurante from './routes/Pages/ContenidoRestaurante.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { PrivateRoute, PublicRoute } from './context/ProtectedRoute.jsx';
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/registro" element={<Registro />} />
-          <Route path="/" element={<RutaProtegida><Inicio /></RutaProtegida>} />
+          {/* Por defecto va al login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+
+          {/* Login y Registro (solo sin sesión) */}
+          <Route path="/login" element={
+            <PublicRoute><Login /></PublicRoute>
+          } />
+          <Route path="/registro" element={
+            <PublicRoute><Registro /></PublicRoute>
+          } />
+
+          {/* Inicio y detalle (solo con sesión) */}
+          <Route path="/inicio" element={
+            <PrivateRoute><Inicio /></PrivateRoute>
+          } />
+          <Route path="/contenido/:id" element={
+            <PrivateRoute><ContenidoRestaurante /></PrivateRoute>
+          } />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

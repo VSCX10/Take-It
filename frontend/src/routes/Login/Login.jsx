@@ -64,7 +64,7 @@ setTimeout(async () => {
     return;
   }
 
-  navigate('/');
+  navigate('/inicio');  // ← cambio aquí
 }, 500);
   };
 
