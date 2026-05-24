@@ -1,6 +1,6 @@
 /* LAYOUT */
 
-.layout-restaurante {
+/*.layout-restaurante {
     display: grid;
 
     grid-template-columns: 2fr 1fr;
@@ -8,6 +8,48 @@
     gap: 30px;
 
     padding: 40px 50px 50px;
+
+}*/
+
+/* NAVBAR */
+
+.navbar {
+    margin: 0;
+}
+
+/* BODY */
+
+.contenido-restaurante {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    margin-bottom: 32px;
+}
+
+h1 {
+    margin: 0;
+}
+
+.main-body {
+    padding: 24px;
+}
+
+/* BANNER */
+
+.banner-restaurante {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0;
+    height: clamp(230px, 250px, 270px);
+    padding: 24px;
+}
+
+.banner-restaurante h1, .banner-restaurante .datos-restaurante {
+    color: #fff;
 }
 
 /* MENU */
@@ -20,6 +62,15 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+/* ESTRUCTURA PREORDEN Y RESERVA */
+
+.grid-mainBody {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    gap: 20px;
+    width: 95%;
 }
 
 /* TARJETA */
@@ -233,6 +284,24 @@
     opacity: 0.9;
 }
 
+/* MENU RESERVA */
+
+.Reserva {
+    display: grid;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    padding: 12px 16px;
+    border-radius: 18px;
+    
+}
+
+.reserva-title {
+    font-size: 24px;
+}
+
+
+
+
 /* RESPONSIVE */
 
 @media (max-width: 1000px) {
@@ -246,3 +315,4 @@
     }
 
 }
+
