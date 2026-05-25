@@ -90,6 +90,7 @@ function Inicio() {
               {usuarioActual ? (
                 <>
                   <p className="ti-menu-saludo">👋 Hola, {usuarioActual.nombre}</p>
+                  <button onClick={() => navigate('/perfil')}>👤 Mi Perfil</button>
                   <button onClick={() => { cerrarSesion(); navigate('/login'); }}>
                     🚪 Cerrar Sesión
                   </button>
