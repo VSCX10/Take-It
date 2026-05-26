@@ -1,13 +1,20 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import "./ContenidoRestaurante.css";
+import { useAuth } from "../../context/AuthContext";
 
 function ContenidoRestaurante() {
     const {id} = useParams();
     const [menu, setMenu] = useState([]);
     const [restaurante, setRestaurante] = useState(null);
     const [pedido, setPedido] = useState([]);
+    const [fecha, setFecha] = useState('');
+    const [hora, setHora] = useState('');
+    const [personas, setPersonas] = useState(1);
+    const [cargandoPago, setCargandoPago] = useState(false);
+    const [mensajeExito, setMensajeExito] = useState('');
     const navigate = useNavigate();
+    const { usuarioActual } = useAuth();
 
     const agregarPlato = (plato) => {
         const platoExistente = pedido.find((item) => item.id === plato.id);
@@ -18,6 +25,18 @@ function ContenidoRestaurante() {
             ));
         } else {
             setPedido([...pedido, { ...plato, cantidad: 1 }]);
+        }
+    }
+
+    const quitarPlato = (plato) => {
+        const platoExistente = pedido.find((item) => item.id === plato.id);
+        if (platoExistente.cantidad === 1) {
+            setPedido(pedido.filter((item) => item.id !== plato.id));
+        } else {
+            setPedido(pedido.map((item) => item.id === plato.id
+                ? { ...item, cantidad: item.cantidad - 1 }
+                : item
+            ));
         }
     }
 
@@ -34,9 +53,45 @@ function ContenidoRestaurante() {
             .catch((error) => console.error("Error:", error));
     }, [id]);
 
-    if (!restaurante) {
-        return <p>Cargando...</p>;
-    }
+    const subtotal = pedido.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+    const igv = subtotal * 0.18;
+    const total = subtotal + igv;
+
+    const procederPago = async () => {
+        if (!fecha || !hora) {
+            alert('Por favor selecciona fecha y hora');
+            return;
+        }
+
+        setCargandoPago(true);
+        try {
+            const respuesta = await fetch('http://localhost:3000/api/reservas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    usuarioId: usuarioActual.id,
+                    restauranteId: parseInt(id),
+                    fecha,
+                    hora,
+                    personas: parseInt(personas),
+                    total: parseFloat(total.toFixed(2))
+                })
+            });
+
+            const datos = await respuesta.json();
+
+            if (datos.ok) {
+                setMensajeExito('✅ ¡Reserva confirmada! Redirigiendo a tu perfil...');
+                setTimeout(() => navigate('/perfil'), 2000);
+            }
+        } catch (error) {
+            alert('Error al procesar la reserva');
+        } finally {
+            setCargandoPago(false);
+        }
+    };
+
+    if (!restaurante) return <p>Cargando...</p>;
 
     return (
         <div className="contenido-restaurante">
@@ -45,10 +100,12 @@ function ContenidoRestaurante() {
             <div className="banner-restaurante">
                 <img src={restaurante.img} alt={restaurante.nombre} className="imagen-banner" />
                 <div className="overlay-banner">
+                    <button className="btn-volver" onClick={() => navigate('/inicio')}>← Volver</button>
                     <h1>{restaurante.nombre}</h1>
                     <div className="datos-restaurante">
                         <span>⭐ {restaurante.rating}</span>
                         <span>{restaurante.categoria}</span>
+                        <span>📍 {restaurante.direccion}</span>
                     </div>
                 </div>
             </div>
@@ -78,9 +135,17 @@ function ContenidoRestaurante() {
                                         </div>
                                         <div className="footer-plato">
                                             <span className="precio">S/ {plato.precio}</span>
-                                            <button className="btn-agregar" onClick={() => agregarPlato(plato)}>
-                                                Agregar
-                                            </button>
+                                            <div className="controles-cantidad">
+                                                {pedido.find(item => item.id === plato.id) && (
+                                                    <button className="btn-quitar" onClick={() => quitarPlato(plato)}>−</button>
+                                                )}
+                                                {pedido.find(item => item.id === plato.id) && (
+                                                    <span>{pedido.find(item => item.id === plato.id).cantidad}</span>
+                                                )}
+                                                <button className="btn-agregar" onClick={() => agregarPlato(plato)}>
+                                                    {pedido.find(item => item.id === plato.id) ? '+' : 'Agregar'}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -96,23 +161,20 @@ function ContenidoRestaurante() {
 
                         <div className="grupo-input">
                             <label>Fecha</label>
-                            <input type="date" />
+                            <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} />
                         </div>
 
                         <div className="grupo-input">
                             <label>Hora</label>
-                            <input type="time" />
+                            <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} />
                         </div>
 
                         <div className="grupo-input">
                             <label>Personas</label>
-                            <select>
-                                <option>1 Persona</option>
-                                <option>2 Personas</option>
-                                <option>3 Personas</option>
-                                <option>4 Personas</option>
-                                <option>5 Personas</option>
-                                <option>6 Personas</option>
+                            <select value={personas} onChange={(e) => setPersonas(e.target.value)}>
+                                {[1,2,3,4,5,6].map(n => (
+                                    <option key={n} value={n}>{n} Persona{n > 1 ? 's' : ''}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -135,23 +197,34 @@ function ContenidoRestaurante() {
                             <div className="totales">
                                 <div className="fila-total">
                                     <span>Subtotal</span>
-                                    <span>S/ {pedido.reduce((acc, item) => acc + item.precio * item.cantidad, 0).toFixed(2)}</span>
+                                    <span>S/ {subtotal.toFixed(2)}</span>
                                 </div>
                                 <div className="fila-total">
                                     <span>IGV (18%)</span>
-                                    <span>S/ {(pedido.reduce((acc, item) => acc + item.precio * item.cantidad, 0) * 0.18).toFixed(2)}</span>
+                                    <span>S/ {igv.toFixed(2)}</span>
                                 </div>
                                 <div className="fila-total total-final">
                                     <span>Total</span>
-                                    <span>S/ {(pedido.reduce((acc, item) => acc + item.precio * item.cantidad, 0) * 1.18).toFixed(2)}</span>
+                                    <span>S/ {total.toFixed(2)}</span>
                                 </div>
                             </div>
                         )}
 
-                        <button className="btn-reservar">Proceder con el pago</button>
+                        {mensajeExito && (
+                            <p style={{color: '#16a34a', fontSize: '14px', marginTop: '12px', textAlign: 'center'}}>
+                                {mensajeExito}
+                            </p>
+                        )}
+
+                        <button
+                            className="btn-reservar"
+                            onClick={procederPago}
+                            disabled={cargandoPago}
+                        >
+                            {cargandoPago ? 'Procesando...' : 'Proceder con el pago'}
+                        </button>
                     </div>
                 </div>
-
             </div>
         </div>
     );
