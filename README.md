@@ -6,9 +6,9 @@ SEGUIR LOS PASOS PARA EJECUTAR LA PAGINA WEB EN LOCALHOST
 3.  npm install
 4. Crear archivo ".env" en el backend porque al subirlo a github se elimina
   //
-    DATABASE_URL=postgresql://neondb_owner:npg_6D7ROzpfSILT@ep-rough-bird-apmw8yl4.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require
-    PORT=3000
-    JWT_SECRET=ROMAINA3000_TakeAndIt_2026
+    1. DATABASE_URL=postgresql://neondb_owner:npg_6D7ROzpfSILT@ep-rough-bird-apmw8yl4.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require
+    2. PORT=3000
+    3. JWT_SECRET=ROMAINA3000_TakeAndIt_2026
   //
 5. node index.js
 6. cd ../frontend
