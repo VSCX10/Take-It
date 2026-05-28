@@ -44,12 +44,13 @@ function ContenidoRestaurante() {
         fetch('http://localhost:3000/api/restaurantes')
             .then((res) => res.json())
             .then((data) => {
-                const restEncontrado = data.find((r) => r.id === parseInt(id));
+                const lista = data.data || data;
+                const restEncontrado = lista.find((r) => r.id === parseInt(id));
                 setRestaurante(restEncontrado);
-            });
+});
         fetch(`http://localhost:3000/api/restaurantes/${id}/menu`)
             .then((res) => res.json())
-            .then((datos) => setMenu(datos))
+            .then((datos) => setMenu(datos.data))
             .catch((error) => console.error("Error:", error));
     }, [id]);
 
@@ -98,17 +99,21 @@ function ContenidoRestaurante() {
 
             {/* HEADER */}
             <div className="banner-restaurante">
-                <img src={restaurante.img} alt={restaurante.nombre} className="imagen-banner" />
+            <img src={restaurante.img} alt={restaurante.nombre} className="imagen-banner" />
                 <div className="overlay-banner">
-                    <button className="btn-volver" onClick={() => navigate('/inicio')}>← Volver</button>
                     <h1>{restaurante.nombre}</h1>
                     <div className="datos-restaurante">
                         <span>⭐ {restaurante.rating}</span>
                         <span>{restaurante.categoria}</span>
-                        <span>📍 {restaurante.direccion}</span>
+                        <span   span>📍 {restaurante.direccion}</span>
                     </div>
                 </div>
             </div>
+
+{/* BOTÓN VOLVER */}
+<div className="contenedor-volver">
+    <button className="btn-volver" onClick={() => navigate('/inicio')}>← Volver al inicio</button>
+</div>
 
             <div className="layout-restaurante">
 

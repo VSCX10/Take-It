@@ -7,13 +7,16 @@ export function AuthProvider({ children }) {
   const [usuarioActual, setUsuarioActual] = useState(null);
   const [cargando, setCargando] = useState(true);
 
-  // Al montar, verificar si hay token guardado
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const usuario = localStorage.getItem('usuario');
-    
-    if (token && usuario) {
-      setUsuarioActual(JSON.parse(usuario));
+    try {
+      const token = localStorage.getItem('token');
+      const usuario = localStorage.getItem('usuario');
+      
+      if (token && usuario && usuario !== 'undefined') {
+        setUsuarioActual(JSON.parse(usuario));
+      }
+    } catch (error) {
+      localStorage.clear();
     }
     setCargando(false);
   }, []);
@@ -32,10 +35,9 @@ export function AuthProvider({ children }) {
         return { ok: false, mensaje: datos.mensaje };
       }
 
-      // Guardar token y usuario
-      localStorage.setItem('token', datos.token);
-      localStorage.setItem('usuario', JSON.stringify(datos.usuario));
-      setUsuarioActual(datos.usuario);
+      localStorage.setItem('token', datos.data.token);
+      localStorage.setItem('usuario', JSON.stringify(datos.data.usuario));
+      setUsuarioActual(datos.data.usuario);
 
       return { ok: true };
     } catch (error) {
@@ -58,10 +60,9 @@ export function AuthProvider({ children }) {
         return { ok: false, mensaje: datos.mensaje };
       }
 
-      // Guardar token y usuario
-      localStorage.setItem('token', datos.token);
-      localStorage.setItem('usuario', JSON.stringify(datos.usuario));
-      setUsuarioActual(datos.usuario);
+      localStorage.setItem('token', datos.data.token);
+      localStorage.setItem('usuario', JSON.stringify(datos.data.usuario));
+      setUsuarioActual(datos.data.usuario);
 
       return { ok: true };
     } catch (error) {

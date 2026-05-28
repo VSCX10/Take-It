@@ -46,7 +46,7 @@ function Inicio() {
   useEffect(() => {
     fetch('http://localhost:3000/api/restaurantes')
       .then((r) => r.json())
-      .then((datos) => { setRestaurantes(datos); setCargando(false); })
+      .then((datos) => { setRestaurantes(datos.data); setCargando(false); })
       .catch((err) => { console.error('Error:', err); setCargando(false); });
   }, []);
 

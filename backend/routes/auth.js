@@ -1,38 +1,29 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const Usuario = require('../models/Usuario');
-
 const router = express.Router();
+const ServicioFactory = require('../factories/ServicioFactory');
+const ResponseFactory = require('../factories/ResponseFactory');
 
-// REGISTRO
+const servicio = ServicioFactory.crear('usuario');
+
 router.post('/register', async (req, res) => {
   try {
     const { nombre, apellido, email, telefono, password, confirmar } = req.body;
 
-    if (!nombre || !apellido || !email || !password || !confirmar) {
-      return res.status(400).json({ ok: false, mensaje: 'Todos los campos son obligatorios' });
-    }
+    if (!nombre || !apellido || !email || !password || !confirmar)
+      return ResponseFactory.error(res, 'Todos los campos son obligatorios', 400);
 
-    if (password !== confirmar) {
-      return res.status(400).json({ ok: false, mensaje: 'Las contraseñas no coinciden' });
-    }
+    if (password !== confirmar)
+      return ResponseFactory.error(res, 'Las contraseñas no coinciden', 400);
 
-    if (password.length < 6) {
-      return res.status(400).json({ ok: false, mensaje: 'La contraseña debe tener al menos 6 caracteres' });
-    }
+    if (password.length < 6)
+      return ResponseFactory.error(res, 'La contraseña debe tener al menos 6 caracteres', 400);
 
-    const usuarioExistente = await Usuario.findOne({ where: { email } });
-    if (usuarioExistente) {
-      return res.status(400).json({ ok: false, mensaje: 'Este correo ya está registrado' });
-    }
+    const usuarioExistente = await servicio.buscarPorEmail(email);
+    if (usuarioExistente)
+      return ResponseFactory.error(res, 'Este correo ya está registrado', 400);
 
-    const nuevoUsuario = await Usuario.create({
-      nombre,
-      apellido,
-      email,
-      telefono: telefono || '',
-      password
-    });
+    const nuevoUsuario = await servicio.crear({ nombre, apellido, email, telefono: telefono || '', password });
 
     const token = jwt.sign(
       { id: nuevoUsuario.id, email: nuevoUsuario.email },
@@ -40,44 +31,30 @@ router.post('/register', async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    res.status(201).json({
-      ok: true,
-      mensaje: 'Usuario registrado exitosamente',
+    return ResponseFactory.exito(res, {
       token,
-      usuario: {
-        id: nuevoUsuario.id,
-        nombre: nuevoUsuario.nombre,
-        apellido: nuevoUsuario.apellido,
-        email: nuevoUsuario.email
-      }
-    });
+      usuario: { id: nuevoUsuario.id, nombre: nuevoUsuario.nombre, apellido: nuevoUsuario.apellido, email: nuevoUsuario.email }
+    }, 'Usuario registrado exitosamente', 201);
 
   } catch (error) {
-    console.error('Error en registro:', error);
-    res.status(500).json({ ok: false, mensaje: 'Error al registrar usuario', error: error.message });
+    return ResponseFactory.error(res, 'Error al registrar usuario');
   }
 });
 
-// LOGIN
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ ok: false, mensaje: 'Email y contraseña son obligatorios' });
-    }
+    if (!email || !password)
+      return ResponseFactory.error(res, 'Email y contraseña son obligatorios', 400);
 
-    const usuario = await Usuario.findOne({ where: { email } });
-
-    if (!usuario) {
-      return res.status(401).json({ ok: false, mensaje: 'Correo o contraseña incorrectos' });
-    }
+    const usuario = await servicio.buscarPorEmail(email);
+    if (!usuario)
+      return ResponseFactory.error(res, 'Correo o contraseña incorrectos', 401);
 
     const passwordValida = usuario.compararPassword(password);
-
-    if (!passwordValida) {
-      return res.status(401).json({ ok: false, mensaje: 'Correo o contraseña incorrectos' });
-    }
+    if (!passwordValida)
+      return ResponseFactory.error(res, 'Correo o contraseña incorrectos', 401);
 
     const token = jwt.sign(
       { id: usuario.id, email: usuario.email },
@@ -85,21 +62,13 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    res.json({
-      ok: true,
-      mensaje: 'Sesión iniciada exitosamente',
+    return ResponseFactory.exito(res, {
       token,
-      usuario: {
-        id: usuario.id,
-        nombre: usuario.nombre,
-        apellido: usuario.apellido,
-        email: usuario.email
-      }
-    });
+      usuario: { id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido, email: usuario.email }
+    }, 'Sesión iniciada exitosamente');
 
   } catch (error) {
-    console.error('Error en login:', error);
-    res.status(500).json({ ok: false, mensaje: 'Error al iniciar sesión', error: error.message });
+    return ResponseFactory.error(res, 'Error al iniciar sesión');
   }
 });
 

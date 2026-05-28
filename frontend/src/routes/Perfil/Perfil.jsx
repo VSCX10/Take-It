@@ -13,7 +13,7 @@ function Perfil() {
     if (usuarioActual) {
       fetch(`http://localhost:3000/api/reservas/${usuarioActual.id}`)
         .then((r) => r.json())
-        .then((datos) => { setReservas(datos); setCargando(false); })
+        .then((datos) => { setReservas(datos.data); setCargando(false); })
         .catch(() => setCargando(false));
     }
   }, [usuarioActual]);

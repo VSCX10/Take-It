@@ -7,7 +7,11 @@ const Usuario = require('./models/Usuario');
 const Restaurante = require('./models/Restaurante');
 const Menu = require('./models/Menu');
 const Reserva = require('./models/Reserva');
+
 const authRoutes = require('./routes/auth');
+const restaurantesRoutes = require('./routes/restaurantes');
+const reservasRoutes = require('./routes/reservas');
+const menuRoutes = require('./routes/menu');
 
 const app = express();
 const puerto = process.env.PORT || 3000;
@@ -15,53 +19,20 @@ const puerto = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Rutas auth
+// Rutas
 app.use('/api/auth', authRoutes);
+app.use('/api/restaurantes', restaurantesRoutes);
+app.use('/api/reservas', reservasRoutes);
+app.use('/api/restaurantes', menuRoutes);
 
-// Ruta restaurantes
-app.get('/api/restaurantes', async (req, res) => {
-  try {
-    const restaurantes = await Restaurante.findAll();
-    res.json(restaurantes);
-  } catch (error) {
-    res.status(500).json({ ok: false, mensaje: 'Error al obtener restaurantes' });
-  }
-});
 
-// Ruta menú por restaurante
-app.get('/api/restaurantes/:id/menu', async (req, res) => {
-  try {
-    const id = parseInt(req.params.id);
-    const platos = await Menu.findAll({ where: { restauranteId: id } });
-    res.json(platos);
-  } catch (error) {
-    res.status(500).json({ ok: false, mensaje: 'Error al obtener el menú' });
-  }
-});
 
-// Crear reserva
-app.post('/api/reservas', async (req, res) => {
-  try {
-    const { usuarioId, restauranteId, fecha, hora, personas, total } = req.body;
-    const reserva = await Reserva.create({ usuarioId, restauranteId, fecha, hora, personas, total });
-    res.status(201).json({ ok: true, reserva });
-  } catch (error) {
-    res.status(500).json({ ok: false, mensaje: 'Error al crear reserva', error: error.message });
-  }
-});
 
-// Obtener reservas de un usuario
-app.get('/api/reservas/:usuarioId', async (req, res) => {
-  try {
-    const { usuarioId } = req.params;
-    const reservas = await Reserva.findAll({ where: { usuarioId } });
-    res.json(reservas);
-  } catch (error) {
-    res.status(500).json({ ok: false, mensaje: 'Error al obtener reservas' });
-  }
-});
 
-// Conectar a PostgreSQL y sincronizar tablas
+
+
+
+// Conectar a PostgreSQL
 sequelize.authenticate()
   .then(() => {
     console.log('✅ PostgreSQL conectado exitosamente');
