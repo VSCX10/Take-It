@@ -1,0 +1,24 @@
+:root {
+  --naranja:        #c2440e;
+  --naranja-hover:  #a8370b;
+  --naranja-suave:  #FFF7ED;
+  --negro:          #1a1714;
+  --blanco:         #ffffff;
+  --fondo:          #faf9f7;
+  --borde:          #e8e3da;
+  --borde-input:    #e0dbd3;
+  --texto-muted:    #9a958e;
+  --placeholder:    #b0aba4;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--fondo);
+  color: var(--negro);
+}
