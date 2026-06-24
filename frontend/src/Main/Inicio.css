@@ -1,23 +1,21 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 .ti-pagina {
   font-family: 'DM Sans', sans-serif;
-  background: #faf9f7;
+  background: var(--fondo);
   min-height: 100vh;
-  color: #1a1714;
+  color: var(--negro);
 }
 
-
+/* NAV */
 .ti-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 40px;
-  background: #fff;
-  border-bottom: 0.5px solid #e8e3da;
+  background: var(--blanco);
+  border-bottom: 0.5px solid var(--borde);
   position: sticky;
   top: 0;
   z-index: 200;
@@ -27,16 +25,16 @@
   font-family: 'Playfair Display', serif;
   font-size: 22px;
   font-weight: 700;
-  color: #1a1714;
+  color: var(--negro);
 }
-.ti-logo span { color: #c2440e; }
+.ti-logo span { color: var(--naranja); }
 
 .ti-nav-tagline {
   font-family: 'Playfair Display', serif;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 2.5px;
-  color: #c2440e;
+  color: var(--naranja);
   text-transform: uppercase;
   position: absolute;
   left: 50%;
@@ -47,7 +45,7 @@
 
 .ti-btn-hamburguesa {
   background: transparent;
-  border: 0.5px solid #e0dbd3;
+  border: 0.5px solid var(--borde-input);
   border-radius: 8px;
   width: 40px;
   height: 40px;
@@ -57,7 +55,7 @@
   justify-content: center;
   transition: border-color 0.2s;
 }
-.ti-btn-hamburguesa:hover { border-color: #c2440e; }
+.ti-btn-hamburguesa:hover { border-color: var(--naranja); }
 
 .ti-hamburguesa-icon,
 .ti-hamburguesa-icon::before,
@@ -65,7 +63,7 @@
   display: block;
   width: 18px;
   height: 2px;
-  background: #1a1714;
+  background: var(--negro);
   border-radius: 2px;
   transition: all 0.25s;
   position: relative;
@@ -82,12 +80,13 @@
 .ti-hamburguesa-icon.abierto::before { transform: rotate(45deg); top: 0; }
 .ti-hamburguesa-icon.abierto::after  { transform: rotate(-45deg); top: 0; }
 
+/* MENÚ DESPLEGABLE */
 .ti-menu-desplegable {
   position: absolute;
   right: 0;
   top: calc(100% + 8px);
-  background: #fff;
-  border: 0.5px solid #e8e3da;
+  background: var(--blanco);
+  border: 0.5px solid var(--borde);
   border-radius: 12px;
   padding: 8px;
   min-width: 180px;
@@ -103,14 +102,23 @@
   padding: 10px 14px;
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  color: #1a1714;
+  color: var(--negro);
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.15s;
 }
-.ti-menu-desplegable button:hover { background: #faf9f7; color: #c2440e; }
+.ti-menu-desplegable button:hover { background: var(--fondo); color: var(--naranja); }
 
+.ti-menu-saludo {
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--negro);
+  border-bottom: 0.5px solid var(--borde);
+  margin-bottom: 4px;
+}
 
+/* HERO CAROUSEL */
 .ti-hero {
   position: relative;
   height: 500px;
@@ -145,9 +153,9 @@
 
 .ti-hero-contenido {
   position: absolute;
-  bottom: 100px;
+  bottom: 50px;
   left: 60px;
-  color: #fff;
+  color: var(--blanco);
   max-width: 560px;
 }
 .ti-hero-tag {
@@ -156,7 +164,7 @@
   font-weight: 500;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #f0a070;
+  color: var(--naranja);
   margin-bottom: 12px;
 }
 .ti-hero-titulo {
@@ -186,7 +194,7 @@
   pointer-events: all;
   background: rgba(255,255,255,0.15);
   border: 0.5px solid rgba(255,255,255,0.3);
-  color: #fff;
+  color: var(--blanco);
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -198,11 +206,12 @@
   justify-content: center;
   transition: background 0.2s;
 }
-.ti-flecha:hover { background: rgba(255,255,255,0.3); }
+.ti-flecha:hover { background: rgba(194,68,14,0.7); border-color: var(--naranja); }
 
+/* DOTS — activo en naranja para reforzar marca */
 .ti-hero-dots {
   position: absolute;
-  bottom: 24px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -218,16 +227,16 @@
   transition: background 0.3s, width 0.3s;
 }
 .ti-dot.activo {
-  background: #fff;
+  background: var(--naranja);
   width: 24px;
   border-radius: 4px;
 }
 
-
+/* BUSCADOR */
 .ti-busqueda-seccion {
-  background: #fff;
+  background: var(--blanco);
   padding: 24px 40px;
-  border-bottom: 0.5px solid #e8e3da;
+  border-bottom: 0.5px solid var(--borde);
 }
 .ti-busqueda-wrap {
   max-width: 860px;
@@ -240,28 +249,28 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #faf9f7;
-  border: 1.5px solid #e0dbd3;
+  background: var(--fondo);
+  border: 1.5px solid var(--borde-input);
   border-radius: 12px;
   padding: 12px 18px;
   transition: border-color 0.2s;
 }
-.ti-input-wrap:focus-within { border-color: #c2440e; }
+.ti-input-wrap:focus-within { border-color: var(--naranja); }
 .ti-search-icon { font-size: 16px; opacity: 0.5; flex-shrink: 0; }
 .ti-input-wrap input {
   border: none;
   background: transparent;
   font-family: 'DM Sans', sans-serif;
   font-size: 15px;
-  color: #1a1714;
+  color: var(--negro);
   width: 100%;
   outline: none;
 }
-.ti-input-wrap input::placeholder { color: #b0aba4; }
+.ti-input-wrap input::placeholder { color: var(--placeholder); }
 
 .ti-btn-buscar {
-  background: #c2440e;
-  color: #fff;
+  background: var(--naranja);
+  color: var(--blanco);
   border: none;
   border-radius: 12px;
   padding: 0 28px;
@@ -272,15 +281,14 @@
   transition: background 0.2s;
   white-space: nowrap;
 }
-.ti-btn-buscar:hover { background: #a8370b; }
+.ti-btn-buscar:hover { background: var(--naranja-hover); }
 
-
+/* MAIN CONTENT */
 .ti-main {
   max-width: 1240px;
   margin: 0 auto;
   padding: 28px 40px 60px;
 }
-
 
 .ti-cabecera-filtros {
   display: flex;
@@ -294,11 +302,11 @@
   font-family: 'Playfair Display', serif;
   font-size: 26px;
   font-weight: 700;
-  color: #1a1714;
+  color: var(--negro);
 }
 .ti-section-sub {
   font-size: 13px;
-  color: #9a958e;
+  color: var(--texto-muted);
   margin-top: 4px;
 }
 
@@ -316,40 +324,39 @@
 .ti-filtro-label {
   font-size: 11px;
   font-weight: 500;
-  color: #9a958e;
+  color: var(--texto-muted);
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
 .ti-dropdown {
   appearance: none;
   -webkit-appearance: none;
-  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239a958e' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
-  border: 1.5px solid #e0dbd3;
-  border-radius: 10px;
+  background: var(--blanco) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239a958e' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border: 1.5px solid var(--borde-input);
+  border-radius: 12px;
   padding: 9px 36px 9px 14px;
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  color: #1a1714;
+  color: var(--negro);
   cursor: pointer;
   transition: border-color 0.2s;
   min-width: 180px;
 }
-.ti-dropdown:hover { border-color: #c2440e; }
-.ti-dropdown:focus { outline: none; border-color: #c2440e; }
+.ti-dropdown:hover { border-color: var(--naranja); }
+.ti-dropdown:focus { outline: none; border-color: var(--naranja); }
 
-
+/* GRID DE CARDS */
 .ti-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
-
 .ti-tarjeta {
-  background: #fff;
+  background: var(--blanco);
   border-radius: 16px;
   overflow: hidden;
-  border: 0.5px solid #e8e3da;
+  border: 0.5px solid var(--borde);
   transition: transform 0.22s, box-shadow 0.22s;
   cursor: pointer;
 }
@@ -381,7 +388,7 @@
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 500;
-  color: #1a1714;
+  color: var(--negro);
 }
 .ti-badge-precio {
   position: absolute;
@@ -392,7 +399,7 @@
   padding: 4px 10px;
   font-size: 11px;
   font-weight: 500;
-  color: #fff;
+  color: var(--blanco);
 }
 
 .ti-tarjeta-body { padding: 14px 16px 16px; }
@@ -400,12 +407,12 @@
   font-family: 'Playfair Display', serif;
   font-size: 17px;
   font-weight: 700;
-  color: #1a1714;
+  color: var(--negro);
   margin-bottom: 4px;
 }
 .ti-tarjeta-categoria {
   font-size: 12px;
-  color: #9a958e;
+  color: var(--texto-muted);
   margin-bottom: 14px;
 }
 
@@ -413,29 +420,28 @@
   display: block;
   width: 100%;
   padding: 9px;
-  border: 1.5px solid #c2440e;
+  border: 1.5px solid var(--naranja);
   background: transparent;
-  border-radius: 8px;
+  border-radius: 12px;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #c2440e;
+  color: var(--naranja);
   cursor: pointer;
   transition: all 0.2s;
   text-align: center;
 }
-.ti-btn-reserva:hover { background: #c2440e; color: #fff; }
-
+.ti-btn-reserva:hover { background: var(--naranja); color: var(--blanco); }
 
 .ti-estado {
   grid-column: 1 / -1;
   text-align: center;
   padding: 56px 20px;
-  color: #9a958e;
+  color: var(--texto-muted);
   font-size: 15px;
 }
 
-
+/* RESPONSIVE */
 @media (max-width: 1024px) {
   .ti-grid { grid-template-columns: repeat(3, 1fr); }
   .ti-hero-titulo { font-size: 38px; }
@@ -444,7 +450,7 @@
   .ti-nav { padding: 14px 20px; }
   .ti-nav-links { display: none; }
   .ti-hero { height: 380px; }
-  .ti-hero-contenido { left: 24px; bottom: 80px; }
+  .ti-hero-contenido { left: 24px; bottom: 40px; }
   .ti-hero-titulo { font-size: 28px; }
   .ti-busqueda-seccion { padding: 18px 20px; }
   .ti-main { padding: 20px 20px 48px; }
