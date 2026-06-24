@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Inicio.css';
+import { useAuth } from '../context/AuthContext';
 
 const HERO_SLIDES = [
   {
@@ -39,17 +40,16 @@ function Inicio() {
   const [filtroTipo, setFiltroTipo] = useState('todos');
   const [slideActual, setSlideActual] = useState(0);
   const navigate = useNavigate();
+  const { cerrarSesion, usuarioActual } = useAuth();
   const intervaloRef = useRef(null);
 
- 
   useEffect(() => {
     fetch('http://localhost:3000/api/restaurantes')
       .then((r) => r.json())
-      .then((datos) => { setRestaurantes(datos); setCargando(false); })
+      .then((datos) => { setRestaurantes(datos.data); setCargando(false); })
       .catch((err) => { console.error('Error:', err); setCargando(false); });
   }, []);
 
-  // carrusel
   const irSlide = (n) => setSlideActual((n + HERO_SLIDES.length) % HERO_SLIDES.length);
 
   useEffect(() => {
@@ -57,28 +57,23 @@ function Inicio() {
     return () => clearInterval(intervaloRef.current);
   }, [slideActual]);
 
-  // ── Filtros 
   const restaurantesFiltrados = restaurantes.filter((r) => {
     const coincideBusqueda =
       r.nombre.toLowerCase().includes(busquedaActiva.toLowerCase()) ||
       (r.categoria && r.categoria.toLowerCase().includes(busquedaActiva.toLowerCase()));
-
     const coincideEstrellas =
       filtroEstrellas === 'todas' || Math.floor(r.rating) >= Number(filtroEstrellas);
-
     const coincideTipo =
       filtroTipo === 'todos' || r.categoria === filtroTipo;
-
     return coincideBusqueda && coincideEstrellas && coincideTipo;
   });
 
   return (
     <div className="ti-pagina">
 
-      {/* ── NAVEGADOR ──────────────────────────────────────────────────────── */}
+      {/* NAV */}
       <header className="ti-nav">
         <h1 className="ti-logo">Take<span>&</span>It</h1>
-
         <p className="ti-nav-tagline">ADQUIERE TU MESA AL INSTANTE</p>
 
         <div className="ti-menu-wrap">
@@ -92,14 +87,26 @@ function Inicio() {
 
           {menuAbierto && (
             <div className="ti-menu-desplegable">
-              <button onClick={() => navigate('/login')}>👤 Iniciar Sesión</button>
-              <button onClick={() => navigate('/registro')}>📝 Registrarse</button>
+              {usuarioActual ? (
+                <>
+                  <p className="ti-menu-saludo">👋 Hola, {usuarioActual.nombre}</p>
+                  <button onClick={() => navigate('/perfil')}>👤 Mi Perfil</button>
+                  <button onClick={() => { cerrarSesion(); navigate('/login'); }}>
+                    🚪 Cerrar Sesión
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button onClick={() => navigate('/login')}>👤 Iniciar Sesión</button>
+                  <button onClick={() => navigate('/registro')}>📝 Registrarse</button>
+                </>
+              )}
             </div>
           )}
         </div>
       </header>
 
-      {/* ── HERO CARRUSEL*/}
+      {/* HERO CARRUSEL */}
       <section className="ti-hero">
         <div
           className="ti-hero-slides"
@@ -134,6 +141,7 @@ function Inicio() {
         </div>
       </section>
 
+      {/* BÚSQUEDA */}
       <section className="ti-busqueda-seccion">
         <div className="ti-busqueda-wrap">
           <div className="ti-input-wrap">
@@ -152,9 +160,8 @@ function Inicio() {
         </div>
       </section>
 
-      {/* ── FILTROS + LISTADO  */}
+      {/* FILTROS + GRID */}
       <main className="ti-main">
-
         <div className="ti-cabecera-filtros">
           <div>
             <h2 className="ti-section-titulo">Restaurantes Destacados</h2>
@@ -164,14 +171,9 @@ function Inicio() {
           </div>
 
           <div className="ti-filtros">
-            {/* Dropdown estrellas */}
             <div className="ti-dropdown-wrap">
               <label className="ti-filtro-label">Calificación</label>
-              <select
-                className="ti-dropdown"
-                value={filtroEstrellas}
-                onChange={(e) => setFiltroEstrellas(e.target.value)}
-              >
+              <select className="ti-dropdown" value={filtroEstrellas} onChange={(e) => setFiltroEstrellas(e.target.value)}>
                 <option value="todas">Todas las estrellas</option>
                 <option value="3">⭐⭐⭐</option>
                 <option value="4">⭐⭐⭐⭐</option>
@@ -179,14 +181,9 @@ function Inicio() {
               </select>
             </div>
 
-            {/* Dropdown tipo de comida — opciones dinámicas desde el backend */}
             <div className="ti-dropdown-wrap">
               <label className="ti-filtro-label">Tipo de comida</label>
-              <select
-                className="ti-dropdown"
-                value={filtroTipo}
-                onChange={(e) => setFiltroTipo(e.target.value)}
-              >
+              <select className="ti-dropdown" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
                 <option value="todos">Todos los tipos</option>
                 {[...new Set(restaurantes.map((r) => r.categoria).filter(Boolean))].sort().map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
@@ -196,7 +193,6 @@ function Inicio() {
           </div>
         </div>
 
-        {/* ── GRID */}
         <div className="ti-grid">
           {cargando ? (
             <div className="ti-estado">Cargando restaurantes...</div>
@@ -208,17 +204,12 @@ function Inicio() {
                 <div className="ti-tarjeta-img">
                   <img src={rest.img} alt={rest.nombre} />
                   <span className="ti-badge-rating">⭐ {rest.rating}</span>
-                  {rest.precio && (
-                    <span className="ti-badge-precio">{rest.precio}</span>
-                  )}
+                  {rest.precio && <span className="ti-badge-precio">{rest.precio}</span>}
                 </div>
                 <div className="ti-tarjeta-body">
                   <h3 className="ti-tarjeta-nombre">{rest.nombre}</h3>
                   <p className="ti-tarjeta-categoria">{rest.categoria}</p>
-                  <button
-                    className="ti-btn-reserva"
-                    onClick={() => navigate(`/restaurante/${rest.id}`)}
-                  >
+                  <button className="ti-btn-reserva" onClick={() => navigate(`/contenido/${rest.id}`)}>
                     Ver Disponibilidad
                   </button>
                 </div>
