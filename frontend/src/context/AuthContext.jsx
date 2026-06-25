@@ -7,13 +7,18 @@ export function AuthProvider({ children }) {
   const [usuarioActual, setUsuarioActual] = useState(null);
   const [cargando, setCargando] = useState(true);
 
+  const setUserWithFoto = (user) => {
+    if (!user) { setUsuarioActual(null); return; }
+    const foto = localStorage.getItem(`foto_${user.id}`);
+    setUsuarioActual(foto ? { ...user, foto } : user);
+  };
+
   useEffect(() => {
     try {
       const token = localStorage.getItem('token');
       const usuario = localStorage.getItem('usuario');
-      
       if (token && usuario && usuario !== 'undefined') {
-        setUsuarioActual(JSON.parse(usuario));
+        setUserWithFoto(JSON.parse(usuario));
       }
     } catch (error) {
       localStorage.clear();
@@ -37,7 +42,7 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem('token', datos.data.token);
       localStorage.setItem('usuario', JSON.stringify(datos.data.usuario));
-      setUsuarioActual(datos.data.usuario);
+      setUserWithFoto(datos.data.usuario);
 
       return { ok: true };
     } catch (error) {
@@ -62,7 +67,7 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem('token', datos.data.token);
       localStorage.setItem('usuario', JSON.stringify(datos.data.usuario));
-      setUsuarioActual(datos.data.usuario);
+      setUserWithFoto(datos.data.usuario);
 
       return { ok: true };
     } catch (error) {
@@ -83,8 +88,14 @@ export function AuthProvider({ children }) {
     setUsuarioActual(merged);
   };
 
+  const actualizarFoto = (base64) => {
+    if (!usuarioActual) return;
+    localStorage.setItem(`foto_${usuarioActual.id}`, base64);
+    setUsuarioActual(prev => ({ ...prev, foto: base64 }));
+  };
+
   return (
-    <AuthContext.Provider value={{ usuarioActual, registrar, iniciarSesion, cerrarSesion, actualizarPerfil, cargando }}>
+    <AuthContext.Provider value={{ usuarioActual, registrar, iniciarSesion, cerrarSesion, actualizarPerfil, actualizarFoto, cargando }}>
       {children}
     </AuthContext.Provider>
   );

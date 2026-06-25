@@ -36,35 +36,31 @@ const PROMOCIONES = [
     categoria: 'Japonesa-Peruana',
     badge: '-20%',
     etiqueta: 'Julio 2026',
-    descripcion: 'Descuento en menú degustación completo de 12 tiempos. Una experiencia de fusión nikkei única en Lima.',
-    condicion: 'Mínimo 2 personas · Reserva anticipada obligatoria',
+    descripcion: 'Descuento en Sushi Acevichado, la fusión nikkei más icónica de Lima. Una experiencia única en cada bocado.',
     img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80',
   },
   {
     restaurante: 'Central',
     categoria: 'Alta Cocina Peruana',
-    badge: '2×1',
-    etiqueta: 'Viernes',
-    descripcion: 'Dos en uno en ceviche de autor con insumos de diferentes altitudes del Perú. Solo los viernes.',
-    condicion: 'Válido solo viernes · Horario: 12:00 – 15:00',
+    badge: '-15%',
+    etiqueta: 'Julio 2026',
+    descripcion: 'Descuento en Nixtamal y Costa, dos platos que capturan los sabores de distintas altitudes del Perú.',
     img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80',
   },
   {
     restaurante: 'La Mar',
     categoria: 'Mariscos & Cevichería',
     badge: '-15%',
-    etiqueta: 'Todo agosto',
-    descripcion: 'Descuento en todos los ceviches y tiraditos del menú regular. La mejor cevichería de Lima te espera.',
-    condicion: 'No acumulable con otras promos · Solo menú regular',
+    etiqueta: 'Julio 2026',
+    descripcion: 'Descuento en Ceviche Mixto, Leche de Tigre y Jalea Mixta. Los sabores del Pacífico en su mejor versión.',
     img: 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=600&q=80',
   },
   {
     restaurante: 'Astrid & Gastón',
-    categoria: 'Peruana de Autor',
-    badge: '+ Postre',
+    categoria: 'Fusión Peruana',
+    badge: '-25%',
     etiqueta: 'Fines de semana',
-    descripcion: 'Postre de cortesía para grupos de 4 personas o más. Cierra en grande una experiencia gastronómica de lujo.',
-    condicion: 'Mínimo 4 personas · Solo sábados y domingos',
+    descripcion: 'Descuento en Suspiro Limeño, el postre insignia de la casa. Tradición y vanguardia en cada cucharada.',
     img: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=600&q=80',
   },
 ];
@@ -164,7 +160,10 @@ function Inicio() {
               onClick={() => setMenuAbierto(!menuAbierto)}
               aria-label="Menú de usuario"
             >
-              {usuarioActual ? inicialUsuario : '☰'}
+              {usuarioActual?.foto
+                ? <img src={usuarioActual.foto} className="ti-avatar-foto" alt="" />
+                : (usuarioActual ? inicialUsuario : '☰')
+              }
             </button>
 
             {menuAbierto && (
@@ -350,7 +349,9 @@ function Inicio() {
                   <span className="ti-tarjeta-pill">{p.categoria}</span>
                   <h3 className="ti-promo-restaurante">{p.restaurante}</h3>
                   <p className="ti-promo-desc">{p.descripcion}</p>
-                  <p className="ti-promo-condicion">📋 {p.condicion}</p>
+                  <div className="ti-promo-web">
+                    <i className="ti ti-world" /> Válido solo por WEB
+                  </div>
                   <button
                     className="ti-btn-reserva"
                     onClick={() => navegarAPromo(p.restaurante)}

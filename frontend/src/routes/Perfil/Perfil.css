@@ -306,9 +306,44 @@
 ══════════════════════════════════ */
 .pf-reservas-header {
   display: flex;
-  align-items: baseline;
-  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.pf-reservas-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+/* Tabs de filtro */
+.pf-filtros {
+  display: flex;
+  gap: 6px;
+}
+
+.pf-filtro-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--borde-input);
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texto-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.pf-filtro-btn:hover { border-color: var(--naranja); color: var(--naranja); }
+
+.pf-filtro-activo {
+  background: var(--naranja);
+  border-color: var(--naranja);
+  color: var(--blanco) !important;
 }
 
 .pf-reservas-titulo {
@@ -439,6 +474,23 @@
 }
 .pf-chip .ti { font-size: 13px; color: var(--naranja); }
 
+.pf-chip-pago {
+  background: var(--naranja-suave);
+  border-color: var(--naranja);
+  color: var(--naranja);
+}
+.pf-chip-pago .ti { color: var(--naranja); }
+
+.pf-dsct-label {
+  display: block;
+  font-size: 10px;
+  color: #16a34a;
+  font-weight: 600;
+  margin-top: 2px;
+  text-align: right;
+}
+.pf-dsct-label .ti { font-size: 10px; }
+
 /* Línea de tiempo */
 .pf-timeline {
   display: flex;
@@ -517,6 +569,62 @@
   color: #dc2626;
 }
 .pf-cancelada-badge .ti { font-size: 15px; }
+
+/* ── Ticket meta (ID + estado chip) */
+.pf-tarjeta-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+/* Chip de estado */
+.pf-estado-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: 1px solid transparent;
+}
+.pf-estado-pendiente  { background: var(--naranja-suave); color: var(--naranja); border-color: #fbd38d; }
+.pf-estado-revisando  { background: #fefce8; color: #b45309; border-color: #fde68a; }
+.pf-estado-confirmada { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+.pf-estado-completada { background: var(--fondo); color: var(--texto-muted); border-color: var(--borde); }
+.pf-estado-cancelada  { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+
+/* Footer de tarjeta — botón cancelar */
+.pf-tarjeta-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 0.5px solid var(--borde);
+}
+
+.pf-btn-cancelar-reserva {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1.5px solid #fecaca;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #dc2626;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pf-btn-cancelar-reserva:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #dc2626;
+}
+.pf-btn-cancelar-reserva:disabled { opacity: 0.5; cursor: not-allowed; }
+.pf-btn-cancelar-reserva .ti { font-size: 14px; }
 
 /* ══════════════════════════════════
    RESPONSIVE

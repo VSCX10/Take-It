@@ -92,6 +92,14 @@
 }
 .ti-avatar:hover { background: var(--naranja); }
 
+.ti-avatar-foto {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
 .ti-menu-desplegable {
   position: absolute;
   right: 0;
@@ -657,14 +665,18 @@
   margin: 0;
 }
 
-.ti-promo-condicion {
-  font-size: 12px;
-  color: var(--texto-muted);
+.ti-promo-web {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--naranja);
+  background: var(--naranja-suave);
+  border: 1px solid #fbd38d;
+  border-radius: 20px;
+  padding: 4px 12px;
   margin: 0;
-  padding: 8px 12px;
-  background: var(--fondo);
-  border-radius: 8px;
-  border-left: 3px solid var(--naranja);
 }
 
 .ti-btn-reserva {

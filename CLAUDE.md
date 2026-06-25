@@ -78,9 +78,15 @@ Express 5 en CommonJS con arquitectura por capas:
 ```
 Usuario     → id, nombre, apellido, email, telefono, password
 Restaurante → id, nombre, categoria, rating, img, descripcion, direccion
-Menu        → id, restauranteId, nombre, descripcion, precio, imagen
-Reserva     → id, usuarioId, restauranteId, fecha, hora, personas, estado, total
+Menu        → id, restauranteId, nombre, descripcion, precio, imagen, descuentoPct, stock
+Reserva     → id, usuarioId, restauranteId, fecha, hora, personas, estado, total, metodoPago
 ```
+
+- `Menu.descuentoPct` (INTEGER, default 0) — porcentaje de descuento activo sobre el plato (0 = sin descuento)
+- `Menu.stock` (INTEGER, nullable) — unidades disponibles; `null` = sin límite, `0` = agotado
+- `Reserva.metodoPago` (STRING, default `'local'`) — `'local'` | `'tarjeta'` según el flujo elegido por el usuario
+
+Seed de datos de demostración: `backend/seed_descuentos.js`
 
 Asociaciones registradas en `index.js`:
 - `Reserva.belongsTo(Restaurante, { as: 'restaurante' })`
@@ -195,19 +201,89 @@ Mejoras visuales y funcionales sin modificar la estructura de la base de datos.
 
 > En desarrollo. Backlog completo en `DOCUMENTACION REALEASE 2 - CODE/Release2_Documentacion.docx`.
 
-| HU | Alias | Prioridad |
-|----|-------|-----------|
-| HU-05 | Perfil usuario editable | Must Have |
-| HU-06 | Cancelación desde historial | Must Have |
-| HU-07 | POST /reservas end-to-end | Must Have |
-| HU-08 | Navegación dinámica navbar | Must Have |
-| HU-09 | Carrusel noticias gastronómicas | Should Have |
-| HU-10 | Detalle de restaurante dinámico | Must Have |
-| HU-11 | Listado dinámico desde API | Must Have |
-| HU-12 | Confirmación de reserva con número | Must Have |
-| HU-13 | Hash bcrypt + recuperación por email | Must Have |
-| HU-14 | Panel admin (protegido por rol JWT) | Must Have |
-| HU-15 | Reseñas post-visita | Should Have |
-| HU-16 | Recordatorio por email (Nodemailer + cron) | Should Have |
-| HU-17 | Pagos con Culqi (PEN) | Should Have |
-| HU-18 | Favoritos de restaurantes | Could Have |
+#### Jornada 2 — 25 junio 2026 · 09:00–13:00 (Descuentos, Stock y Métodos de Pago)
+
+**Backend**
+- `ADD` Campo `descuentoPct` (INTEGER, default 0) en modelo `Menu` — porcentaje de descuento por plato
+- `ADD` Campo `stock` (INTEGER, nullable) en modelo `Menu` — control de disponibilidad por plato
+- `ADD` Campo `metodoPago` (STRING, default `'local'`) en modelo `Reserva`
+- `ADD` Script `backend/seed_descuentos.js` — carga descuentos y stock de demo en Neon con un solo `node seed_descuentos.js`
+
+Descuentos de demo activos:
+
+| Restaurante | Plato(s) | Descuento |
+|---|---|---|
+| Maido | Sushi Acevichado | 20% |
+| Central | Nixtamal, Costa | 15% |
+| La Mar | Ceviche Mixto, Leche de Tigre, Jalea Mixta | 15% |
+| Astrid & Gastón | Suspiro Limeño | 25% |
+
+Platos agotados de demo: Lomo Saltado Nikkei (Maido), Alturas (Central), Cochinillo (Astrid & Gastón), Sudado de Mero (La Mar). Todos los demás platos tienen `stock = 10` como límite por pedido.
+
+**Frontend — `/contenido/:id`**
+- `ADD` Overlay "NO DISPONIBLE" + icono sobre imagen del plato cuando `stock === 0`
+- `ADD` Badge `-X%` en naranja sobre imagen cuando `descuentoPct > 0`
+- `ADD` Precio original tachado + precio con descuento en naranja en tarjeta de plato
+- `ADD` Bloqueo de botón `+` al alcanzar límite de 10 unidades con mensaje "Límite de 10 und."
+- `ADD` Línea "Descuento aplicado − S/ X.XX" en bloque de totales del sidebar (fondo naranja sutil, monto en naranja)
+- `ADD` Dos botones de pago: **Pagar en local** (confirma reserva, paga al llegar) y **Pagar ahora** (abre modal)
+- `ADD` Modal de pago con tarjeta: campos número, nombre, vencimiento y CVV con formato automático. Simula procesamiento y confirma reserva con `metodoPago: 'tarjeta'`
+
+**Frontend — `/inicio`**
+- `CHANGE` Tarjeta de promoción Astrid & Gastón: badge `+ Postre` → `-25%`, descripción actualizada a descuento en Suspiro Limeño
+
+**Frontend — `/perfil`**
+- `ADD` Chip de método de pago en tarjeta de reserva: "Pagado con tarjeta" (naranja) o "Paga en local" según `metodoPago`
+- `ADD` Etiqueta verde "con descuento" bajo el monto cuando la reserva tiene preorden
+
+#### Jornada 2 — 25 junio 2026 · 14:00–18:00 (UX Perfil, Filtros y Correcciones)
+
+**Backend**
+- `FIX` `backend/routes/reservas.js` — `metodoPago` no se incluía en el destructuring del body ni se pasaba a `servicio.crear()`. La columna existía en el modelo pero el campo se descartaba silenciosamente. Ahora se persiste correctamente en Neon.
+
+**Frontend — `AuthContext.jsx`**
+- `ADD` Función interna `setUserWithFoto(user)` — al cargar sesión desde localStorage, lee automáticamente `foto_<userId>` y la adjunta a `usuarioActual.foto`
+- `ADD` Función `actualizarFoto(base64)` expuesta en el contexto — guarda en `foto_<userId>` y actualiza el estado global. La foto ya no queda limitada al componente Perfil
+
+**Frontend — `/inicio`**
+- `FIX` Navbar: avatar muestra la foto de perfil del usuario si existe (`usuarioActual.foto`), en lugar de mostrar siempre la inicial
+- `CHANGE` Sección Promociones: Central badge `2×1` → `-15%` y descripción actualizada a los platos reales con descuento (Nixtamal y Costa). La Mar actualizada a Ceviche Mixto, Leche de Tigre y Jalea Mixta
+- `CHANGE` Bloque de condiciones eliminado de todas las tarjetas de promo. Reemplazado por chip **"Válido solo por WEB"**
+
+**Frontend — `/perfil`**
+- `ADD` Filtros de reservas: tabs **Activas / Canceladas / Finalizadas** junto al título. El contador de reservas refleja siempre el filtro activo
+- `ADD` Botón **Cancelar reserva** al pie de cada tarjeta activa — llama a `PATCH /api/reservas/:id/cancelar` y actualiza la lista en tiempo real sin recargar
+- `CHANGE` Número de ticket: `#7` → `RS-0007` (prefijo RS + id con ceros a la izquierda, 4 dígitos)
+- `CHANGE` Timeline de estados renombrado: **Registrada → Por confirmar → Confirmada**. Al crear una reserva nueva, "Registrada" aparece con checkmark verde y "Por confirmar" se ilumina en naranja, indicando que espera aprobación del admin
+- `FIX` Prefijo de teléfono: al abrir el editor, el número guardado (`+51 987...`) se parsea separando prefijo y número. Se elimina la duplicación acumulativa del prefijo en cada guardado
+
+| HU | Alias | Prioridad | Pts |
+|----|-------|-----------|-----|
+| HU-01 | Registro — completar (bcrypt + recuperar contraseña) | Must Have | 5 |
+| HU-05 | Perfil usuario editable | Must Have | 5 |
+| HU-06 | Cancelar desde historial | Must Have | 5 |
+| HU-07 | POST /reservas end-to-end | Must Have | 8 |
+| HU-08 | Sección Promociones en inicio | Should Have | 3 |
+| HU-09 | Capacidad de mesa + observaciones | Should Have | 5 |
+| HU-10 | Página Sobre Nosotros | Should Have | 3 |
+| HU-12 | Confirmación de reserva con número | Must Have | 8 |
+| HU-14 | Panel admin (protegido por rol JWT) | Must Have | 8 |
+| HU-15 | Reseñas post-visita | Should Have | 5 |
+| HU-16 | Recordatorio por email (Nodemailer + cron) | Should Have | 5 |
+| HU-18 | Favoritos de restaurantes | Could Have | 3 |
+
+> HU-13 eliminada: sus pendientes (bcrypt + olvidar contraseña) pertenecen a HU-01 del R1, que se completa en R2.  
+> HU-17 (Pagos Culqi) aplazada a Release 3.
+
+**HU-01 — detalle:** *Como cliente quiero que mi contraseña se almacene con hash bcrypt y poder recuperarla si la olvido mediante un correo con enlace temporal.* (Pendiente de R1 registrado en BACKLOG_DESPUES_SPRT1.docx)
+- Backend: `bcrypt.hash()` al registrar y al cambiar contraseña. Endpoint `POST /auth/recuperar` genera token temporal (válido 15 min, un solo uso) y envía email con Nodemailer.
+
+**HU-08 — detalle:** *Como cliente quiero ver una sección de promociones vigentes en el inicio (descuentos, 2×1, cortesías) que me lleven directamente al restaurante correspondiente.*
+- Implementado: 4 tarjetas con badge de oferta, condiciones, imagen y botón que navega al restaurante si existe en la DB.
+
+**HU-09 — detalle:** *Como cliente quiero indicar la capacidad de mesa que necesito (para 2, para 3 o para 4 o más personas) y añadir observaciones de preferencia de ubicación al hacer mi reserva.*
+- Frontend: selector de capacidad (Mesa para 2 / Mesa para 3 / Mesa para 4 o más) + campo de texto libre "Observaciones" en el sidebar de reserva (`/contenido/:id`)
+- Backend: campos `capacidadMesa` y `observaciones` en modelo `Reserva` (Sequelize auto-migra), incluidos en `POST /api/reservas` y visibles en tarjeta del perfil
+
+**HU-10 — detalle:** *Como visitante quiero acceder a una página que presente al equipo de desarrollo, la propuesta de valor de la plataforma y el stack técnico, para entender quiénes construyeron Take&It y con qué tecnología.*
+- Implementado: página `/nosotros` con sidebar fijo de imágenes, sección de equipo (6 integrantes con fotos y roles), features del R1, stack técnico con iconos y footer con créditos.
