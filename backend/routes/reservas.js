@@ -7,8 +7,8 @@ const servicio = ServicioFactory.crear('reserva');
 
 router.post('/', async (req, res) => {
     try {
-        const { usuarioId, restauranteId, fecha, hora, personas, total } = req.body;
-        const reserva = await servicio.crear({ usuarioId, restauranteId, fecha, hora, personas, total });
+        const { usuarioId, restauranteId, fecha, hora, personas, total, metodoPago } = req.body;
+        const reserva = await servicio.crear({ usuarioId, restauranteId, fecha, hora, personas, total, metodoPago });
         return ResponseFactory.exito(res, reserva, 'Reserva creada', 201);
     } catch (error) {
         return ResponseFactory.error(res, 'Error al crear reserva');

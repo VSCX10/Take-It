@@ -29,6 +29,10 @@ const Reserva = sequelize.define('Reserva', {
   total: {
     type: DataTypes.FLOAT,
     defaultValue: 0
+  },
+  metodoPago: {
+    type: DataTypes.STRING,
+    defaultValue: 'local'
   }
 }, {
   tableName: 'reservas',
