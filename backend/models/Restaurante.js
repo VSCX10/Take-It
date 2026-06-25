@@ -32,4 +32,8 @@ const Restaurante = sequelize.define('Restaurante', {
   timestamps: false
 });
 
+Restaurante.associate = (modelos) => {
+  Restaurante.hasMany(modelos.Reserva, { foreignKey: 'restauranteId', as: 'reservas' });
+};
+
 module.exports = Restaurante;

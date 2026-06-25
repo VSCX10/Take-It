@@ -5,6 +5,7 @@ import Registro from './routes/Register/Register.jsx';
 import Inicio from './Main/Inicio.jsx';
 import Perfil from './routes/Perfil/Perfil.jsx';
 import ContenidoRestaurante from './routes/Pages/ContenidoRestaurante.jsx';
+import SobreNosotros from './routes/SobreNosotros/SobreNosotros.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { PrivateRoute, PublicRoute } from './context/ProtectedRoute.jsx';
 
@@ -33,6 +34,9 @@ function App() {
           } />
           <Route path="/perfil" element={
             <PrivateRoute><Perfil /></PrivateRoute>
+          } />
+          <Route path="/nosotros" element={
+            <PrivateRoute><SobreNosotros /></PrivateRoute>
           } />
         </Routes>
       </AuthProvider>

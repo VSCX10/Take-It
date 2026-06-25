@@ -35,4 +35,8 @@ const Reserva = sequelize.define('Reserva', {
   timestamps: false
 });
 
+Reserva.associate = (modelos) => {
+  Reserva.belongsTo(modelos.Restaurante, { foreignKey: 'restauranteId', as: 'restaurante' });
+};
+
 module.exports = Reserva;

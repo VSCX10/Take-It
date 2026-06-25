@@ -162,53 +162,103 @@ function ContenidoRestaurante() {
                 {/* SIDEBAR RESERVA */}
                 <div className="sidebar-reserva">
                     <div className="card-reserva">
-                        <h2>Tu Reserva</h2>
 
-                        <div className="grupo-input">
-                            <label>Fecha</label>
-                            <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} />
+                        {/* Cabecera */}
+                        <div className="cr-reserva-header">
+                            <span className="cr-reserva-tag">Tu Reserva</span>
+                            <h2 className="cr-reserva-rest">{restaurante.nombre}</h2>
+                            <div className="cr-reserva-deco" />
                         </div>
 
-                        <div className="grupo-input">
-                            <label>Hora</label>
-                            <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} />
+                        {/* Campos de fecha / hora / personas */}
+                        <div className="cr-campos">
+                            <div className="cr-campo">
+                                <i className="ti ti-calendar cr-campo-icono" />
+                                <div className="cr-campo-wrap">
+                                    <label className="cr-campo-label">Fecha</label>
+                                    <input
+                                        type="date"
+                                        className="cr-campo-input"
+                                        value={fecha}
+                                        onChange={(e) => setFecha(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="cr-campo">
+                                <i className="ti ti-clock cr-campo-icono" />
+                                <div className="cr-campo-wrap">
+                                    <label className="cr-campo-label">Hora</label>
+                                    <input
+                                        type="time"
+                                        className="cr-campo-input"
+                                        value={hora}
+                                        onChange={(e) => setHora(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="cr-campo">
+                                <i className="ti ti-users cr-campo-icono" />
+                                <div className="cr-campo-wrap">
+                                    <label className="cr-campo-label">Personas</label>
+                                    <select
+                                        className="cr-campo-input"
+                                        value={personas}
+                                        onChange={(e) => setPersonas(e.target.value)}
+                                    >
+                                        {[1,2,3,4,5,6,7,8].map(n => (
+                                            <option key={n} value={n}>{n} persona{n > 1 ? 's' : ''}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="grupo-input">
-                            <label>Personas</label>
-                            <select value={personas} onChange={(e) => setPersonas(e.target.value)}>
-                                {[1,2,3,4,5,6].map(n => (
-                                    <option key={n} value={n}>{n} Persona{n > 1 ? 's' : ''}</option>
-                                ))}
-                            </select>
-                        </div>
+                        {/* Sección preorden */}
+                        <div className="cr-preorden">
+                            <div className="cr-preorden-titulo">
+                                <i className="ti ti-shopping-bag" />
+                                <span>Preorden</span>
+                                {pedido.length > 0 && (
+                                    <span className="cr-preorden-count">{pedido.reduce((a, i) => a + i.cantidad, 0)}</span>
+                                )}
+                            </div>
 
-                        {/* RESUMEN */}
-                        <div className="resumen-pedido">
-                            <h3>Preorden</h3>
                             {pedido.length === 0 ? (
-                                <p style={{color: '#9a958e', fontSize: '14px'}}>Aún no agregaste platos</p>
+                                <div className="cr-preorden-vacio">
+                                    <i className="ti ti-bowl" />
+                                    <p>Agrega platos del menú para incluir una preorden</p>
+                                </div>
                             ) : (
-                                pedido.map((item) => (
-                                    <div key={item.id} className="item-resumen">
-                                        <span>{item.nombre} x{item.cantidad}</span>
-                                        <span>S/ {(item.precio * item.cantidad).toFixed(2)}</span>
-                                    </div>
-                                ))
+                                <div className="cr-items-lista">
+                                    {pedido.map((item) => (
+                                        <div key={item.id} className="cr-item">
+                                            <div className="cr-item-info">
+                                                <span className="cr-item-nombre">{item.nombre}</span>
+                                                <span className="cr-item-precio">S/ {(item.precio * item.cantidad).toFixed(2)}</span>
+                                            </div>
+                                            <div className="cr-item-controles">
+                                                <button className="cr-ctrl" onClick={() => quitarPlato(item)}>−</button>
+                                                <span className="cr-ctrl-cant">{item.cantidad}</span>
+                                                <button className="cr-ctrl" onClick={() => agregarPlato(item)}>+</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             )}
                         </div>
 
+                        {/* Totales */}
                         {pedido.length > 0 && (
-                            <div className="totales">
-                                <div className="fila-total">
+                            <div className="cr-totales">
+                                <div className="cr-total-fila">
                                     <span>Subtotal</span>
                                     <span>S/ {subtotal.toFixed(2)}</span>
                                 </div>
-                                <div className="fila-total">
-                                    <span>IGV (18%)</span>
+                                <div className="cr-total-fila">
+                                    <span>IGV 18%</span>
                                     <span>S/ {igv.toFixed(2)}</span>
                                 </div>
-                                <div className="fila-total total-final">
+                                <div className="cr-total-fila cr-total-final">
                                     <span>Total</span>
                                     <span>S/ {total.toFixed(2)}</span>
                                 </div>
@@ -216,17 +266,21 @@ function ContenidoRestaurante() {
                         )}
 
                         {mensajeExito && (
-                            <p style={{color: '#16a34a', fontSize: '14px', marginTop: '12px', textAlign: 'center'}}>
+                            <div className="cr-exito">
+                                <i className="ti ti-circle-check" />
                                 {mensajeExito}
-                            </p>
+                            </div>
                         )}
 
                         <button
-                            className="btn-reservar"
+                            className="cr-btn-confirmar"
                             onClick={procederPago}
                             disabled={cargandoPago}
                         >
-                            {cargandoPago ? 'Procesando...' : 'Proceder con el pago'}
+                            {cargandoPago
+                                ? <><i className="ti ti-loader-2 cr-spin" /> Procesando...</>
+                                : <><i className="ti ti-check" /> Confirmar Reserva</>
+                            }
                         </button>
                     </div>
                 </div>

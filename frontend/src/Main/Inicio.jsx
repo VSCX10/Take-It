@@ -8,7 +8,7 @@ const HERO_SLIDES = [
     img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80',
     tag: '✦ Lima, Perú',
     titulo: 'Experiencias gastronómicas inolvidables',
-    sub: 'Reserva en los mejores restaurantes de la ciudad',
+    sub: 'Reserva en los mejores restaurantes de la ciudad en segundos',
   },
   {
     img: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=1400&q=80',
@@ -30,6 +30,52 @@ const HERO_SLIDES = [
   },
 ];
 
+const PROMOCIONES = [
+  {
+    restaurante: 'Maido',
+    categoria: 'Japonesa-Peruana',
+    badge: '-20%',
+    etiqueta: 'Julio 2026',
+    descripcion: 'Descuento en menú degustación completo de 12 tiempos. Una experiencia de fusión nikkei única en Lima.',
+    condicion: 'Mínimo 2 personas · Reserva anticipada obligatoria',
+    img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80',
+  },
+  {
+    restaurante: 'Central',
+    categoria: 'Alta Cocina Peruana',
+    badge: '2×1',
+    etiqueta: 'Viernes',
+    descripcion: 'Dos en uno en ceviche de autor con insumos de diferentes altitudes del Perú. Solo los viernes.',
+    condicion: 'Válido solo viernes · Horario: 12:00 – 15:00',
+    img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80',
+  },
+  {
+    restaurante: 'La Mar',
+    categoria: 'Mariscos & Cevichería',
+    badge: '-15%',
+    etiqueta: 'Todo agosto',
+    descripcion: 'Descuento en todos los ceviches y tiraditos del menú regular. La mejor cevichería de Lima te espera.',
+    condicion: 'No acumulable con otras promos · Solo menú regular',
+    img: 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=600&q=80',
+  },
+  {
+    restaurante: 'Astrid & Gastón',
+    categoria: 'Peruana de Autor',
+    badge: '+ Postre',
+    etiqueta: 'Fines de semana',
+    descripcion: 'Postre de cortesía para grupos de 4 personas o más. Cierra en grande una experiencia gastronómica de lujo.',
+    condicion: 'Mínimo 4 personas · Solo sábados y domingos',
+    img: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=600&q=80',
+  },
+];
+
+const NAV_LINKS = [
+  { label: 'Inicio', href: '#inicio' },
+  { label: 'Restaurantes', href: '#restaurantes' },
+  { label: 'Promociones', href: '#promociones' },
+  { label: 'Sobre Nosotros', href: null, to: '/nosotros' },
+];
+
 function Inicio() {
   const [restaurantes, setRestaurantes] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -42,6 +88,7 @@ function Inicio() {
   const navigate = useNavigate();
   const { cerrarSesion, usuarioActual } = useAuth();
   const intervaloRef = useRef(null);
+  const restaurantesRef = useRef(null);
 
   useEffect(() => {
     fetch('http://localhost:3000/api/restaurantes')
@@ -57,6 +104,23 @@ function Inicio() {
     return () => clearInterval(intervaloRef.current);
   }, [slideActual]);
 
+  const scrollToRestaurantes = () => {
+    restaurantesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const navegarAPromo = (nombreRest) => {
+    const encontrado = restaurantes.find(r =>
+      r.nombre?.toLowerCase().includes(nombreRest.toLowerCase())
+    );
+    if (encontrado) {
+      navigate(`/contenido/${encontrado.id}`);
+    } else {
+      setBusqueda(nombreRest);
+      setBusquedaActiva(nombreRest);
+      scrollToRestaurantes();
+    }
+  };
+
   const restaurantesFiltrados = restaurantes.filter((r) => {
     const coincideBusqueda =
       r.nombre.toLowerCase().includes(busquedaActiva.toLowerCase()) ||
@@ -68,45 +132,66 @@ function Inicio() {
     return coincideBusqueda && coincideEstrellas && coincideTipo;
   });
 
-  return (
-    <div className="ti-pagina">
+  const inicialUsuario = usuarioActual?.nombre?.[0]?.toUpperCase() || '';
 
-      {/* NAV */}
+  return (
+    <div className="ti-pagina" id="inicio">
+
+      {/* ── NAV ───────────────────────────────────────────────────────── */}
       <header className="ti-nav">
         <h1 className="ti-logo">Take<span>&</span>It</h1>
-        <p className="ti-nav-tagline">ADQUIERE TU MESA AL INSTANTE</p>
 
-        <div className="ti-menu-wrap">
-          <button
-            className="ti-btn-hamburguesa"
-            onClick={() => setMenuAbierto(!menuAbierto)}
-            aria-label="Menú"
-          >
-            <span className={`ti-hamburguesa-icon ${menuAbierto ? 'abierto' : ''}`} />
-          </button>
-
-          {menuAbierto && (
-            <div className="ti-menu-desplegable">
-              {usuarioActual ? (
-                <>
-                  <p className="ti-menu-saludo">👋 Hola, {usuarioActual.nombre}</p>
-                  <button onClick={() => navigate('/perfil')}>👤 Mi Perfil</button>
-                  <button onClick={() => { cerrarSesion(); navigate('/login'); }}>
-                    🚪 Cerrar Sesión
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button onClick={() => navigate('/login')}>👤 Iniciar Sesión</button>
-                  <button onClick={() => navigate('/registro')}>📝 Registrarse</button>
-                </>
-              )}
-            </div>
+        <nav className="ti-nav-links">
+          {NAV_LINKS.map((l) =>
+            l.to ? (
+              <button
+                key={l.label}
+                className="ti-nav-link ti-nav-link-btn"
+                onClick={() => navigate(l.to)}
+              >
+                {l.label}
+              </button>
+            ) : (
+              <a key={l.label} className="ti-nav-link" href={l.href}>{l.label}</a>
+            )
           )}
+        </nav>
+
+        <div className="ti-nav-acciones">
+          <div className="ti-menu-wrap">
+            <button
+              className="ti-avatar"
+              onClick={() => setMenuAbierto(!menuAbierto)}
+              aria-label="Menú de usuario"
+            >
+              {usuarioActual ? inicialUsuario : '☰'}
+            </button>
+
+            {menuAbierto && (
+              <div className="ti-menu-desplegable">
+                {usuarioActual ? (
+                  <>
+                    <p className="ti-menu-saludo">👋 Hola, {usuarioActual.nombre}</p>
+                    <button onClick={() => { navigate('/perfil'); setMenuAbierto(false); }}>
+                      👤 Mi Perfil
+                    </button>
+                    <button onClick={() => { cerrarSesion(); navigate('/login'); }}>
+                      🚪 Cerrar Sesión
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => navigate('/login')}>👤 Iniciar Sesión</button>
+                    <button onClick={() => navigate('/registro')}>📝 Registrarse</button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
-      {/* HERO CARRUSEL */}
+      {/* ── HERO CAROUSEL ─────────────────────────────────────────────── */}
       <section className="ti-hero">
         <div
           className="ti-hero-slides"
@@ -120,6 +205,9 @@ function Inicio() {
                 <span className="ti-hero-tag">{s.tag}</span>
                 <h2 className="ti-hero-titulo">{s.titulo}</h2>
                 <p className="ti-hero-sub">{s.sub}</p>
+                <button className="ti-hero-cta" onClick={scrollToRestaurantes}>
+                  Explorar Restaurantes →
+                </button>
               </div>
             </div>
           ))}
@@ -141,30 +229,37 @@ function Inicio() {
         </div>
       </section>
 
-      {/* BÚSQUEDA */}
-      <section className="ti-busqueda-seccion">
-        <div className="ti-busqueda-wrap">
-          <div className="ti-input-wrap">
-            <span className="ti-search-icon">🔍</span>
-            <input
-              type="text"
-              placeholder="Buscar restaurante, cocina, zona..."
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && setBusquedaActiva(busqueda)}
-            />
-          </div>
-          <button className="ti-btn-buscar" onClick={() => setBusquedaActiva(busqueda)}>
+      {/* ── BÚSQUEDA FLOTANTE ─────────────────────────────────────────── */}
+      <div className="ti-search-float-wrap">
+        <div className="ti-search-float">
+          <span className="ti-search-icon">🔍</span>
+          <input
+            type="text"
+            placeholder="Buscar restaurante, cocina, zona..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setBusquedaActiva(busqueda);
+                scrollToRestaurantes();
+              }
+            }}
+          />
+          <button
+            className="ti-btn-buscar"
+            onClick={() => { setBusquedaActiva(busqueda); scrollToRestaurantes(); }}
+          >
             Buscar
           </button>
         </div>
-      </section>
+      </div>
 
-      {/* FILTROS + GRID */}
-      <main className="ti-main">
+      {/* ── RESTAURANTES ──────────────────────────────────────────────── */}
+      <main className="ti-main" ref={restaurantesRef} id="restaurantes">
         <div className="ti-cabecera-filtros">
           <div>
             <h2 className="ti-section-titulo">Restaurantes Destacados</h2>
+            <div className="ti-titulo-deco" />
             <p className="ti-section-sub">
               {restaurantesFiltrados.length} restaurante{restaurantesFiltrados.length !== 1 ? 's' : ''} disponible{restaurantesFiltrados.length !== 1 ? 's' : ''}
             </p>
@@ -173,17 +268,24 @@ function Inicio() {
           <div className="ti-filtros">
             <div className="ti-dropdown-wrap">
               <label className="ti-filtro-label">Calificación</label>
-              <select className="ti-dropdown" value={filtroEstrellas} onChange={(e) => setFiltroEstrellas(e.target.value)}>
+              <select
+                className="ti-dropdown"
+                value={filtroEstrellas}
+                onChange={(e) => setFiltroEstrellas(e.target.value)}
+              >
                 <option value="todas">Todas las estrellas</option>
                 <option value="3">⭐⭐⭐</option>
                 <option value="4">⭐⭐⭐⭐</option>
                 <option value="5">⭐⭐⭐⭐⭐</option>
               </select>
             </div>
-
             <div className="ti-dropdown-wrap">
               <label className="ti-filtro-label">Tipo de comida</label>
-              <select className="ti-dropdown" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
+              <select
+                className="ti-dropdown"
+                value={filtroTipo}
+                onChange={(e) => setFiltroTipo(e.target.value)}
+              >
                 <option value="todos">Todos los tipos</option>
                 {[...new Set(restaurantes.map((r) => r.categoria).filter(Boolean))].sort().map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
@@ -200,24 +302,68 @@ function Inicio() {
             <div className="ti-estado">No se encontraron restaurantes con esos filtros.</div>
           ) : (
             restaurantesFiltrados.map((rest) => (
-              <div key={rest.id} className="ti-tarjeta">
+              <div
+                key={rest.id}
+                className="ti-tarjeta"
+                onClick={() => navigate(`/contenido/${rest.id}`)}
+              >
                 <div className="ti-tarjeta-img">
                   <img src={rest.img} alt={rest.nombre} />
+                  <div className="ti-tarjeta-overlay">
+                    <button
+                      className="ti-btn-reserva-overlay"
+                      onClick={(e) => { e.stopPropagation(); navigate(`/contenido/${rest.id}`); }}
+                    >
+                      Ver Disponibilidad →
+                    </button>
+                  </div>
                   <span className="ti-badge-rating">⭐ {rest.rating}</span>
                   {rest.precio && <span className="ti-badge-precio">{rest.precio}</span>}
                 </div>
                 <div className="ti-tarjeta-body">
+                  <span className="ti-tarjeta-pill">{rest.categoria}</span>
                   <h3 className="ti-tarjeta-nombre">{rest.nombre}</h3>
-                  <p className="ti-tarjeta-categoria">{rest.categoria}</p>
-                  <button className="ti-btn-reserva" onClick={() => navigate(`/contenido/${rest.id}`)}>
-                    Ver Disponibilidad
-                  </button>
                 </div>
               </div>
             ))
           )}
         </div>
       </main>
+
+      {/* ── PROMOCIONES ───────────────────────────────────────────────── */}
+      <section className="ti-promos" id="promociones">
+        <div className="ti-promos-inner">
+          <div className="ti-promos-header">
+            <h2 className="ti-section-titulo">Promociones Exclusivas</h2>
+            <div className="ti-titulo-deco" />
+            <p className="ti-section-sub">Descuentos especiales en los mejores restaurantes de Lima</p>
+          </div>
+          <div className="ti-promos-grid">
+            {PROMOCIONES.map((p, i) => (
+              <div key={i} className="ti-promo-card">
+                <div className="ti-promo-img-wrap">
+                  <img src={p.img} alt={p.restaurante} />
+                  <span className="ti-promo-badge">{p.badge}</span>
+                  <span className="ti-promo-etiqueta">{p.etiqueta}</span>
+                </div>
+                <div className="ti-promo-body">
+                  <span className="ti-tarjeta-pill">{p.categoria}</span>
+                  <h3 className="ti-promo-restaurante">{p.restaurante}</h3>
+                  <p className="ti-promo-desc">{p.descripcion}</p>
+                  <p className="ti-promo-condicion">📋 {p.condicion}</p>
+                  <button
+                    className="ti-btn-reserva"
+                    onClick={() => navegarAPromo(p.restaurante)}
+                  >
+                    Aprovechar Oferta →
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }

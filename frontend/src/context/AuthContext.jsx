@@ -77,8 +77,14 @@ export function AuthProvider({ children }) {
     setUsuarioActual(null);
   };
 
+  const actualizarPerfil = (nuevoDato) => {
+    const merged = { ...usuarioActual, ...nuevoDato };
+    localStorage.setItem('usuario', JSON.stringify(merged));
+    setUsuarioActual(merged);
+  };
+
   return (
-    <AuthContext.Provider value={{ usuarioActual, registrar, iniciarSesion, cerrarSesion, cargando }}>
+    <AuthContext.Provider value={{ usuarioActual, registrar, iniciarSesion, cerrarSesion, actualizarPerfil, cargando }}>
       {children}
     </AuthContext.Provider>
   );

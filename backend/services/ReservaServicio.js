@@ -1,4 +1,5 @@
 const Reserva = require('../models/Reserva');
+const Restaurante = require('../models/Restaurante');
 
 class ReservaServicio {
     async crear(datos) {
@@ -6,7 +7,11 @@ class ReservaServicio {
     }
 
     async obtenerPorUsuario(usuarioId) {
-        return await Reserva.findAll({ where: { usuarioId } });
+        return await Reserva.findAll({
+            where: { usuarioId },
+            include: [{ model: Restaurante, as: 'restaurante', attributes: ['nombre', 'img'] }],
+            order: [['id', 'DESC']]
+        });
     }
 
     async buscarPorId(id) {
