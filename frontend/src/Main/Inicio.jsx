@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Inicio.css';
 import { useAuth } from '../context/AuthContext';
@@ -47,7 +47,7 @@ function Inicio() {
     fetch('http://localhost:3000/api/restaurantes')
       .then((r) => r.json())
       .then((datos) => { setRestaurantes(datos.data); setCargando(false); })
-      .catch((err) => { console.error('Error:', err); setCargando(false); });
+      .catch(() => { setCargando(false); });
   }, []);
 
   const irSlide = (n) => setSlideActual((n + HERO_SLIDES.length) % HERO_SLIDES.length);
@@ -71,7 +71,6 @@ function Inicio() {
   return (
     <div className="ti-pagina">
 
-      {/* NAV */}
       <header className="ti-nav">
         <h1 className="ti-logo">Take<span>&</span>It</h1>
         <p className="ti-nav-tagline">ADQUIERE TU MESA AL INSTANTE</p>
@@ -106,7 +105,6 @@ function Inicio() {
         </div>
       </header>
 
-      {/* HERO CARRUSEL */}
       <section className="ti-hero">
         <div
           className="ti-hero-slides"
@@ -141,7 +139,6 @@ function Inicio() {
         </div>
       </section>
 
-      {/* BÚSQUEDA */}
       <section className="ti-busqueda-seccion">
         <div className="ti-busqueda-wrap">
           <div className="ti-input-wrap">
@@ -160,7 +157,6 @@ function Inicio() {
         </div>
       </section>
 
-      {/* FILTROS + GRID */}
       <main className="ti-main">
         <div className="ti-cabecera-filtros">
           <div>
@@ -195,7 +191,16 @@ function Inicio() {
 
         <div className="ti-grid">
           {cargando ? (
-            <div className="ti-estado">Cargando restaurantes...</div>
+            Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="ti-tarjeta ti-skeleton-card">
+                <div className="ti-sk ti-sk-img" />
+                <div className="ti-tarjeta-body">
+                  <div className="ti-sk ti-sk-linea" />
+                  <div className="ti-sk ti-sk-linea corta" />
+                  <div className="ti-sk ti-sk-btn" />
+                </div>
+              </div>
+            ))
           ) : restaurantesFiltrados.length === 0 ? (
             <div className="ti-estado">No se encontraron restaurantes con esos filtros.</div>
           ) : (

@@ -7,6 +7,9 @@ const Usuario = require('./models/Usuario');
 const Restaurante = require('./models/Restaurante');
 const Menu = require('./models/Menu');
 const Reserva = require('./models/Reserva');
+const Mesa = require('./models/Mesa');
+
+const seedMesas = require('./seeders/seedMesas');
 
 const authRoutes = require('./routes/auth');
 const restaurantesRoutes = require('./routes/restaurantes');
@@ -19,7 +22,6 @@ const puerto = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurantes', restaurantesRoutes);
 app.use('/api/reservas', reservasRoutes);
@@ -29,10 +31,6 @@ app.use('/api/restaurantes', menuRoutes);
 
 
 
-
-
-
-// Conectar a PostgreSQL
 sequelize.authenticate()
   .then(() => {
     console.log('✅ PostgreSQL conectado exitosamente');
@@ -40,6 +38,9 @@ sequelize.authenticate()
   })
   .then(() => {
     console.log('✅ Tablas sincronizadas');
+    return seedMesas();
+  })
+  .then(() => {
     app.listen(puerto, () => {
       console.log(`🚀 Servidor corriendo en http://localhost:${puerto}`);
     });

@@ -16,10 +16,10 @@ class ReservaServicio {
     async cancelar(id) {
         const reserva = await Reserva.findByPk(id);
         if (!reserva) return null;
-            reserva.estado = 'cancelada';
-            await reserva.save();
-            return reserva;
-        }
+        reserva.estado = 'cancelada';
+        await reserva.save();
+        return reserva;
+    }
 }
 
 module.exports = ReservaServicio;

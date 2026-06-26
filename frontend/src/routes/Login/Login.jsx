@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Login.css';
@@ -64,7 +64,7 @@ setTimeout(async () => {
     return;
   }
 
-  navigate('/inicio');  // ← cambio aquí
+  navigate('/inicio');
 }, 500);
   };
 

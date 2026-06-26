@@ -1,9 +1,3 @@
-:root {
-    --naranja-brand: #c2440e;
-    --texto-oscuro: #1a1714;
-    --texto-claro: #9a958e;
-}
-
 /* BANNER */
 .banner-restaurante {
     position: relative;
@@ -30,6 +24,7 @@
 }
 
 .overlay-banner h1 {
+    font-family: var(--fuente-titulo);
     font-size: 42px;
     margin: 0 0 10px 0;
 }
@@ -40,14 +35,27 @@
     font-size: 16px;
 }
 
-/* BOTON VOLVER */
-.contenedor-volver {
+/* NAV SUPERIOR */
+.cr-nav {
     display: flex;
-    justify-content: flex-start;
-    padding: 16px 40px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 40px;
     background: white;
-    border-bottom: 0.5px solid #e8e3da;
+    border-bottom: 0.5px solid var(--borde);
+    position: sticky;
+    top: 0;
+    z-index: 50;
 }
+
+.cr-logo {
+    font-family: var(--fuente-titulo);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--texto-oscuro);
+    cursor: pointer;
+}
+.cr-logo span { color: var(--naranja-brand); }
 
 .btn-volver {
     background: transparent;
@@ -80,6 +88,7 @@
 }
 
 .cabecera-menu h2 {
+    font-family: var(--fuente-titulo);
     font-size: 24px;
     color: var(--texto-oscuro);
     margin: 0 0 5px 0;
@@ -222,6 +231,7 @@
 }
 
 .card-reserva h2 {
+    font-family: var(--fuente-titulo);
     margin: 0 0 20px 0;
     font-size: 20px;
     color: var(--texto-oscuro);
@@ -254,6 +264,97 @@
 .grupo-input input:focus,
 .grupo-input select:focus {
     border-color: var(--naranja-brand);
+}
+
+/* GRID HORAS */
+.aviso-slots {
+    font-size: 13px;
+    color: var(--texto-claro);
+    margin: 4px 0;
+}
+
+.grid-horas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.slot-hora {
+    position: relative;
+    padding: 9px 4px;
+    border: 1.5px solid #e0dbd3;
+    border-radius: 10px;
+    background: white;
+    color: var(--texto-oscuro);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.slot-hora:hover:not(:disabled) {
+    border-color: var(--naranja-brand);
+    color: var(--naranja-brand);
+}
+
+.slot-hora.activo {
+    background: var(--naranja-brand);
+    border-color: var(--naranja-brand);
+    color: white;
+}
+
+.slot-hora:disabled {
+    background: #f9ece8;
+    border-color: #f0d8d0;
+    color: #c69b8e;
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
+
+.slot-hora.pocas { border-color: #e8923f; }
+
+.slot-punto {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #e8923f;
+}
+
+.grid-horas-leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--texto-claro);
+}
+.grid-horas-leyenda span { display: inline-flex; align-items: center; gap: 5px; }
+.grid-horas-leyenda .pt { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+.grid-horas-leyenda .pt.libre { background: #fff; border: 1.5px solid #e0dbd3; }
+.grid-horas-leyenda .pt.pocas { background: #e8923f; }
+.grid-horas-leyenda .pt.lleno { background: #f0d8d0; }
+
+/* MENSAJES */
+.cr-alerta,
+.cr-exito {
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 14px;
+    font-size: 13px;
+    text-align: center;
+}
+.cr-alerta {
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+.cr-exito {
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    color: #16a34a;
 }
 
 /* RESUMEN */
@@ -330,7 +431,7 @@
         font-size: 28px;
     }
 
-    .contenedor-volver {
+    .cr-nav {
         padding: 12px 20px;
     }
 }

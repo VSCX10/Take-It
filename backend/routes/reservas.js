@@ -4,11 +4,20 @@ const ServicioFactory = require('../factories/ServicioFactory');
 const ResponseFactory = require('../factories/ResponseFactory');
 
 const servicio = ServicioFactory.crear('reserva');
+const mesaServicio = ServicioFactory.crear('mesa');
 
 router.post('/', async (req, res) => {
     try {
         const { usuarioId, restauranteId, fecha, hora, personas, total } = req.body;
-        const reserva = await servicio.crear({ usuarioId, restauranteId, fecha, hora, personas, total });
+
+        const mesa = await mesaServicio.asignarMesa(restauranteId, fecha, hora, personas);
+        if (!mesa) {
+            return ResponseFactory.error(res, 'No hay mesas disponibles para ese horario', 409);
+        }
+
+        const reserva = await servicio.crear({
+            usuarioId, restauranteId, mesaId: mesa.id, fecha, hora, personas, total
+        });
         return ResponseFactory.exito(res, reserva, 'Reserva creada', 201);
     } catch (error) {
         return ResponseFactory.error(res, 'Error al crear reserva');

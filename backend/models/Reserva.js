@@ -10,6 +10,10 @@ const Reserva = sequelize.define('Reserva', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  mesaId: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
   fecha: {
     type: DataTypes.DATEONLY,
     allowNull: false

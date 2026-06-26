@@ -1,5 +1,5 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useCallback} from "react";
 import "./ContenidoRestaurante.css";
 import { useAuth } from "../../context/AuthContext";
 
@@ -13,6 +13,8 @@ function ContenidoRestaurante() {
     const [personas, setPersonas] = useState(1);
     const [cargandoPago, setCargandoPago] = useState(false);
     const [mensajeExito, setMensajeExito] = useState('');
+    const [mensajeError, setMensajeError] = useState('');
+    const [slots, setSlots] = useState(null);
     const navigate = useNavigate();
     const { usuarioActual } = useAuth();
 
@@ -51,16 +53,28 @@ function ContenidoRestaurante() {
         fetch(`http://localhost:3000/api/restaurantes/${id}/menu`)
             .then((res) => res.json())
             .then((datos) => setMenu(datos.data))
-            .catch((error) => console.error("Error:", error));
+            .catch(() => {});
     }, [id]);
+
+    const cargarDisponibilidad = useCallback(() => {
+        fetch(`http://localhost:3000/api/restaurantes/${id}/disponibilidad?fecha=${fecha}&personas=${personas}`)
+            .then((res) => res.json())
+            .then((datos) => setSlots(datos.data || []))
+            .catch(() => setSlots([]));
+    }, [id, fecha, personas]);
+
+    useEffect(() => {
+        if (fecha) cargarDisponibilidad();
+    }, [fecha, cargarDisponibilidad]);
 
     const subtotal = pedido.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
     const igv = subtotal * 0.18;
     const total = subtotal + igv;
 
     const procederPago = async () => {
+        setMensajeError('');
         if (!fecha || !hora) {
-            alert('Por favor selecciona fecha y hora');
+            setMensajeError('Selecciona una fecha y una hora para continuar.');
             return;
         }
 
@@ -84,20 +98,32 @@ function ContenidoRestaurante() {
             if (datos.ok) {
                 setMensajeExito('✅ ¡Reserva confirmada! Redirigiendo a tu perfil...');
                 setTimeout(() => navigate('/perfil'), 2000);
+            } else {
+                setMensajeError(datos.mensaje || 'No se pudo completar la reserva.');
+                cargarDisponibilidad();
             }
-        } catch (error) {
-            alert('Error al procesar la reserva');
+        } catch {
+            setMensajeError('Error de conexión al procesar la reserva.');
         } finally {
             setCargandoPago(false);
         }
     };
 
-    if (!restaurante) return <p>Cargando...</p>;
+    if (!restaurante) return (
+        <div className="cargando-pantalla">
+            <div className="spinner" />
+            <p>Cargando restaurante...</p>
+        </div>
+    );
 
     return (
         <div className="contenido-restaurante">
 
-            {/* HEADER */}
+            <header className="cr-nav">
+                <h1 className="cr-logo" onClick={() => navigate('/inicio')}>Take<span>&</span>It</h1>
+                <button className="btn-volver" onClick={() => navigate('/inicio')}>← Volver al inicio</button>
+            </header>
+
             <div className="banner-restaurante">
             <img src={restaurante.img} alt={restaurante.nombre} className="imagen-banner" />
                 <div className="overlay-banner">
@@ -105,19 +131,13 @@ function ContenidoRestaurante() {
                     <div className="datos-restaurante">
                         <span>⭐ {restaurante.rating}</span>
                         <span>{restaurante.categoria}</span>
-                        <span   span>📍 {restaurante.direccion}</span>
+                        <span>📍 {restaurante.direccion}</span>
                     </div>
                 </div>
             </div>
 
-{/* BOTÓN VOLVER */}
-<div className="contenedor-volver">
-    <button className="btn-volver" onClick={() => navigate('/inicio')}>← Volver al inicio</button>
-</div>
-
             <div className="layout-restaurante">
 
-                {/* MENU */}
                 <div className="contenido-menu">
                     <div className="cabecera-menu">
                         <h2>Menú Disponible</h2>
@@ -159,31 +179,63 @@ function ContenidoRestaurante() {
                     </div>
                 </div>
 
-                {/* SIDEBAR RESERVA */}
                 <div className="sidebar-reserva">
                     <div className="card-reserva">
                         <h2>Tu Reserva</h2>
 
                         <div className="grupo-input">
                             <label>Fecha</label>
-                            <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} />
-                        </div>
-
-                        <div className="grupo-input">
-                            <label>Hora</label>
-                            <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} />
+                            <input
+                                type="date"
+                                value={fecha}
+                                min={new Date().toISOString().split('T')[0]}
+                                onChange={(e) => { setFecha(e.target.value); setHora(''); setSlots(null); }}
+                            />
                         </div>
 
                         <div className="grupo-input">
                             <label>Personas</label>
-                            <select value={personas} onChange={(e) => setPersonas(e.target.value)}>
+                            <select value={personas} onChange={(e) => { setPersonas(e.target.value); setHora(''); setSlots(null); }}>
                                 {[1,2,3,4,5,6].map(n => (
                                     <option key={n} value={n}>{n} Persona{n > 1 ? 's' : ''}</option>
                                 ))}
                             </select>
                         </div>
 
-                        {/* RESUMEN */}
+                        <div className="grupo-input">
+                            <label>Hora</label>
+                            {!fecha ? (
+                                <p className="aviso-slots">Selecciona una fecha para ver los horarios</p>
+                            ) : slots === null ? (
+                                <p className="aviso-slots">Cargando horarios...</p>
+                            ) : slots.length === 0 ? (
+                                <p className="aviso-slots">No hay horarios disponibles</p>
+                            ) : (
+                                <>
+                                    <div className="grid-horas">
+                                        {slots.map((s) => (
+                                            <button
+                                                key={s.hora}
+                                                type="button"
+                                                className={`slot-hora ${hora === s.hora ? 'activo' : ''} ${s.disponible && s.mesasLibres <= 2 ? 'pocas' : ''}`}
+                                                disabled={!s.disponible}
+                                                onClick={() => setHora(s.hora)}
+                                                title={s.disponible ? `${s.mesasLibres} mesa(s) libre(s)` : 'Completo'}
+                                            >
+                                                {s.hora}
+                                                {s.disponible && s.mesasLibres <= 2 && <span className="slot-punto" />}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="grid-horas-leyenda">
+                                        <span><i className="pt libre" /> Disponible</span>
+                                        <span><i className="pt pocas" /> Últimas mesas</span>
+                                        <span><i className="pt lleno" /> Completo</span>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+
                         <div className="resumen-pedido">
                             <h3>Preorden</h3>
                             {pedido.length === 0 ? (
@@ -215,11 +267,8 @@ function ContenidoRestaurante() {
                             </div>
                         )}
 
-                        {mensajeExito && (
-                            <p style={{color: '#16a34a', fontSize: '14px', marginTop: '12px', textAlign: 'center'}}>
-                                {mensajeExito}
-                            </p>
-                        )}
+                        {mensajeError && <p className="cr-alerta">{mensajeError}</p>}
+                        {mensajeExito && <p className="cr-exito">{mensajeExito}</p>}
 
                         <button
                             className="btn-reservar"

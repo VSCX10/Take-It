@@ -1,4 +1,3 @@
-// Patrón Fábrica: crea respuestas HTTP estandarizadas
 class ResponseFactory {
     static exito(res, data, mensaje = 'OK', codigo = 200) {
         return res.status(codigo).json({

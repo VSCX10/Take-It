@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Register.css';
@@ -65,7 +65,6 @@ function Registro() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCampos((prev) => ({ ...prev, [name]: value }));
-    // Limpiar error del campo al escribir
     if (errores[name]) {
       setErrores((prev) => ({ ...prev, [name]: '' }));
     }

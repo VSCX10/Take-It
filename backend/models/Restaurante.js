@@ -27,6 +27,14 @@ const Restaurante = sequelize.define('Restaurante', {
     type: DataTypes.STRING,
     defaultValue: null
   },
+  horaApertura: {
+    type: DataTypes.TIME,
+    defaultValue: '14:00'
+  },
+  horaCierre: {
+    type: DataTypes.TIME,
+    defaultValue: '22:00'
+  },
 }, {
   tableName: 'restaurantes',
   timestamps: false

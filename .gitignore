@@ -1,1 +1,10 @@
 node_modules/
+
+# Variables de entorno (NO subir credenciales)
+.env
+*.env
+.env.*
+
+# Build / caché
+dist/
+.vite/

@@ -1,25 +1,22 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext(null);
 const API_URL = 'http://localhost:3000/api/auth';
 
 export function AuthProvider({ children }) {
-  const [usuarioActual, setUsuarioActual] = useState(null);
-  const [cargando, setCargando] = useState(true);
-
-  useEffect(() => {
+  const [usuarioActual, setUsuarioActual] = useState(() => {
     try {
       const token = localStorage.getItem('token');
       const usuario = localStorage.getItem('usuario');
-      
       if (token && usuario && usuario !== 'undefined') {
-        setUsuarioActual(JSON.parse(usuario));
+        return JSON.parse(usuario);
       }
-    } catch (error) {
+    } catch {
       localStorage.clear();
     }
-    setCargando(false);
-  }, []);
+    return null;
+  });
+  const [cargando] = useState(false);
 
   const registrar = async (datosUsuario) => {
     try {
@@ -40,8 +37,7 @@ export function AuthProvider({ children }) {
       setUsuarioActual(datos.data.usuario);
 
       return { ok: true };
-    } catch (error) {
-      console.error('Error en registro:', error);
+    } catch {
       return { ok: false, mensaje: 'Error de conexión' };
     }
   };
@@ -65,8 +61,7 @@ export function AuthProvider({ children }) {
       setUsuarioActual(datos.data.usuario);
 
       return { ok: true };
-    } catch (error) {
-      console.error('Error en login:', error);
+    } catch {
       return { ok: false, mensaje: 'Error de conexión' };
     }
   };
