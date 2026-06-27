@@ -17,6 +17,17 @@ class UsuarioServicio {
         usuario.password = nuevaPassword;
         return await usuario.save();
     }
+
+    async actualizar(id, datos) {
+        const usuario = await Usuario.findByPk(id);
+        if (!usuario) return null;
+        const campos = {};
+        if (datos.nombre)   campos.nombre   = datos.nombre;
+        if (datos.apellido) campos.apellido = datos.apellido;
+        if (datos.telefono !== undefined) campos.telefono = datos.telefono;
+        await usuario.update(campos);
+        return usuario;
+    }
 }
 
 module.exports = UsuarioServicio;

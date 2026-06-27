@@ -15,6 +15,11 @@ const authRoutes = require('./routes/auth');
 const restaurantesRoutes = require('./routes/restaurantes');
 const reservasRoutes = require('./routes/reservas');
 const menuRoutes = require('./routes/menu');
+const usuariosRoutes = require('./routes/usuarios');
+
+// Registrar asociaciones entre modelos
+const modelos = { Usuario, Restaurante, Menu, Reserva };
+Object.values(modelos).forEach(m => { if (m.associate) m.associate(modelos); });
 
 const app = express();
 const puerto = process.env.PORT || 3000;
@@ -26,6 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/restaurantes', restaurantesRoutes);
 app.use('/api/reservas', reservasRoutes);
 app.use('/api/restaurantes', menuRoutes);
+app.use('/api/usuarios', usuariosRoutes);
 
 
 

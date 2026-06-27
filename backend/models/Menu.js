@@ -21,6 +21,15 @@ const Menu = sequelize.define('Menu', {
   restauranteId: {
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+  descuentoPct: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  stock: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    defaultValue: null
   }
 }, {
   tableName: 'menu',

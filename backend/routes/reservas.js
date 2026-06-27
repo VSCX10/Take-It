@@ -8,7 +8,7 @@ const mesaServicio = ServicioFactory.crear('mesa');
 
 router.post('/', async (req, res) => {
     try {
-        const { usuarioId, restauranteId, fecha, hora, personas, total } = req.body;
+        const { usuarioId, restauranteId, fecha, hora, personas, total, metodoPago } = req.body;
 
         const mesa = await mesaServicio.asignarMesa(restauranteId, fecha, hora, personas);
         if (!mesa) {
@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
         }
 
         const reserva = await servicio.crear({
-            usuarioId, restauranteId, mesaId: mesa.id, fecha, hora, personas, total
+            usuarioId, restauranteId, mesaId: mesa.id, fecha, hora, personas, total, metodoPago
         });
         return ResponseFactory.exito(res, reserva, 'Reserva creada', 201);
     } catch (error) {

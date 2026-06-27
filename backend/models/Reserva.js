@@ -33,10 +33,18 @@ const Reserva = sequelize.define('Reserva', {
   total: {
     type: DataTypes.FLOAT,
     defaultValue: 0
+  },
+  metodoPago: {
+    type: DataTypes.STRING,
+    defaultValue: 'local'
   }
 }, {
   tableName: 'reservas',
   timestamps: false
 });
+
+Reserva.associate = (modelos) => {
+  Reserva.belongsTo(modelos.Restaurante, { foreignKey: 'restauranteId', as: 'restaurante' });
+};
 
 module.exports = Reserva;

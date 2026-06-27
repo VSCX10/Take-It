@@ -9,7 +9,9 @@ export function AuthProvider({ children }) {
       const token = localStorage.getItem('token');
       const usuario = localStorage.getItem('usuario');
       if (token && usuario && usuario !== 'undefined') {
-        return JSON.parse(usuario);
+        const user = JSON.parse(usuario);
+        const foto = localStorage.getItem(`foto_${user.id}`);
+        return foto ? { ...user, foto } : user;
       }
     } catch {
       localStorage.clear();
@@ -17,6 +19,12 @@ export function AuthProvider({ children }) {
     return null;
   });
   const [cargando] = useState(false);
+
+  const setUserWithFoto = (user) => {
+    if (!user) { setUsuarioActual(null); return; }
+    const foto = localStorage.getItem(`foto_${user.id}`);
+    setUsuarioActual(foto ? { ...user, foto } : user);
+  };
 
   const registrar = async (datosUsuario) => {
     try {
@@ -34,7 +42,7 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem('token', datos.data.token);
       localStorage.setItem('usuario', JSON.stringify(datos.data.usuario));
-      setUsuarioActual(datos.data.usuario);
+      setUserWithFoto(datos.data.usuario);
 
       return { ok: true };
     } catch {
@@ -58,7 +66,7 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem('token', datos.data.token);
       localStorage.setItem('usuario', JSON.stringify(datos.data.usuario));
-      setUsuarioActual(datos.data.usuario);
+      setUserWithFoto(datos.data.usuario);
 
       return { ok: true };
     } catch {
@@ -72,8 +80,20 @@ export function AuthProvider({ children }) {
     setUsuarioActual(null);
   };
 
+  const actualizarPerfil = (nuevoDato) => {
+    const merged = { ...usuarioActual, ...nuevoDato };
+    localStorage.setItem('usuario', JSON.stringify(merged));
+    setUsuarioActual(merged);
+  };
+
+  const actualizarFoto = (base64) => {
+    if (!usuarioActual) return;
+    localStorage.setItem(`foto_${usuarioActual.id}`, base64);
+    setUsuarioActual(prev => ({ ...prev, foto: base64 }));
+  };
+
   return (
-    <AuthContext.Provider value={{ usuarioActual, registrar, iniciarSesion, cerrarSesion, cargando }}>
+    <AuthContext.Provider value={{ usuarioActual, registrar, iniciarSesion, cerrarSesion, actualizarPerfil, actualizarFoto, cargando }}>
       {children}
     </AuthContext.Provider>
   );

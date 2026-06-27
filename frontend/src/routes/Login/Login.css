@@ -8,9 +8,8 @@
 /* ===== LADO IZQUIERDO (Branding) ===== */
 .login-branding {
   flex: 1;
-  background: linear-gradient(150deg, rgba(194, 68, 14, 0.92), rgba(120, 38, 8, 0.95)),
-    url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80') center/cover;
-  color: white;
+  background-color: var(--negro);
+  color: var(--blanco);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -22,23 +21,24 @@
   font-family: var(--fuente-titulo);
   font-size: 4rem;
   margin: 0;
+  color: var(--blanco);
 }
 
 .login-branding h1 span {
-  color: #ffd9c0;
+  color: var(--naranja);
 }
 
 .login-branding p {
   font-size: 1.5rem;
   margin-bottom: 40px;
-  color: #fff5eb;
+  color: var(--texto-muted);
 }
 
 .beneficios {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
   padding: 30px;
   border-radius: 15px;
-  backdrop-filter: blur(5px);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
   width: 100%;
   max-width: 400px;
 }
@@ -49,13 +49,14 @@
   gap: 15px;
   margin-bottom: 20px;
   font-size: 1.1rem;
+  color: var(--blanco);
 }
 
 .beneficio-item:last-child { margin-bottom: 0; }
 
 .beneficio-item span {
-  background: white;
-  color: var(--naranja-brand, #F27427);
+  background: var(--naranja);
+  color: var(--blanco);
   width: 35px;
   height: 35px;
   display: flex;
@@ -69,7 +70,7 @@
 /* ===== LADO DERECHO (Formulario) ===== */
 .login-formulario-seccion {
   flex: 1;
-  background-color: white;
+  background-color: var(--blanco);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,16 +86,16 @@
 .formulario-caja h2 {
   font-family: var(--fuente-titulo);
   font-size: 2.5rem;
-  color: #1E293B;
+  color: var(--negro);
   margin: 0 0 10px 0;
 }
 
 .subtitulo-form {
-  color: #64748B;
+  color: var(--texto-muted);
   margin-bottom: 28px;
 }
 
-/* ===== ALERTA ERROR GENERAL ===== */
+/* ===== ALERTAS ===== */
 .alerta-error {
   background: #FEE2E2;
   border: 1px solid #FECACA;
@@ -131,31 +132,36 @@
   display: block;
   margin-bottom: 7px;
   font-weight: 500;
-  color: #334155;
+  color: var(--negro);
   font-size: 0.95rem;
 }
 
 .etiqueta-opcional {
   font-weight: 400;
-  color: #94A3B8;
+  color: var(--placeholder);
   font-size: 0.85rem;
 }
 
 .grupo-input input {
   width: 100%;
   padding: 12px 15px;
-  border: 1.5px solid #E2E8F0;
-  border-radius: 10px;
-  background-color: #F8FAFC;
+  border: 1.5px solid var(--borde-input);
+  border-radius: 12px;
+  background-color: var(--fondo);
   outline: none;
   font-size: 0.95rem;
+  color: var(--negro);
   transition: border-color 0.2s, background-color 0.2s;
   box-sizing: border-box;
 }
 
+.grupo-input input::placeholder {
+  color: var(--placeholder);
+}
+
 .grupo-input input:focus {
-  border-color: var(--naranja-brand, #F27427);
-  background-color: white;
+  border-color: var(--naranja);
+  background-color: var(--blanco);
 }
 
 .grupo-input.con-error input {
@@ -170,7 +176,7 @@
   margin-top: 5px;
 }
 
-/* ===== INPUT CON ÍCONO (mostrar contraseña) ===== */
+/* ===== INPUT CON ÍCONO ===== */
 .input-con-icono {
   position: relative;
 }
@@ -190,7 +196,7 @@
   padding: 0;
   font-size: 1rem;
   line-height: 1;
-  color: #94A3B8;
+  color: var(--placeholder);
 }
 
 /* ===== INDICADOR DE FUERZA ===== */
@@ -208,7 +214,7 @@
   flex: 1;
   height: 4px;
   border-radius: 4px;
-  background: #E2E8F0;
+  background: var(--borde-input);
   transition: background-color 0.3s;
 }
 
@@ -227,7 +233,7 @@
 
 .reglas-password li {
   font-size: 0.8rem;
-  color: #94A3B8;
+  color: var(--placeholder);
   transition: color 0.2s;
 }
 
@@ -239,7 +245,7 @@
 .link-olvido {
   display: block;
   text-align: right;
-  color: var(--naranja-brand, #F27427);
+  color: var(--naranja);
   text-decoration: none;
   font-size: 0.9rem;
   margin-bottom: 20px;
@@ -253,10 +259,10 @@
 .btn-principal {
   width: 100%;
   padding: 14px;
-  background-color: var(--naranja-brand, #F27427);
-  color: white;
+  background-color: var(--naranja);
+  color: var(--blanco);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1.05rem;
   font-weight: bold;
   cursor: pointer;
@@ -265,7 +271,7 @@
 }
 
 .btn-principal:hover:not(:disabled) {
-  background-color: #d96520;
+  background-color: var(--naranja-hover);
 }
 
 .btn-principal:disabled {
@@ -277,14 +283,14 @@
 .texto-cambio {
   text-align: center;
   margin-top: 24px;
-  color: #64748B;
+  color: var(--texto-muted);
   font-size: 0.95rem;
 }
 
 .btn-texto {
   background: none;
   border: none;
-  color: var(--naranja-brand, #F27427);
+  color: var(--naranja);
   font-weight: bold;
   cursor: pointer;
   font-size: inherit;
