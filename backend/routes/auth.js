@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
     if (!usuario)
       return ResponseFactory.error(res, 'Correo o contraseña incorrectos', 401);
 
-    const passwordValida = usuario.compararPassword(password);
+    const passwordValida = await usuario.compararPassword(password);
     if (!passwordValida)
       return ResponseFactory.error(res, 'Correo o contraseña incorrectos', 401);
 
@@ -69,6 +69,32 @@ router.post('/login', async (req, res) => {
 
   } catch (error) {
     return ResponseFactory.error(res, 'Error al iniciar sesión');
+  }
+});
+
+router.post('/recuperar', async (req, res) => {
+  try {
+    const { email, password, confirmar } = req.body;
+
+    if (!email || !password || !confirmar)
+      return ResponseFactory.error(res, 'Todos los campos son obligatorios', 400);
+
+    if (password !== confirmar)
+      return ResponseFactory.error(res, 'Las contraseñas no coinciden', 400);
+
+    if (password.length < 6)
+      return ResponseFactory.error(res, 'La contraseña debe tener al menos 6 caracteres', 400);
+
+    const usuario = await servicio.buscarPorEmail(email);
+    if (!usuario)
+      return ResponseFactory.error(res, 'No existe una cuenta con ese correo', 404);
+
+    await servicio.cambiarPassword(usuario, password);
+
+    return ResponseFactory.exito(res, null, 'Contraseña actualizada. Ya puedes iniciar sesión.');
+
+  } catch (error) {
+    return ResponseFactory.error(res, 'Error al recuperar la contraseña');
   }
 });
 

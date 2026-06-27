@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const bcrypt = require('bcrypt');
 const sequelize = require('../database');
 
 const Usuario = sequelize.define('Usuario', {
@@ -25,11 +26,22 @@ const Usuario = sequelize.define('Usuario', {
   }
 }, {
   tableName: 'usuarios',
-  timestamps: false
+  timestamps: false,
+  hooks: {
+    beforeCreate: hashearPassword,
+    beforeUpdate: hashearPassword
+  }
 });
 
-Usuario.prototype.compararPassword = function(passwordIngresada) {
-  return passwordIngresada === this.password;
+// Hashea la contraseña solo si cambió (registro o actualización)
+async function hashearPassword(usuario) {
+  if (usuario.changed('password')) {
+    usuario.password = await bcrypt.hash(usuario.password, 10);
+  }
+}
+
+Usuario.prototype.compararPassword = function (passwordIngresada) {
+  return bcrypt.compare(passwordIngresada, this.password);
 };
 
 module.exports = Usuario;

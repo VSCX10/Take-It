@@ -12,6 +12,11 @@ class UsuarioServicio {
     async buscarPorId(id) {
         return await Usuario.findByPk(id);
     }
+
+    async cambiarPassword(usuario, nuevaPassword) {
+        usuario.password = nuevaPassword;
+        return await usuario.save();
+    }
 }
 
 module.exports = UsuarioServicio;

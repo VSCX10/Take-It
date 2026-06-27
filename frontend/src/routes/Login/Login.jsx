@@ -128,7 +128,7 @@ setTimeout(async () => {
               {errores.password && <span className="msg-error">{errores.password}</span>}
             </div>
 
-            <button type="button" className="link-olvido">
+            <button type="button" className="link-olvido" onClick={() => navigate('/recuperar')}>
               ¿Olvidaste tu contraseña?
             </button>
 
