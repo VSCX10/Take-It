@@ -1,5 +1,5 @@
 const sequelize = require('../database');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const Usuario = require('../models/Usuario');
 
 (async () => {
@@ -8,7 +8,6 @@ const Usuario = require('../models/Usuario');
     let migradas = 0;
 
     for (const u of usuarios) {
-      
       if (!u.password.startsWith('$2')) {
         const hash = await bcrypt.hash(u.password, 10);
         await Usuario.update({ password: hash }, { where: { id: u.id }, hooks: false });
@@ -16,7 +15,7 @@ const Usuario = require('../models/Usuario');
       }
     }
 
-    console.log(`🔒 Contraseñas migradas a hash: ${migradas} (de ${usuarios.length} usuarios)`);
+    console.log(`Contrasenas migradas a hash: ${migradas} (de ${usuarios.length} usuarios)`);
   } catch (e) {
     console.error('ERROR:', e.message);
   } finally {

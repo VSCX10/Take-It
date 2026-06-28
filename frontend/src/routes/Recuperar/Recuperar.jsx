@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Login/Login.css';
 
-const API_URL = 'http://localhost:3000/api/auth';
+const API_URL = '/api/auth';
 
 const REGLAS_PASSWORD = [
   { test: (p) => p.length >= 8, texto: 'Mínimo 8 caracteres' },

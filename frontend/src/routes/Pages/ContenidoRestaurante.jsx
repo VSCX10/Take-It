@@ -30,13 +30,13 @@ function ContenidoRestaurante() {
     const { usuarioActual } = useAuth();
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/restaurantes')
+        fetch('/api/restaurantes')
             .then(r => r.json())
             .then(data => {
                 const lista = data.data || data;
                 setRestaurante(lista.find(r => r.id === parseInt(id)));
             });
-        fetch(`http://localhost:3000/api/restaurantes/${id}/menu`)
+        fetch(`/api/restaurantes/${id}/menu`)
             .then(r => r.json())
             .then(datos => setMenu(datos.data))
             .catch(() => {});
@@ -44,7 +44,7 @@ function ContenidoRestaurante() {
 
     // Disponibilidad de mesas por bloque de hora (fecha + personas)
     const cargarDisponibilidad = useCallback(() => {
-        fetch(`http://localhost:3000/api/restaurantes/${id}/disponibilidad?fecha=${fecha}&personas=${personas}`)
+        fetch(`/api/restaurantes/${id}/disponibilidad?fecha=${fecha}&personas=${personas}`)
             .then(r => r.json())
             .then(datos => setSlots(datos.data || []))
             .catch(() => setSlots([]));
@@ -102,7 +102,7 @@ function ContenidoRestaurante() {
     };
 
     const confirmarReserva = async (metodoPago) => {
-        const resp = await fetch('http://localhost:3000/api/reservas', {
+        const resp = await fetch('/api/reservas', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

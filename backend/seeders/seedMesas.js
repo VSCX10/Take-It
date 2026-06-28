@@ -28,7 +28,7 @@ async function seedMesas() {
             }
         }
         await Mesa.bulkCreate(mesas);
-        console.log(`🪑 ${mesas.length} mesas creadas para ${restaurante.nombre}`);
+        console.log(`${mesas.length} mesas creadas para ${restaurante.nombre}`);
     }
 }
 

@@ -86,7 +86,7 @@ function Inicio() {
   const restaurantesRef = useRef(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/restaurantes')
+    fetch('/api/restaurantes')
       .then((r) => r.json())
       .then((datos) => { setRestaurantes(datos.data); setCargando(false); })
       .catch((err) => { console.error('Error:', err); setCargando(false); });

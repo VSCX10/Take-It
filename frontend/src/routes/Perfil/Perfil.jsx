@@ -69,7 +69,7 @@ function Perfil() {
         apellido: usuarioActual.apellido || '',
         telefono: numeroSolo,
       });
-      fetch(`http://localhost:3000/api/reservas/${usuarioActual.id}`)
+      fetch(`/api/reservas/${usuarioActual.id}`)
         .then(r => r.json())
         .then(datos => { setReservas(datos.data || []); setCargando(false); })
         .catch(() => setCargando(false));
@@ -87,11 +87,12 @@ function Perfil() {
   const cancelarReserva = async (id) => {
     setCancelando(id);
     try {
-      const resp = await fetch(`http://localhost:3000/api/reservas/${id}/cancelar`, { method: 'PATCH' });
+      const resp = await fetch(`/api/reservas/${id}/cancelar`, { method: 'PATCH' });
       if (resp.ok) {
         setReservas(prev => prev.map(r => r.id === id ? { ...r, estado: 'Cancelada' } : r));
       }
-    } catch (_) {
+    } catch {
+      // si falla la conexion no hacemos nada, el estado queda igual
     } finally {
       setCancelando(null);
     }
@@ -100,7 +101,7 @@ function Perfil() {
   const guardarCambios = async () => {
     setGuardando(true);
     try {
-      const resp = await fetch(`http://localhost:3000/api/usuarios/${usuarioActual.id}`, {
+      const resp = await fetch(`/api/usuarios/${usuarioActual.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, telefono: `${prefijo} ${form.telefono}` }),
@@ -109,7 +110,8 @@ function Perfil() {
         actualizarPerfil({ ...form, telefono: `${prefijo} ${form.telefono}` });
         setEditando(false);
       }
-    } catch (_) {
+    } catch {
+      // si falla la conexion mantenemos el modo edicion abierto
     } finally {
       setGuardando(false);
     }
