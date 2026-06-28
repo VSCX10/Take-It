@@ -1,7 +1,5 @@
 # Take&It — Documentación del proyecto
 
-Plataforma web de reservas gastronómicas para Lima, Perú.  
-Universidad de Lima · Ingeniería de Sistemas · Grupo 4 · Docente: Neil Muñoz
 
 ---
 
@@ -16,7 +14,7 @@ npm install
 node index.js
 ```
 
-**Frontend** (puerto 5173 vía Vite):
+**Frontend** (puerto 5174 vía Vite):
 ```bash
 cd frontend
 npm install
