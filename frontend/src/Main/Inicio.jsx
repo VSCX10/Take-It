@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Inicio.css';
 import { useAuth } from '../context/AuthContext';
@@ -77,7 +77,6 @@ function Inicio() {
   const [cargando, setCargando] = useState(true);
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [busqueda, setBusqueda] = useState('');
-  const [busquedaActiva, setBusquedaActiva] = useState('');
   const [filtroEstrellas, setFiltroEstrellas] = useState('todas');
   const [filtroTipo, setFiltroTipo] = useState('todos');
   const [slideActual, setSlideActual] = useState(0);
@@ -112,15 +111,14 @@ function Inicio() {
       navigate(`/contenido/${encontrado.id}`);
     } else {
       setBusqueda(nombreRest);
-      setBusquedaActiva(nombreRest);
       scrollToRestaurantes();
     }
   };
 
   const restaurantesFiltrados = restaurantes.filter((r) => {
     const coincideBusqueda =
-      r.nombre.toLowerCase().includes(busquedaActiva.toLowerCase()) ||
-      (r.categoria && r.categoria.toLowerCase().includes(busquedaActiva.toLowerCase()));
+      r.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+      (r.categoria && r.categoria.toLowerCase().includes(busqueda.toLowerCase()));
     const coincideEstrellas =
       filtroEstrellas === 'todas' || Math.floor(r.rating) >= Number(filtroEstrellas);
     const coincideTipo =
@@ -237,17 +235,9 @@ function Inicio() {
             placeholder="Buscar restaurante, cocina, zona..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                setBusquedaActiva(busqueda);
-                scrollToRestaurantes();
-              }
-            }}
+            onKeyDown={(e) => { if (e.key === 'Enter') scrollToRestaurantes(); }}
           />
-          <button
-            className="ti-btn-buscar"
-            onClick={() => { setBusquedaActiva(busqueda); scrollToRestaurantes(); }}
-          >
+          <button className="ti-btn-buscar" onClick={scrollToRestaurantes}>
             Buscar
           </button>
         </div>
