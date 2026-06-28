@@ -23,9 +23,6 @@ function ContenidoRestaurante() {
     const [cargandoPago, setCargandoPago] = useState(false);
     const [mensajeExito, setMensajeExito] = useState('');
     const [slots, setSlots] = useState(null);
-    const [modalPago, setModalPago] = useState(false);
-    const [procesandoTarjeta, setProcesandoTarjeta] = useState(false);
-    const [tarjeta, setTarjeta] = useState({ numero: '', nombre: '', vencimiento: '', cvv: '' });
     const navigate = useNavigate();
     const { usuarioActual } = useAuth();
 
@@ -117,14 +114,14 @@ function ContenidoRestaurante() {
         return await resp.json();
     };
 
-    const pagarEnLocal = async () => {
+    const reservar = async () => {
         if (!validarCampos()) return;
         setCargandoPago(true);
         try {
             const datos = await confirmarReserva('local');
             if (datos.ok) {
-                setMensajeExito('Reserva confirmada. Pagaras en el local al llegar.');
-                setTimeout(() => navigate('/perfil'), 2200);
+                setMensajeExito('Reserva creada. Te llevamos a tu perfil...');
+                setTimeout(() => navigate('/perfil'), 1800);
             } else {
                 alert(datos.mensaje || 'No se pudo crear la reserva');
                 cargarDisponibilidad();
@@ -132,36 +129,6 @@ function ContenidoRestaurante() {
         } catch { alert('Error al procesar la reserva'); }
         finally { setCargandoPago(false); }
     };
-
-    const abrirPagarAhora = () => {
-        if (!validarCampos()) return;
-        setModalPago(true);
-    };
-
-    const procesarTarjeta = async () => {
-        const { numero, nombre, vencimiento, cvv } = tarjeta;
-        if (!numero || !nombre || !vencimiento || !cvv) {
-            alert('Completa todos los campos de pago'); return;
-        }
-        setProcesandoTarjeta(true);
-        await new Promise(r => setTimeout(r, 2000));
-        try {
-            const datos = await confirmarReserva('tarjeta');
-            if (datos.ok) {
-                setModalPago(false);
-                setMensajeExito('Pago procesado exitosamente. Redirigiendo a tu perfil...');
-                setTimeout(() => navigate('/perfil'), 2200);
-            } else {
-                setModalPago(false);
-                alert(datos.mensaje || 'No se pudo crear la reserva');
-                cargarDisponibilidad();
-            }
-        } catch { alert('Error al procesar el pago'); }
-        finally { setProcesandoTarjeta(false); }
-    };
-
-    const formatCard = (v) => v.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
-    const formatVenc = (v) => v.replace(/\D/g, '').slice(0, 4).replace(/(\d{2})(\d)/, '$1/$2');
 
     if (!restaurante) return <p>Cargando...</p>;
 
@@ -419,104 +386,14 @@ function ContenidoRestaurante() {
                             </div>
                         )}
 
-                        <div className="cr-botones-pago">
-                            <button className="cr-btn-local" onClick={pagarEnLocal} disabled={cargandoPago}>
-                                <i className="ti ti-building-store" />
-                                {cargandoPago ? 'Procesando...' : 'Pagar en local'}
-                            </button>
-                            <button className="cr-btn-ahora" onClick={abrirPagarAhora} disabled={cargandoPago}>
-                                <i className="ti ti-credit-card" />
-                                Pagar ahora
-                            </button>
-                        </div>
+                        <button className="cr-btn-reservar" onClick={reservar} disabled={cargandoPago}>
+                            <i className="ti ti-calendar-check" />
+                            {cargandoPago ? 'Procesando...' : 'Reservar y ver en mi perfil'}
+                        </button>
 
                     </div>
                 </div>
             </div>
-
-            {/* MODAL PAGO CON TARJETA */}
-            {modalPago && (
-                <div className="cr-modal-overlay" onClick={e => { if (e.target === e.currentTarget) setModalPago(false); }}>
-                    <div className="cr-modal">
-                        <div className="cr-modal-header">
-                            <div>
-                                <span className="cr-modal-tag">Pago seguro</span>
-                                <h3 className="cr-modal-titulo">Total: S/ {total.toFixed(2)}</h3>
-                            </div>
-                            <button className="cr-modal-cerrar" onClick={() => setModalPago(false)}>
-                                <i className="ti ti-x" />
-                            </button>
-                        </div>
-
-                        <div className="cr-modal-body">
-                            <div className="cr-modal-campo">
-                                <label>Número de tarjeta</label>
-                                <div className="cr-modal-input-wrap">
-                                    <i className="ti ti-credit-card" />
-                                    <input
-                                        type="text"
-                                        placeholder="1234 5678 9012 3456"
-                                        value={tarjeta.numero}
-                                        onChange={e => setTarjeta(p => ({ ...p, numero: formatCard(e.target.value) }))}
-                                        maxLength={19}
-                                    />
-                                </div>
-                            </div>
-                            <div className="cr-modal-campo">
-                                <label>Nombre en la tarjeta</label>
-                                <div className="cr-modal-input-wrap">
-                                    <i className="ti ti-user" />
-                                    <input
-                                        type="text"
-                                        placeholder="RODRIGO ARRIETA"
-                                        value={tarjeta.nombre}
-                                        onChange={e => setTarjeta(p => ({ ...p, nombre: e.target.value.toUpperCase() }))}
-                                    />
-                                </div>
-                            </div>
-                            <div className="cr-modal-fila">
-                                <div className="cr-modal-campo">
-                                    <label>Vencimiento</label>
-                                    <div className="cr-modal-input-wrap">
-                                        <i className="ti ti-calendar" />
-                                        <input
-                                            type="text"
-                                            placeholder="MM/AA"
-                                            value={tarjeta.vencimiento}
-                                            onChange={e => setTarjeta(p => ({ ...p, vencimiento: formatVenc(e.target.value) }))}
-                                            maxLength={5}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="cr-modal-campo">
-                                    <label>CVV</label>
-                                    <div className="cr-modal-input-wrap">
-                                        <i className="ti ti-lock" />
-                                        <input
-                                            type="password"
-                                            placeholder="***"
-                                            value={tarjeta.cvv}
-                                            onChange={e => setTarjeta(p => ({ ...p, cvv: e.target.value.replace(/\D/g,'').slice(0,4) }))}
-                                            maxLength={4}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button className="cr-btn-pagar-tarjeta" onClick={procesarTarjeta} disabled={procesandoTarjeta}>
-                            {procesandoTarjeta
-                                ? <><i className="ti ti-loader-2 cr-spin" /> Procesando pago...</>
-                                : <><i className="ti ti-lock" /> Confirmar pago · S/ {total.toFixed(2)}</>
-                            }
-                        </button>
-
-                        <p className="cr-modal-aviso">
-                            <i className="ti ti-shield-check" /> Transacción simulada — sin cargo real
-                        </p>
-                    </div>
-                </div>
-            )}
 
         </div>
     );

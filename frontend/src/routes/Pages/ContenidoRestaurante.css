@@ -870,3 +870,30 @@
 .grid-horas-leyenda .pt.libre { background: rgba(255, 255, 255, 0.05); border: 1.5px solid var(--borde-input); }
 .grid-horas-leyenda .pt.pocas { background: #e8923f; }
 .grid-horas-leyenda .pt.lleno { background: rgba(180, 70, 40, 0.4); }
+
+/* Opciones del select en oscuro (mismo fix que Inicio) */
+.cr-campo-input option { background: #241e19; color: #fff; }
+
+/* Boton unico de reserva (reemplaza los dos botones de pago) */
+.cr-btn-reservar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: calc(100% - 48px);
+    margin: 16px 24px 24px;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: var(--naranja);
+    color: var(--blanco);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.3px;
+}
+.cr-btn-reservar:hover { background: var(--naranja-hover); transform: translateY(-1px); }
+.cr-btn-reservar:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+.cr-btn-reservar .ti { font-size: 18px; }
