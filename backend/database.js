@@ -1,10 +1,15 @@
 const { Sequelize } = require('sequelize');
+// Importamos pg explicitamente para que Vercel lo incluya en la funcion.
+// Sequelize lo carga de forma dinamica y el empaquetador no lo detecta solo.
+const pg = require('pg');
+
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
+    dialectModule: pg,
     dialectOptions: {
         ssl: {
             require: true,
