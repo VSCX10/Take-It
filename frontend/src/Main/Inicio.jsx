@@ -30,40 +30,14 @@ const HERO_SLIDES = [
   },
 ];
 
-const PROMOCIONES = [
-  {
-    restaurante: 'Maido',
-    categoria: 'Japonesa-Peruana',
-    badge: '-20%',
-    etiqueta: 'Julio 2026',
-    descripcion: 'Descuento en Sushi Acevichado, la fusión nikkei más icónica de Lima. Una experiencia única en cada bocado.',
-    img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80',
-  },
-  {
-    restaurante: 'Central',
-    categoria: 'Alta Cocina Peruana',
-    badge: '-15%',
-    etiqueta: 'Julio 2026',
-    descripcion: 'Descuento en Nixtamal y Costa, dos platos que capturan los sabores de distintas altitudes del Perú.',
-    img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80',
-  },
-  {
-    restaurante: 'La Mar',
-    categoria: 'Mariscos & Cevichería',
-    badge: '-15%',
-    etiqueta: 'Julio 2026',
-    descripcion: 'Descuento en Ceviche Mixto, Leche de Tigre y Jalea Mixta. Los sabores del Pacífico en su mejor versión.',
-    img: 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=600&q=80',
-  },
-  {
-    restaurante: 'Astrid & Gastón',
-    categoria: 'Fusión Peruana',
-    badge: '-25%',
-    etiqueta: 'Fines de semana',
-    descripcion: 'Descuento en Suspiro Limeño, el postre insignia de la casa. Tradición y vanguardia en cada cucharada.',
-    img: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=600&q=80',
-  },
-];
+// Arma la frase "Descuento en A, B y C" a partir de los platos en oferta
+function describirPromo(platos) {
+  const nombres = platos.map(p => p.nombre);
+  const lista = nombres.length === 1
+    ? nombres[0]
+    : `${nombres.slice(0, -1).join(', ')} y ${nombres[nombres.length - 1]}`;
+  return `Descuento en ${lista}.`;
+}
 
 const NAV_LINKS = [
   { label: 'Inicio', href: '#inicio' },
@@ -74,6 +48,7 @@ const NAV_LINKS = [
 
 function Inicio() {
   const [restaurantes, setRestaurantes] = useState([]);
+  const [promos, setPromos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [busqueda, setBusqueda] = useState('');
@@ -90,6 +65,11 @@ function Inicio() {
       .then((r) => r.json())
       .then((datos) => { setRestaurantes(datos.data); setCargando(false); })
       .catch((err) => { console.error('Error:', err); setCargando(false); });
+
+    fetch('/api/restaurantes/promociones')
+      .then((r) => r.json())
+      .then((datos) => setPromos(datos.data || []))
+      .catch(() => setPromos([]));
   }, []);
 
   const irSlide = (n) => setSlideActual((n + HERO_SLIDES.length) % HERO_SLIDES.length);
@@ -101,18 +81,6 @@ function Inicio() {
 
   const scrollToRestaurantes = () => {
     restaurantesRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const navegarAPromo = (nombreRest) => {
-    const encontrado = restaurantes.find(r =>
-      r.nombre?.toLowerCase().includes(nombreRest.toLowerCase())
-    );
-    if (encontrado) {
-      navigate(`/contenido/${encontrado.id}`);
-    } else {
-      setBusqueda(nombreRest);
-      scrollToRestaurantes();
-    }
   };
 
   const restaurantesFiltrados = restaurantes.filter((r) => {
@@ -319,41 +287,45 @@ function Inicio() {
         </div>
       </main>
 
-      {/* ── PROMOCIONES ───────────────────────────────────────────────── */}
-      <section className="ti-promos" id="promociones">
-        <div className="ti-promos-inner">
-          <div className="ti-promos-header">
-            <h2 className="ti-section-titulo">Promociones Exclusivas</h2>
-            <div className="ti-titulo-deco" />
-            <p className="ti-section-sub">Descuentos especiales en los mejores restaurantes de Lima</p>
-          </div>
-          <div className="ti-promos-grid">
-            {PROMOCIONES.map((p, i) => (
-              <div key={i} className="ti-promo-card">
-                <div className="ti-promo-img-wrap">
-                  <img src={p.img} alt={p.restaurante} />
-                  <span className="ti-promo-badge">{p.badge}</span>
-                  <span className="ti-promo-etiqueta">{p.etiqueta}</span>
-                </div>
-                <div className="ti-promo-body">
-                  <span className="ti-tarjeta-pill">{p.categoria}</span>
-                  <h3 className="ti-promo-restaurante">{p.restaurante}</h3>
-                  <p className="ti-promo-desc">{p.descripcion}</p>
-                  <div className="ti-promo-web">
-                    <i className="ti ti-world" /> Válido solo por WEB
+      {/* ── PROMOCIONES (desde la base de datos) ──────────────────────── */}
+      {promos.length > 0 && (
+        <section className="ti-promos" id="promociones">
+          <div className="ti-promos-inner">
+            <div className="ti-promos-header">
+              <h2 className="ti-section-titulo">Promociones Exclusivas</h2>
+              <div className="ti-titulo-deco" />
+              <p className="ti-section-sub">Descuentos vigentes en la carta de los mejores restaurantes de Lima</p>
+            </div>
+            <div className="ti-promos-grid">
+              {promos.map((p) => (
+                <div key={p.restauranteId} className="ti-promo-card">
+                  <div className="ti-promo-img-wrap">
+                    <img src={p.img} alt={p.nombre} />
+                    <span className="ti-promo-badge">-{p.descuentoMax}%</span>
+                    <span className="ti-promo-etiqueta">
+                      {p.platos.length} plato{p.platos.length > 1 ? 's' : ''} en oferta
+                    </span>
                   </div>
-                  <button
-                    className="ti-btn-reserva"
-                    onClick={() => navegarAPromo(p.restaurante)}
-                  >
-                    Aprovechar Oferta →
-                  </button>
+                  <div className="ti-promo-body">
+                    <span className="ti-tarjeta-pill">{p.categoria}</span>
+                    <h3 className="ti-promo-restaurante">{p.nombre}</h3>
+                    <p className="ti-promo-desc">{describirPromo(p.platos)}</p>
+                    <div className="ti-promo-web">
+                      <i className="ti ti-world" /> Válido solo por WEB
+                    </div>
+                    <button
+                      className="ti-btn-reserva"
+                      onClick={() => navigate(`/contenido/${p.restauranteId}`)}
+                    >
+                      Aprovechar Oferta →
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
     </div>
   );

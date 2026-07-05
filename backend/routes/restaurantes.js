@@ -5,6 +5,7 @@ const ResponseFactory = require('../factories/ResponseFactory');
 
 const servicio = ServicioFactory.crear('restaurante');
 const mesaServicio = ServicioFactory.crear('mesa');
+const menuServicio = ServicioFactory.crear('menu');
 
 router.get('/', async (req, res) => {
     try {
@@ -12,6 +13,16 @@ router.get('/', async (req, res) => {
         return ResponseFactory.exito(res, restaurantes, 'Restaurantes obtenidos');
     } catch (error) {
         return ResponseFactory.error(res, 'Error al obtener restaurantes');
+    }
+});
+
+// Promociones vigentes segun los descuentos reales de la carta
+router.get('/promociones', async (req, res) => {
+    try {
+        const promos = await menuServicio.promociones();
+        return ResponseFactory.exito(res, promos, 'Promociones obtenidas');
+    } catch (error) {
+        return ResponseFactory.error(res, 'Error al obtener promociones');
     }
 });
 
