@@ -122,7 +122,7 @@ setTimeout(async () => {
                   onClick={() => setMostrarPassword((v) => !v)}
                   aria-label={mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
-                  <i className={`ti ${mostrarPassword ? 'ti-eye-off' : 'ti-eye'}`} />
+                  {mostrarPassword ? '🙈' : '👁️'}
                 </button>
               </div>
               {errores.password && <span className="msg-error">{errores.password}</span>}
