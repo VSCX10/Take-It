@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import './Register.css';
+import '../Login/Login.css';
 
 const REGLAS_PASSWORD = [
   { test: (p) => p.length >= 8, texto: 'Mínimo 8 caracteres' },
@@ -198,7 +198,7 @@ setTimeout(async () => {
                   onClick={() => setMostrarPassword((v) => !v)}
                   aria-label={mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
-                  {mostrarPassword ? '🙈' : '👁️'}
+                  <i className={`ti ${mostrarPassword ? 'ti-eye-off' : 'ti-eye'}`} />
                 </button>
               </div>
 
@@ -215,7 +215,7 @@ setTimeout(async () => {
                   <ul className="reglas-password">
                     {REGLAS_PASSWORD.map((r) => (
                       <li key={r.texto} className={r.test(campos.password) ? 'cumplida' : ''}>
-                        {r.test(campos.password) ? '✓' : '○'} {r.texto}
+                        <i className={`ti ${r.test(campos.password) ? 'ti-circle-check' : 'ti-circle'}`} /> {r.texto}
                       </li>
                     ))}
                   </ul>

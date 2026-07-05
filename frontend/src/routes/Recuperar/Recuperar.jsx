@@ -138,7 +138,7 @@ function Recuperar() {
                   onClick={() => setMostrarPassword((v) => !v)}
                   aria-label={mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
-                  {mostrarPassword ? '🙈' : '👁️'}
+                  <i className={`ti ${mostrarPassword ? 'ti-eye-off' : 'ti-eye'}`} />
                 </button>
               </div>
 
@@ -155,7 +155,7 @@ function Recuperar() {
                   <ul className="reglas-password">
                     {REGLAS_PASSWORD.map((r) => (
                       <li key={r.texto} className={r.test(campos.password) ? 'cumplida' : ''}>
-                        {r.test(campos.password) ? '✓' : '○'} {r.texto}
+                        <i className={`ti ${r.test(campos.password) ? 'ti-circle-check' : 'ti-circle'}`} /> {r.texto}
                       </li>
                     ))}
                   </ul>
