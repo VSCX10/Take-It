@@ -28,6 +28,16 @@ npm run dev
 cd frontend && npm run lint
 ```
 
+**Pruebas del backend (Jest — caja blanca, caja negra y unitarias):**
+```bash
+cd backend && npm test
+```
+
+**Métricas de complejidad ciclomática del backend:**
+```bash
+cd backend && npm run metricas
+```
+
 ---
 
 ## Variables de entorno
@@ -58,20 +68,24 @@ Express 5 en CommonJS con arquitectura por capas:
 | Servicios | `services/` | Lógica de negocio: `UsuarioServicio`, `RestauranteServicio`, `ReservaServicio`, `MenuServicio` |
 | Rutas | `routes/` | Routers Express: `auth`, `restaurantes`, `menu`, `reservas`, `usuarios` |
 | Factories | `factories/` | `ServicioFactory` (instancia servicios por clave) · `ResponseFactory` (respuestas `{ ok, mensaje, data }`) |
+| Middleware | `middleware/` | `verificarToken` — valida el JWT (`Authorization: Bearer`) en las rutas privadas |
+| Pruebas | `tests/` | Jest: caja blanca (`MesaServicio`), caja negra (registro) y unitarias (`generarSlots`, `verificarToken`) |
 
-**Rutas API actuales:**
+**Rutas API actuales** (🔒 = requiere JWT):
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | POST | `/api/auth/register` | Registro de usuario — devuelve JWT |
 | POST | `/api/auth/login` | Inicio de sesión — devuelve JWT |
+| POST | `/api/auth/recuperar` | Restablecer contraseña por email |
 | GET | `/api/restaurantes` | Listado de restaurantes |
-| POST | `/api/restaurantes` | Crear restaurante |
+| GET | `/api/restaurantes/promociones` | Platos con descuento agrupados por restaurante |
+| GET | `/api/restaurantes/:id/disponibilidad` | Bloques de hora con mesas libres (`?fecha=&personas=`) |
 | GET | `/api/restaurantes/:id/menu` | Menú de un restaurante |
-| POST | `/api/reservas` | Crear reserva |
-| GET | `/api/reservas/:usuarioId` | Reservas de un usuario (incluye nombre del restaurante vía JOIN) |
-| PATCH | `/api/reservas/:id/cancelar` | Cancelar reserva |
-| PUT | `/api/usuarios/:id` | Actualizar perfil (nombre, apellido, teléfono) |
+| POST 🔒 | `/api/reservas` | Crear reserva (asigna mesa; 409 si el bloque está lleno) |
+| GET 🔒 | `/api/reservas/:usuarioId` | Reservas de un usuario (incluye nombre del restaurante vía JOIN) |
+| PATCH 🔒 | `/api/reservas/:id/cancelar` | Cancelar reserva |
+| PUT 🔒 | `/api/usuarios/:id` | Actualizar perfil (nombre, apellido, teléfono) |
 
 **Modelos y campos:**
 

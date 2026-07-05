@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState, useCallback } from 'react';
 import './ContenidoRestaurante.css';
 import { useAuth } from '../../context/AuthContext';
+import { authHeaders } from '../../utils/authHeaders';
 
 const MAX_UNIDADES = 10;
 
@@ -101,7 +102,7 @@ function ContenidoRestaurante() {
     const confirmarReserva = async (metodoPago) => {
         const resp = await fetch('/api/reservas', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...authHeaders() },
             body: JSON.stringify({
                 usuarioId: usuarioActual.id,
                 restauranteId: parseInt(id),

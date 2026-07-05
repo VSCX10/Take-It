@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { authHeaders } from '../../utils/authHeaders';
 import './Perfil.css';
 
 const PREFIJOS = [
@@ -69,7 +70,7 @@ function Perfil() {
         apellido: usuarioActual.apellido || '',
         telefono: numeroSolo,
       });
-      fetch(`/api/reservas/${usuarioActual.id}`)
+      fetch(`/api/reservas/${usuarioActual.id}`, { headers: authHeaders() })
         .then(r => r.json())
         .then(datos => { setReservas(datos.data || []); setCargando(false); })
         .catch(() => setCargando(false));
@@ -87,7 +88,7 @@ function Perfil() {
   const cancelarReserva = async (id) => {
     setCancelando(id);
     try {
-      const resp = await fetch(`/api/reservas/${id}/cancelar`, { method: 'PATCH' });
+      const resp = await fetch(`/api/reservas/${id}/cancelar`, { method: 'PATCH', headers: authHeaders() });
       if (resp.ok) {
         setReservas(prev => prev.map(r => r.id === id ? { ...r, estado: 'Cancelada' } : r));
       }
@@ -103,7 +104,7 @@ function Perfil() {
     try {
       const resp = await fetch(`/api/usuarios/${usuarioActual.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify({ ...form, telefono: `${prefijo} ${form.telefono}` }),
       });
       if (resp.ok) {

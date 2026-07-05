@@ -18,6 +18,7 @@ const restaurantesRoutes = require('./routes/restaurantes');
 const reservasRoutes = require('./routes/reservas');
 const menuRoutes = require('./routes/menu');
 const usuariosRoutes = require('./routes/usuarios');
+const verificarToken = require('./middleware/verificarToken');
 
 // Relaciones entre modelos
 const modelos = { Usuario, Restaurante, Menu, Reserva };
@@ -28,11 +29,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Rutas publicas (login/registro y catalogo de restaurantes)
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurantes', restaurantesRoutes);
-app.use('/api/reservas', reservasRoutes);
 app.use('/api/restaurantes', menuRoutes);
-app.use('/api/usuarios', usuariosRoutes);
+
+// Rutas privadas: requieren sesion activa (JWT)
+app.use('/api/reservas', verificarToken, reservasRoutes);
+app.use('/api/usuarios', verificarToken, usuariosRoutes);
 
 
 // Solo arranca un servidor cuando se ejecuta directo (node index.js).
