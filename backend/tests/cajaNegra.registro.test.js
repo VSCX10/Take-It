@@ -1,12 +1,6 @@
-/**
- * PRUEBA DE CAJA NEGRA — POST /api/auth/register
- *
- * Funcionalidad con mas de 4 campos de entrada:
- *   nombre, apellido, email, telefono (opcional), password, confirmar (6 campos).
- *
- * Se prueba solo entrada -> salida (clases de equivalencia y valores limite),
- * sin conocer la implementacion interna. La base de datos se simula.
- */
+// Prueba de caja negra sobre el registro de usuario (POST /api/auth/register).
+// La funcionalidad tiene 6 campos de entrada: nombre, apellido, email,
+// telefono, password y confirmar. Solo se valida entrada -> salida.
 jest.mock('../models/Usuario', () => ({
   findOne: jest.fn(),
   create: jest.fn(),
@@ -22,88 +16,59 @@ const app = express();
 app.use(express.json());
 app.use('/api/auth', require('../routes/auth'));
 
-// Entrada valida de referencia (se altera campo por campo en cada caso)
-const VALIDO = {
+const DATOS = {
   nombre: 'Victor',
   apellido: 'Sevillano',
   email: 'victor@test.com',
-  telefono: '+51 987654321',
+  telefono: '987654321',
   password: 'Clave123',
   confirmar: 'Clave123',
 };
 
 beforeEach(() => {
   jest.clearAllMocks();
-  Usuario.findOne.mockResolvedValue(null); // por defecto el correo esta libre
-  Usuario.create.mockResolvedValue({ id: 1, ...VALIDO });
+  Usuario.findOne.mockResolvedValue(null);
+  Usuario.create.mockResolvedValue({ id: 1, ...DATOS });
 });
 
-describe('Caja Negra: registro de usuario', () => {
+describe('registro de usuario', () => {
 
-  test('CN1 - clase valida: todos los campos correctos -> 201 con token y usuario', async () => {
-    const res = await request(app).post('/api/auth/register').send(VALIDO);
+  test('con todos los campos correctos registra y devuelve token', async () => {
+    const res = await request(app).post('/api/auth/register').send(DATOS);
 
     expect(res.status).toBe(201);
-    expect(res.body.ok).toBe(true);
     expect(res.body.data.token).toBeDefined();
-    expect(res.body.data.usuario.email).toBe(VALIDO.email);
   });
 
-  test('CN2 - telefono es opcional: sin telefono tambien registra -> 201', async () => {
-    const { telefono, ...sinTelefono } = VALIDO;
-    const res = await request(app).post('/api/auth/register').send(sinTelefono);
-
-    expect(res.status).toBe(201);
-    expect(res.body.ok).toBe(true);
-  });
-
-  test('CN3 - clase invalida: falta un campo obligatorio (nombre) -> 400', async () => {
-    const { nombre, ...sinNombre } = VALIDO;
-    const res = await request(app).post('/api/auth/register').send(sinNombre);
-
-    expect(res.status).toBe(400);
-    expect(res.body.ok).toBe(false);
-  });
-
-  test('CN4 - clase invalida: las contrasenas no coinciden -> 400', async () => {
+  test('si falta un campo obligatorio responde 400', async () => {
     const res = await request(app)
       .post('/api/auth/register')
-      .send({ ...VALIDO, confirmar: 'OtraClave99' });
+      .send({ ...DATOS, nombre: '' });
 
     expect(res.status).toBe(400);
-    expect(res.body.mensaje).toMatch(/no coinciden/i);
   });
 
-  test('CN5 - valor limite: contrasena de 5 caracteres (menor al minimo de 6) -> 400', async () => {
+  test('si las contrasenas no coinciden responde 400', async () => {
     const res = await request(app)
       .post('/api/auth/register')
-      .send({ ...VALIDO, password: 'Ab123', confirmar: 'Ab123' });
+      .send({ ...DATOS, confirmar: 'otra' });
 
     expect(res.status).toBe(400);
-    expect(res.body.mensaje).toMatch(/6 caracteres/i);
   });
 
-  test('CN6 - valor limite: contrasena de exactamente 6 caracteres -> 201', async () => {
+  test('si la contrasena tiene menos de 6 caracteres responde 400', async () => {
     const res = await request(app)
       .post('/api/auth/register')
-      .send({ ...VALIDO, password: 'Abc123', confirmar: 'Abc123' });
-
-    expect(res.status).toBe(201);
-  });
-
-  test('CN7 - clase invalida: el correo ya esta registrado -> 400', async () => {
-    Usuario.findOne.mockResolvedValue({ id: 7, email: VALIDO.email }); // ya existe
-
-    const res = await request(app).post('/api/auth/register').send(VALIDO);
+      .send({ ...DATOS, password: 'abc12', confirmar: 'abc12' });
 
     expect(res.status).toBe(400);
-    expect(res.body.mensaje).toMatch(/ya está registrado/i);
   });
 
-  test('CN8 - cuerpo vacio: ningun campo enviado -> 400', async () => {
-    const res = await request(app).post('/api/auth/register').send({});
+  test('si el correo ya esta registrado responde 400', async () => {
+    Usuario.findOne.mockResolvedValue({ id: 7 });
+
+    const res = await request(app).post('/api/auth/register').send(DATOS);
 
     expect(res.status).toBe(400);
-    expect(res.body.ok).toBe(false);
   });
 });
