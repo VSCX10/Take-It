@@ -4,47 +4,22 @@ import '../Login/Login.css';
 
 const API_URL = '/api/auth';
 
-const REGLAS_PASSWORD = [
-  { test: (p) => p.length >= 8, texto: 'Mínimo 8 caracteres' },
-  { test: (p) => /[A-Z]/.test(p), texto: 'Al menos una mayúscula' },
-  { test: (p) => /[0-9]/.test(p), texto: 'Al menos un número' },
-];
-
 function Restablecer() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const token = params.get('token');
 
-  const [campos, setCampos] = useState({ password: '', confirmar: '' });
   const [error, setError] = useState('');
   const [exito, setExito] = useState('');
-  const [mostrarPassword, setMostrarPassword] = useState(false);
   const [cargando, setCargando] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCampos((prev) => ({ ...prev, [name]: value }));
-    setError('');
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (REGLAS_PASSWORD.some((r) => !r.test(campos.password))) {
-      setError('La contraseña no cumple los requisitos.');
-      return;
-    }
-    if (campos.password !== campos.confirmar) {
-      setError('Las contraseñas no coinciden.');
-      return;
-    }
-
+  const confirmarCambio = async () => {
     setCargando(true);
     try {
       const respuesta = await fetch(`${API_URL}/restablecer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, ...campos }),
+        body: JSON.stringify({ token }),
       });
       const datos = await respuesta.json();
 
@@ -62,24 +37,24 @@ function Restablecer() {
     }
   };
 
-  const fuerzaPassword = REGLAS_PASSWORD.filter((r) => r.test(campos.password)).length;
-
   return (
     <div className="login-contenedor">
       <div className="login-branding">
         <h1>Take<span>&amp;</span>It</h1>
-        <p>Un último paso para volver a entrar.</p>
+        <p>Un último paso para confirmar.</p>
         <div className="beneficios">
           <div className="beneficio-item"><span>1</span> Verificamos tu correo</div>
-          <div className="beneficio-item"><span>2</span> Define tu nueva contraseña</div>
-          <div className="beneficio-item"><span>3</span> Inicia sesión al instante</div>
+          <div className="beneficio-item"><span>2</span> Confirma el cambio con un clic</div>
+          <div className="beneficio-item"><span>3</span> Inicia sesión con tu nueva contraseña</div>
         </div>
       </div>
 
       <div className="login-formulario-seccion">
         <div className="formulario-caja">
-          <h2>Nueva contraseña</h2>
-          <p className="subtitulo-form">Confirma el cambio de tu contraseña</p>
+          <h2>Confirmar cambio</h2>
+          <p className="subtitulo-form">
+            Estás a punto de cambiar la contraseña de tu cuenta
+          </p>
 
           {error && <div className="alerta-error">{error}</div>}
           {exito && <div className="alerta-exito">{exito}</div>}
@@ -89,68 +64,19 @@ function Restablecer() {
               El enlace no es válido. Solicita uno nuevo desde "¿Olvidaste tu contraseña?".
             </div>
           ) : (
-            <form onSubmit={handleSubmit} noValidate>
-              <div className="grupo-input">
-                <label htmlFor="password">Nueva contraseña</label>
-                <div className="input-con-icono">
-                  <input
-                    id="password"
-                    name="password"
-                    type={mostrarPassword ? 'text' : 'password'}
-                    placeholder="***********"
-                    value={campos.password}
-                    onChange={handleChange}
-                    autoComplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    className="btn-ver-password"
-                    onClick={() => setMostrarPassword((v) => !v)}
-                    aria-label={mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                  >
-                    {mostrarPassword ? '🙈' : '👁️'}
-                  </button>
-                </div>
-
-                {campos.password && (
-                  <div className="indicador-fuerza">
-                    <div className="barras-fuerza">
-                      {[1, 2, 3].map((n) => (
-                        <div
-                          key={n}
-                          className={`barra ${fuerzaPassword >= n ? `nivel-${fuerzaPassword}` : ''}`}
-                        />
-                      ))}
-                    </div>
-                    <ul className="reglas-password">
-                      {REGLAS_PASSWORD.map((r) => (
-                        <li key={r.texto} className={r.test(campos.password) ? 'cumplida' : ''}>
-                          {r.test(campos.password) ? '✓' : '○'} {r.texto}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-
-              <div className="grupo-input">
-                <label htmlFor="confirmar">Confirmar contraseña</label>
-                <input
-                  id="confirmar"
-                  name="confirmar"
-                  type={mostrarPassword ? 'text' : 'password'}
-                  placeholder="***********"
-                  value={campos.confirmar}
-                  onChange={handleChange}
-                  autoComplete="new-password"
-                />
-              </div>
-
-              <button type="submit" className="btn-principal" disabled={cargando}>
-                {cargando ? 'Guardando...' : 'Cambiar contraseña'}
+            !exito && (
+              <button className="btn-principal" onClick={confirmarCambio} disabled={cargando}>
+                {cargando ? 'Confirmando...' : 'Sí, cambiar mi contraseña'}
               </button>
-            </form>
+            )
           )}
+
+          <p className="texto-cambio">
+            ¿No solicitaste este cambio?{' '}
+            <button type="button" className="btn-texto" onClick={() => navigate('/login')}>
+              Ir al inicio de sesión
+            </button>
+          </p>
         </div>
       </div>
     </div>

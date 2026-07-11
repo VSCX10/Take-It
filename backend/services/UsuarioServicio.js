@@ -18,6 +18,15 @@ class UsuarioServicio {
         return await usuario.save();
     }
 
+    // Aplica una contraseña que ya viene hasheada (confirmación por correo),
+    // por eso se desactivan los hooks para no volver a hashearla
+    async confirmarPassword(id, passwordHasheada) {
+        return await Usuario.update(
+            { password: passwordHasheada },
+            { where: { id }, hooks: false }
+        );
+    }
+
     async actualizar(id, datos) {
         const usuario = await Usuario.findByPk(id);
         if (!usuario) return null;

@@ -20,15 +20,15 @@ async function enviarRecuperacion(destinatario, enlace) {
     await transporte.sendMail({
         from: `"Take&It" <${process.env.EMAIL_USER}>`,
         to: destinatario,
-        subject: 'Recupera tu contraseña — Take&It',
+        subject: 'Confirma el cambio de tu contraseña — Take&It',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
             <h2 style="color: #1a1714;">Take<span style="color: #c2440e;">&</span>It</h2>
-            <p>Recibimos una solicitud para cambiar tu contraseña.</p>
-            <p>Haz clic en el botón para confirmar el cambio. El enlace vence en <b>15 minutos</b> y solo puede usarse una vez.</p>
+            <p>Recibimos una solicitud para cambiar la contraseña de tu cuenta.</p>
+            <p>Si fuiste tú, confirma el cambio con el botón. El enlace vence en <b>15 minutos</b> y solo puede usarse una vez.</p>
             <a href="${enlace}"
                style="display: inline-block; margin: 16px 0; padding: 12px 28px; background: #c2440e; color: #fff; text-decoration: none; border-radius: 10px; font-weight: bold;">
-              Restablecer contraseña
+              Sí, cambiar mi contraseña
             </a>
             <p style="color: #9a958e; font-size: 13px;">Si no fuiste tú, ignora este correo y tu contraseña seguirá igual.</p>
           </div>
