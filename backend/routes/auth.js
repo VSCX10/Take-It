@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const ServicioFactory = require('../factories/ServicioFactory');
 const ResponseFactory = require('../factories/ResponseFactory');
+const { enviarRecuperacion } = require('../services/CorreoServicio');
 
 const servicio = ServicioFactory.crear('usuario');
 
@@ -74,9 +75,37 @@ router.post('/login', async (req, res) => {
 
 router.post('/recuperar', async (req, res) => {
   try {
-    const { email, password, confirmar } = req.body;
+    const { email } = req.body;
 
-    if (!email || !password || !confirmar)
+    if (!email)
+      return ResponseFactory.error(res, 'El correo es obligatorio', 400);
+
+    const usuario = await servicio.buscarPorEmail(email);
+    if (!usuario)
+      return ResponseFactory.error(res, 'No existe una cuenta con ese correo', 404);
+
+    // El token se firma con la contraseña actual: al cambiarla queda invalidado (un solo uso)
+    const token = jwt.sign(
+      { id: usuario.id },
+      process.env.JWT_SECRET + usuario.password,
+      { expiresIn: '15m' }
+    );
+
+    const origen = req.headers.origin || 'http://localhost:5173';
+    await enviarRecuperacion(email, `${origen}/restablecer?token=${token}`);
+
+    return ResponseFactory.exito(res, null, 'Te enviamos un enlace a tu correo para confirmar el cambio');
+
+  } catch (error) {
+    return ResponseFactory.error(res, 'Error al enviar el correo de recuperación');
+  }
+});
+
+router.post('/restablecer', async (req, res) => {
+  try {
+    const { token, password, confirmar } = req.body;
+
+    if (!token || !password || !confirmar)
       return ResponseFactory.error(res, 'Todos los campos son obligatorios', 400);
 
     if (password !== confirmar)
@@ -85,16 +114,23 @@ router.post('/recuperar', async (req, res) => {
     if (password.length < 6)
       return ResponseFactory.error(res, 'La contraseña debe tener al menos 6 caracteres', 400);
 
-    const usuario = await servicio.buscarPorEmail(email);
+    const datos = jwt.decode(token);
+    const usuario = datos && await servicio.buscarPorId(datos.id);
     if (!usuario)
-      return ResponseFactory.error(res, 'No existe una cuenta con ese correo', 404);
+      return ResponseFactory.error(res, 'El enlace no es válido', 400);
+
+    try {
+      jwt.verify(token, process.env.JWT_SECRET + usuario.password);
+    } catch {
+      return ResponseFactory.error(res, 'El enlace expiró o ya fue usado. Solicita uno nuevo.', 400);
+    }
 
     await servicio.cambiarPassword(usuario, password);
 
     return ResponseFactory.exito(res, null, 'Contraseña actualizada. Ya puedes iniciar sesión.');
 
   } catch (error) {
-    return ResponseFactory.error(res, 'Error al recuperar la contraseña');
+    return ResponseFactory.error(res, 'Error al restablecer la contraseña');
   }
 });
 

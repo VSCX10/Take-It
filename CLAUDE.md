@@ -48,6 +48,8 @@ Crear `backend/.env` — **nunca commitear este archivo**.
 DATABASE_URL=<neon-postgres-connection-string>
 PORT=3000
 JWT_SECRET=<clave-secreta>
+EMAIL_USER=<gmail-del-equipo>          # opcional: para el correo de recuperación
+EMAIL_PASS=<app-password-de-gmail>     # opcional: sin esto, el enlace sale por consola
 ```
 
 El backend se conecta a Neon PostgreSQL vía SSL. Al arrancar, Sequelize ejecuta `sync({ alter: true })` para auto-migrar el esquema según los modelos.
@@ -77,7 +79,8 @@ Express 5 en CommonJS con arquitectura por capas:
 |--------|------|-------------|
 | POST | `/api/auth/register` | Registro de usuario — devuelve JWT |
 | POST | `/api/auth/login` | Inicio de sesión — devuelve JWT |
-| POST | `/api/auth/recuperar` | Restablecer contraseña por email |
+| POST | `/api/auth/recuperar` | Envía al correo un enlace de recuperación (válido 15 min, un solo uso) |
+| POST | `/api/auth/restablecer` | Cambia la contraseña con el token del enlace |
 | GET | `/api/restaurantes` | Listado de restaurantes |
 | GET | `/api/restaurantes/promociones` | Platos con descuento agrupados por restaurante |
 | GET | `/api/restaurantes/:id/disponibilidad` | Bloques de hora con mesas libres (`?fecha=&personas=`) |

@@ -10,6 +10,11 @@ router.post('/', async (req, res) => {
     try {
         const { usuarioId, restauranteId, fecha, hora, personas, total, metodoPago } = req.body;
 
+        const duplicada = await servicio.buscarDuplicada(usuarioId, restauranteId, fecha, hora);
+        if (duplicada) {
+            return ResponseFactory.error(res, 'Ya tienes una reserva en este restaurante para esa fecha y hora', 409);
+        }
+
         const mesa = await mesaServicio.asignarMesa(restauranteId, fecha, hora, personas);
         if (!mesa) {
             return ResponseFactory.error(res, 'No hay mesas disponibles para ese horario', 409);

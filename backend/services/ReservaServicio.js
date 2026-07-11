@@ -1,9 +1,17 @@
+const { Op } = require('sequelize');
 const Reserva = require('../models/Reserva');
 const Restaurante = require('../models/Restaurante');
 
 class ReservaServicio {
     async crear(datos) {
         return await Reserva.create(datos);
+    }
+
+    // Busca si el usuario ya tiene una reserva activa igual (mismo restaurante, fecha y hora)
+    async buscarDuplicada(usuarioId, restauranteId, fecha, hora) {
+        return await Reserva.findOne({
+            where: { usuarioId, restauranteId, fecha, hora, estado: { [Op.ne]: 'cancelada' } }
+        });
     }
 
     async obtenerPorUsuario(usuarioId) {
