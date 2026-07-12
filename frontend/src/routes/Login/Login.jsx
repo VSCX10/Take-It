@@ -64,7 +64,10 @@ setTimeout(async () => {
     return;
   }
 
-  navigate('/inicio');
+  const rol = resultado.usuario?.rol;
+  if (rol === 'admin_general') navigate('/panel/general/dashboard');
+  else if (rol === 'admin_restaurante') navigate('/panel/restaurante/reservas');
+  else navigate('/inicio');
 }, 500);
   };
 

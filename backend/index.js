@@ -10,9 +10,12 @@ const Restaurante = require('./models/Restaurante');
 const Menu = require('./models/Menu');
 const Reserva = require('./models/Reserva');
 const Favorito = require('./models/Favorito');
-require('./models/Mesa');
+const Mesa = require('./models/Mesa');
+const Promocion = require('./models/Promocion');
+const Resena = require('./models/Resena');
 
 const seedMesas = require('./seeders/seedMesas');
+const seedAdminGeneral = require('./seeders/seedAdminGeneral');
 
 const authRoutes = require('./routes/auth');
 const restaurantesRoutes = require('./routes/restaurantes');
@@ -21,11 +24,14 @@ const menuRoutes = require('./routes/menu');
 const usuariosRoutes = require('./routes/usuarios');
 const favoritosRoutes = require('./routes/favoritos');
 const adminRoutes = require('./routes/admin');
+const panelGeneralRoutes = require('./routes/panel/general');
+const panelRestauranteRoutes = require('./routes/panel/restaurante');
 const verificarToken = require('./middleware/verificarToken');
 const verificarAdmin = require('./middleware/verificarAdmin');
+const verificarRol = require('./middleware/verificarRol');
 
 // Relaciones entre modelos
-const modelos = { Usuario, Restaurante, Menu, Reserva, Favorito };
+const modelos = { Usuario, Restaurante, Menu, Reserva, Favorito, Mesa, Promocion, Resena };
 Object.values(modelos).forEach(m => { if (m.associate) m.associate(modelos); });
 
 const app = express();
@@ -43,8 +49,12 @@ app.use('/api/reservas', verificarToken, reservasRoutes);
 app.use('/api/usuarios', verificarToken, usuariosRoutes);
 app.use('/api/favoritos', verificarToken, favoritosRoutes);
 
-// Rutas solo para el administrador
+// Rutas solo para el administrador (panel legado: aprobar/rechazar reservas con preorden)
 app.use('/api/admin', verificarToken, verificarAdmin, adminRoutes);
+
+// Panel de administracion (nuevo): general (multi-restaurante) y restaurante (scoped)
+app.use('/api/panel/general', verificarToken, verificarRol('admin_general'), panelGeneralRoutes);
+app.use('/api/panel/restaurante', verificarToken, verificarRol('admin_restaurante'), panelRestauranteRoutes);
 
 
 // Solo arranca un servidor cuando se ejecuta directo (node index.js).
@@ -55,6 +65,7 @@ if (require.main === module) {
   sequelize.authenticate()
     .then(() => sequelize.sync({ alter: true }))
     .then(() => seedMesas())
+    .then(() => seedAdminGeneral())
     .then(() => app.listen(puerto, () => {
       console.log(`Servidor corriendo en http://localhost:${puerto}`);
     }))

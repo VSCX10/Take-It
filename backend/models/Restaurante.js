@@ -35,6 +35,10 @@ const Restaurante = sequelize.define('Restaurante', {
     type: DataTypes.TIME,
     defaultValue: '22:00'
   },
+  activo: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
 }, {
   tableName: 'restaurantes',
   timestamps: false
@@ -42,6 +46,10 @@ const Restaurante = sequelize.define('Restaurante', {
 
 Restaurante.associate = (modelos) => {
   Restaurante.hasMany(modelos.Reserva, { foreignKey: 'restauranteId', as: 'reservas' });
+  Restaurante.hasMany(modelos.Usuario, { foreignKey: 'restauranteId', as: 'administradores' });
+  Restaurante.hasMany(modelos.Mesa, { foreignKey: 'restauranteId', as: 'mesas' });
+  Restaurante.hasMany(modelos.Promocion, { foreignKey: 'restauranteId', as: 'promociones' });
+  Restaurante.hasMany(modelos.Resena, { foreignKey: 'restauranteId', as: 'resenas' });
 };
 
 module.exports = Restaurante;

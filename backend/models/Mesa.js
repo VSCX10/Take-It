@@ -13,10 +13,19 @@ const Mesa = sequelize.define('Mesa', {
   codigo: {
     type: DataTypes.STRING,
     defaultValue: null
+  },
+  // disponible | ocupada | mantenimiento
+  estado: {
+    type: DataTypes.STRING,
+    defaultValue: 'disponible'
   }
 }, {
   tableName: 'mesas',
   timestamps: false
 });
+
+Mesa.associate = (modelos) => {
+  Mesa.belongsTo(modelos.Restaurante, { foreignKey: 'restauranteId', as: 'restaurante' });
+};
 
 module.exports = Mesa;

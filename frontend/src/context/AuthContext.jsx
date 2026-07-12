@@ -69,7 +69,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem('usuario', JSON.stringify(datos.data.usuario));
       setUserWithFoto(datos.data.usuario);
 
-      return { ok: true };
+      return { ok: true, usuario: datos.data.usuario };
     } catch {
       return { ok: false, mensaje: 'Error de conexión' };
     }

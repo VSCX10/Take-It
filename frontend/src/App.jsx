@@ -11,6 +11,18 @@ import SobreNosotros from './routes/SobreNosotros/SobreNosotros.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { PrivateRoute, PublicRoute } from './context/ProtectedRoute.jsx';
 
+import { AdminRoute } from './Admin/AdminRoute.jsx';
+import AccesoDenegado from './Admin/AccesoDenegado.jsx';
+import AdminLayout from './Admin/layout/AdminLayout.jsx';
+import Dashboard from './Admin/General/Dashboard.jsx';
+import RestaurantesLista from './Admin/General/RestaurantesLista.jsx';
+import AdministradoresLista from './Admin/General/AdministradoresLista.jsx';
+import ConfiguracionGeneral from './Admin/General/ConfiguracionGeneral.jsx';
+import ReservasLista from './Admin/Restaurante/ReservasLista.jsx';
+import MesasLista from './Admin/Restaurante/MesasLista.jsx';
+import PromocionesLista from './Admin/Restaurante/PromocionesLista.jsx';
+import ResenasLista from './Admin/Restaurante/ResenasLista.jsx';
+
 function App() {
   return (
     <BrowserRouter>
@@ -44,6 +56,30 @@ function App() {
           <Route path="/nosotros" element={
             <PrivateRoute><SobreNosotros /></PrivateRoute>
           } />
+
+          <Route path="/acceso-denegado" element={
+            <PrivateRoute><AccesoDenegado /></PrivateRoute>
+          } />
+
+          <Route path="/panel/general" element={
+            <AdminRoute roles={['admin_general']}><AdminLayout ambito="general" /></AdminRoute>
+          }>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="restaurantes" element={<RestaurantesLista />} />
+            <Route path="administradores" element={<AdministradoresLista />} />
+            <Route path="configuracion" element={<ConfiguracionGeneral />} />
+          </Route>
+
+          <Route path="/panel/restaurante" element={
+            <AdminRoute roles={['admin_restaurante']}><AdminLayout ambito="restaurante" /></AdminRoute>
+          }>
+            <Route index element={<Navigate to="reservas" replace />} />
+            <Route path="reservas" element={<ReservasLista />} />
+            <Route path="mesas" element={<MesasLista />} />
+            <Route path="promociones" element={<PromocionesLista />} />
+            <Route path="resenas" element={<ResenasLista />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

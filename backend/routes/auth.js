@@ -28,14 +28,14 @@ router.post('/register', async (req, res) => {
     const nuevoUsuario = await servicio.crear({ nombre, apellido, email, telefono: telefono || '', password });
 
     const token = jwt.sign(
-      { id: nuevoUsuario.id, email: nuevoUsuario.email, rol: nuevoUsuario.rol },
+      { id: nuevoUsuario.id, email: nuevoUsuario.email, rol: nuevoUsuario.rol, restauranteId: nuevoUsuario.restauranteId },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
     return ResponseFactory.exito(res, {
       token,
-      usuario: { id: nuevoUsuario.id, nombre: nuevoUsuario.nombre, apellido: nuevoUsuario.apellido, email: nuevoUsuario.email, telefono: nuevoUsuario.telefono || '', rol: nuevoUsuario.rol, foto: nuevoUsuario.foto || null }
+      usuario: { id: nuevoUsuario.id, nombre: nuevoUsuario.nombre, apellido: nuevoUsuario.apellido, email: nuevoUsuario.email, telefono: nuevoUsuario.telefono || '', rol: nuevoUsuario.rol, restauranteId: nuevoUsuario.restauranteId, activo: nuevoUsuario.activo, foto: nuevoUsuario.foto || null }
     }, 'Usuario registrado exitosamente', 201);
 
   } catch (error) {
@@ -58,15 +58,18 @@ router.post('/login', async (req, res) => {
     if (!passwordValida)
       return ResponseFactory.error(res, 'Correo o contraseña incorrectos', 401);
 
+    if (usuario.activo === false)
+      return ResponseFactory.error(res, 'Tu cuenta está desactivada, contacta al administrador', 403);
+
     const token = jwt.sign(
-      { id: usuario.id, email: usuario.email, rol: usuario.rol },
+      { id: usuario.id, email: usuario.email, rol: usuario.rol, restauranteId: usuario.restauranteId },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
     return ResponseFactory.exito(res, {
       token,
-      usuario: { id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido, email: usuario.email, telefono: usuario.telefono || '', rol: usuario.rol, foto: usuario.foto || null }
+      usuario: { id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido, email: usuario.email, telefono: usuario.telefono || '', rol: usuario.rol, restauranteId: usuario.restauranteId, activo: usuario.activo, foto: usuario.foto || null }
     }, 'Sesión iniciada exitosamente');
 
   } catch (error) {

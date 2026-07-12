@@ -11,7 +11,26 @@ class MesaServicio {
     }
 
     async obtenerPorRestaurante(restauranteId) {
-        return await Mesa.findAll({ where: { restauranteId } });
+        return await Mesa.findAll({ where: { restauranteId }, order: [['id', 'ASC']] });
+    }
+
+    // Solo actua si la mesa pertenece al restaurante del admin (aislamiento entre restaurantes)
+    async actualizar(id, restauranteId, datos) {
+        const mesa = await Mesa.findOne({ where: { id, restauranteId } });
+        if (!mesa) return null;
+        await mesa.update(datos);
+        return mesa;
+    }
+
+    async cambiarEstado(id, restauranteId, estado) {
+        return await this.actualizar(id, restauranteId, { estado });
+    }
+
+    async eliminar(id, restauranteId) {
+        const mesa = await Mesa.findOne({ where: { id, restauranteId } });
+        if (!mesa) return null;
+        await mesa.destroy();
+        return true;
     }
 
     // Genera los bloques de hora ['14:00', '14:30', ...] del restaurante

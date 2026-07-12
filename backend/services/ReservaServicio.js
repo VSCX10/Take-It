@@ -54,6 +54,48 @@ class ReservaServicio {
         await reserva.save();
         return reserva;
     }
+
+    // Panel del admin de restaurante: solo sus reservas, con filtros opcionales
+    async obtenerPorRestaurante(restauranteId, { fecha, estado, cliente } = {}) {
+        const where = { restauranteId };
+        if (fecha) where.fecha = fecha;
+        if (estado) where.estado = estado;
+
+        const incluirUsuario = { model: Usuario, as: 'usuario', attributes: ['nombre', 'apellido', 'email'] };
+        if (cliente) incluirUsuario.where = { nombre: { [Op.iLike]: `%${cliente}%` } };
+
+        return await Reserva.findAll({
+            where,
+            include: [incluirUsuario],
+            order: [['fecha', 'DESC'], ['hora', 'DESC']]
+        });
+    }
+
+    // Aisla por restaurante: nunca deja tocar una reserva ajena
+    async buscarPorRestaurante(id, restauranteId) {
+        return await Reserva.findOne({
+            where: { id, restauranteId },
+            include: [{ model: Usuario, as: 'usuario', attributes: ['nombre', 'apellido', 'email'] }]
+        });
+    }
+
+    async actualizar(id, restauranteId, datos) {
+        const reserva = await this.buscarPorRestaurante(id, restauranteId);
+        if (!reserva) return null;
+        await reserva.update(datos);
+        return reserva;
+    }
+
+    async cambiarEstadoScoped(id, restauranteId, estado) {
+        return await this.actualizar(id, restauranteId, { estado });
+    }
+
+    async eliminar(id, restauranteId) {
+        const reserva = await this.buscarPorRestaurante(id, restauranteId);
+        if (!reserva) return null;
+        await reserva.destroy();
+        return true;
+    }
 }
 
 module.exports = ReservaServicio;
