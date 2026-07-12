@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Inicio.css';
 import { useAuth } from '../context/AuthContext';
+import { authHeaders } from '../utils/authHeaders';
 
 const HERO_SLIDES = [
   {
@@ -54,6 +55,8 @@ function Inicio() {
   const [busqueda, setBusqueda] = useState('');
   const [filtroEstrellas, setFiltroEstrellas] = useState('todas');
   const [filtroTipo, setFiltroTipo] = useState('todos');
+  const [soloFavoritos, setSoloFavoritos] = useState(false);
+  const [favoritos, setFavoritos] = useState([]);
   const [slideActual, setSlideActual] = useState(0);
   const navigate = useNavigate();
   const { cerrarSesion, usuarioActual } = useAuth();
@@ -71,6 +74,36 @@ function Inicio() {
       .then((datos) => setPromos(datos.data || []))
       .catch(() => setPromos([]));
   }, []);
+
+  useEffect(() => {
+    if (!usuarioActual) return;
+    fetch(`/api/favoritos/${usuarioActual.id}`, { headers: authHeaders() })
+      .then((r) => r.json())
+      .then((datos) => setFavoritos((datos.data || []).map((f) => f.restauranteId)))
+      .catch(() => setFavoritos([]));
+  }, [usuarioActual]);
+
+  const toggleFavorito = (e, restauranteId) => {
+    e.stopPropagation();
+    const esFavorito = favoritos.includes(restauranteId);
+
+    setFavoritos((prev) =>
+      esFavorito ? prev.filter((id) => id !== restauranteId) : [...prev, restauranteId]
+    );
+
+    if (esFavorito) {
+      fetch(`/api/favoritos/${usuarioActual.id}/${restauranteId}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      }).catch(() => setFavoritos((prev) => [...prev, restauranteId]));
+    } else {
+      fetch('/api/favoritos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ usuarioId: usuarioActual.id, restauranteId }),
+      }).catch(() => setFavoritos((prev) => prev.filter((id) => id !== restauranteId)));
+    }
+  };
 
   const irSlide = (n) => setSlideActual((n + HERO_SLIDES.length) % HERO_SLIDES.length);
 
@@ -91,7 +124,8 @@ function Inicio() {
       filtroEstrellas === 'todas' || Math.floor(r.rating) >= Number(filtroEstrellas);
     const coincideTipo =
       filtroTipo === 'todos' || r.categoria === filtroTipo;
-    return coincideBusqueda && coincideEstrellas && coincideTipo;
+    const coincideFavorito = !soloFavoritos || favoritos.includes(r.id);
+    return coincideBusqueda && coincideEstrellas && coincideTipo && coincideFavorito;
   });
 
   const inicialUsuario = usuarioActual?.nombre?.[0]?.toUpperCase() || '';
@@ -139,6 +173,9 @@ function Inicio() {
                     <p className="ti-menu-saludo">👋 Hola, {usuarioActual.nombre}</p>
                     <button onClick={() => { navigate('/perfil'); setMenuAbierto(false); }}>
                       👤 Mi Perfil
+                    </button>
+                    <button onClick={() => { navigate('/favoritos'); setMenuAbierto(false); }}>
+                      ❤️ Mis Favoritos
                     </button>
                     <button onClick={() => { cerrarSesion(); navigate('/login'); }}>
                       🚪 Cerrar Sesión
@@ -249,6 +286,12 @@ function Inicio() {
                 ))}
               </select>
             </div>
+            <button
+              className={`ti-btn-filtro-favoritos${soloFavoritos ? ' activo' : ''}`}
+              onClick={() => setSoloFavoritos((prev) => !prev)}
+            >
+              <i className="ti ti-heart" /> Favoritos
+            </button>
           </div>
         </div>
 
@@ -274,6 +317,14 @@ function Inicio() {
                       Ver Disponibilidad →
                     </button>
                   </div>
+                  <button
+                    className={`ti-btn-favorito${favoritos.includes(rest.id) ? ' activo' : ''}`}
+                    onClick={(e) => toggleFavorito(e, rest.id)}
+                    aria-label="Marcar como favorito"
+                    title={favoritos.includes(rest.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                  >
+                    <i className="ti ti-heart" />
+                  </button>
                   <span className="ti-badge-rating">⭐ {rest.rating}</span>
                   {rest.precio && <span className="ti-badge-precio">{rest.precio}</span>}
                 </div>

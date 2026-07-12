@@ -9,6 +9,7 @@ const Usuario = require('./models/Usuario');
 const Restaurante = require('./models/Restaurante');
 const Menu = require('./models/Menu');
 const Reserva = require('./models/Reserva');
+const Favorito = require('./models/Favorito');
 require('./models/Mesa');
 
 const seedMesas = require('./seeders/seedMesas');
@@ -18,10 +19,11 @@ const restaurantesRoutes = require('./routes/restaurantes');
 const reservasRoutes = require('./routes/reservas');
 const menuRoutes = require('./routes/menu');
 const usuariosRoutes = require('./routes/usuarios');
+const favoritosRoutes = require('./routes/favoritos');
 const verificarToken = require('./middleware/verificarToken');
 
 // Relaciones entre modelos
-const modelos = { Usuario, Restaurante, Menu, Reserva };
+const modelos = { Usuario, Restaurante, Menu, Reserva, Favorito };
 Object.values(modelos).forEach(m => { if (m.associate) m.associate(modelos); });
 
 const app = express();
@@ -37,6 +39,7 @@ app.use('/api/restaurantes', menuRoutes);
 // Rutas privadas: requieren sesion activa (JWT)
 app.use('/api/reservas', verificarToken, reservasRoutes);
 app.use('/api/usuarios', verificarToken, usuariosRoutes);
+app.use('/api/favoritos', verificarToken, favoritosRoutes);
 
 
 // Solo arranca un servidor cuando se ejecuta directo (node index.js).

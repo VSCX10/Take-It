@@ -66,9 +66,9 @@ Express 5 en CommonJS con arquitectura por capas:
 |------|-------------------|-----------------|
 | Entry point | `index.js` | Registra Express, CORS, rutas, asociaciones de modelos y arranca Sequelize |
 | Base de datos | `database.js` | Instancia Sequelize con SSL vía `DATABASE_URL` |
-| Modelos | `models/` | Definiciones Sequelize: `Usuario`, `Restaurante`, `Menu`, `Reserva` |
-| Servicios | `services/` | Lógica de negocio: `UsuarioServicio`, `RestauranteServicio`, `ReservaServicio`, `MenuServicio` |
-| Rutas | `routes/` | Routers Express: `auth`, `restaurantes`, `menu`, `reservas`, `usuarios` |
+| Modelos | `models/` | Definiciones Sequelize: `Usuario`, `Restaurante`, `Menu`, `Reserva`, `Favorito` |
+| Servicios | `services/` | Lógica de negocio: `UsuarioServicio`, `RestauranteServicio`, `ReservaServicio`, `MenuServicio`, `FavoritoServicio` |
+| Rutas | `routes/` | Routers Express: `auth`, `restaurantes`, `menu`, `reservas`, `usuarios`, `favoritos` |
 | Factories | `factories/` | `ServicioFactory` (instancia servicios por clave) · `ResponseFactory` (respuestas `{ ok, mensaje, data }`) |
 | Middleware | `middleware/` | `verificarToken` — valida el JWT (`Authorization: Bearer`) en las rutas privadas |
 | Pruebas | `tests/` | Jest: caja blanca (`MesaServicio`), caja negra (registro) y unitarias (`generarSlots`, `verificarToken`) |
@@ -89,6 +89,9 @@ Express 5 en CommonJS con arquitectura por capas:
 | GET 🔒 | `/api/reservas/:usuarioId` | Reservas de un usuario (incluye nombre del restaurante vía JOIN) |
 | PATCH 🔒 | `/api/reservas/:id/cancelar` | Cancelar reserva |
 | PUT 🔒 | `/api/usuarios/:id` | Actualizar perfil (nombre, apellido, teléfono) |
+| GET 🔒 | `/api/favoritos/:usuarioId` | Restaurantes favoritos de un usuario (incluye datos del restaurante vía JOIN) |
+| POST 🔒 | `/api/favoritos` | Marcar un restaurante como favorito (`usuarioId`, `restauranteId`) |
+| DELETE 🔒 | `/api/favoritos/:usuarioId/:restauranteId` | Quitar un restaurante de favoritos |
 
 **Modelos y campos:**
 
@@ -97,11 +100,13 @@ Usuario     → id, nombre, apellido, email, telefono, password
 Restaurante → id, nombre, categoria, rating, img, descripcion, direccion
 Menu        → id, restauranteId, nombre, descripcion, precio, imagen, descuentoPct, stock
 Reserva     → id, usuarioId, restauranteId, fecha, hora, personas, estado, total, metodoPago
+Favorito    → id, usuarioId, restauranteId
 ```
 
 - `Menu.descuentoPct` (INTEGER, default 0) — porcentaje de descuento activo sobre el plato (0 = sin descuento)
 - `Menu.stock` (INTEGER, nullable) — unidades disponibles; `null` = sin límite, `0` = agotado
 - `Reserva.metodoPago` (STRING, default `'local'`) — `'local'` | `'tarjeta'` según el flujo elegido por el usuario
+- `Favorito` — par único `(usuarioId, restauranteId)`; un usuario no puede marcar el mismo restaurante dos veces
 
 Seed de datos de demostración: `backend/seed_descuentos.js`
 
@@ -126,6 +131,7 @@ React 19 + Vite 8 (ESM). Tabler Icons cargado vía CDN en `index.html`.
 | `/inicio` | `Inicio` | PrivateRoute |
 | `/contenido/:id` | `ContenidoRestaurante` | PrivateRoute |
 | `/perfil` | `Perfil` | PrivateRoute |
+| `/favoritos` | `Favoritos` | PrivateRoute |
 | `/nosotros` | `SobreNosotros` | PrivateRoute |
 
 **Paleta de colores** (variables en `index.css` — usar siempre estas, no valores fijos):
@@ -274,6 +280,30 @@ Platos agotados de demo: Lomo Saltado Nikkei (Maido), Alturas (Central), Cochini
 - `CHANGE` Timeline de estados renombrado: **Registrada → Por confirmar → Confirmada**. Al crear una reserva nueva, "Registrada" aparece con checkmark verde y "Por confirmar" se ilumina en naranja, indicando que espera aprobación del admin
 - `FIX` Prefijo de teléfono: al abrir el editor, el número guardado (`+51 987...`) se parsea separando prefijo y número. Se elimina la duplicación acumulativa del prefijo en cada guardado
 
+#### Jornada 3 — 11 julio 2026 (Favoritos de restaurantes)
+
+**Backend**
+- `ADD` Modelo `Favorito` (`usuarioId`, `restauranteId`, par único) — Sequelize auto-migra la tabla `favoritos`
+- `ADD` `FavoritoServicio` (`obtenerPorUsuario`, `agregar` vía `findOrCreate`, `quitar`)
+- `ADD` Rutas privadas `GET /api/favoritos/:usuarioId`, `POST /api/favoritos`, `DELETE /api/favoritos/:usuarioId/:restauranteId`
+- `ADD` Asociación `Favorito.belongsTo(Restaurante, { as: 'restaurante' })` para traer los datos del restaurante en el listado
+
+**Frontend — `/inicio`**
+- `ADD` Botón de corazón (♥) sobre la imagen de cada tarjeta de restaurante para marcar/desmarcar favorito, con actualización optimista
+- `ADD` Pill de filtro "Favoritos" junto a los dropdowns de Calificación/Tipo — muestra solo los restaurantes marcados
+- `ADD` Entrada "❤️ Mis Favoritos" en el menú desplegable del usuario, junto a "Mi Perfil"
+
+**Frontend — `/contenido/:id`**
+- `ADD` Botón de corazón sobre el banner del restaurante para marcar/desmarcar favorito desde el detalle
+
+**Frontend — `/favoritos`** (página nueva, `routes/Favoritos/Favoritos.jsx`)
+- `ADD` Página dedicada con header sticky (volver a `/inicio`) y grid de tarjetas de los restaurantes marcados como favoritos (imagen, rating, categoría, dirección)
+- `ADD` Botón para quitar de favoritos directo desde la tarjeta, sin pasar por el detalle del restaurante
+- `ADD` Estado vacío con CTA "Explorar restaurantes" cuando el usuario no tiene favoritos aún
+
+**HU-18 — detalle:** *Como cliente quiero poder marcar restaurantes como favoritos y volver a ellos rápidamente desde una sección dedicada, sin tener que buscarlos de nuevo.*
+- Implementado: toggle de corazón en `/inicio` (tarjetas) y `/contenido/:id` (banner), filtro rápido en el inicio, y página `/favoritos` accesible desde el menú de usuario. Persistido en Neon vía tabla `favoritos`, ligado al usuario autenticado.
+
 | HU | Alias | Prioridad | Pts |
 |----|-------|-----------|-----|
 | HU-01 | Registro — completar (bcrypt + recuperar contraseña) | Must Have | 5 |
@@ -287,7 +317,7 @@ Platos agotados de demo: Lomo Saltado Nikkei (Maido), Alturas (Central), Cochini
 | HU-14 | Panel admin (protegido por rol JWT) | Must Have | 8 |
 | HU-15 | Reseñas post-visita | Should Have | 5 |
 | HU-16 | Recordatorio por email (Nodemailer + cron) | Should Have | 5 |
-| HU-18 | Favoritos de restaurantes | Could Have | 3 |
+| HU-18 | Favoritos de restaurantes — ✅ completado | Could Have | 3 |
 
 > HU-13 eliminada: sus pendientes (bcrypt + olvidar contraseña) pertenecen a HU-01 del R1, que se completa en R2.  
 > HU-17 (Pagos Culqi) aplazada a Release 3.

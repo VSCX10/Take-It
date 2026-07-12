@@ -24,6 +24,7 @@ function ContenidoRestaurante() {
     const [cargandoPago, setCargandoPago] = useState(false);
     const [mensajeExito, setMensajeExito] = useState('');
     const [slots, setSlots] = useState(null);
+    const [esFavorito, setEsFavorito] = useState(false);
     const navigate = useNavigate();
     const { usuarioActual } = useAuth();
 
@@ -39,6 +40,33 @@ function ContenidoRestaurante() {
             .then(datos => setMenu(datos.data))
             .catch(() => {});
     }, [id]);
+
+    useEffect(() => {
+        if (!usuarioActual) return;
+        fetch(`/api/favoritos/${usuarioActual.id}`, { headers: authHeaders() })
+            .then(r => r.json())
+            .then(datos => setEsFavorito((datos.data || []).some(f => f.restauranteId === parseInt(id))))
+            .catch(() => {});
+    }, [id, usuarioActual]);
+
+    const toggleFavorito = () => {
+        const restauranteId = parseInt(id);
+        const nuevoValor = !esFavorito;
+        setEsFavorito(nuevoValor);
+
+        if (nuevoValor) {
+            fetch('/api/favoritos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                body: JSON.stringify({ usuarioId: usuarioActual.id, restauranteId }),
+            }).catch(() => setEsFavorito(false));
+        } else {
+            fetch(`/api/favoritos/${usuarioActual.id}/${restauranteId}`, {
+                method: 'DELETE',
+                headers: authHeaders(),
+            }).catch(() => setEsFavorito(true));
+        }
+    };
 
     // Disponibilidad de mesas por bloque de hora (fecha + personas)
     const cargarDisponibilidad = useCallback(() => {
@@ -139,6 +167,14 @@ function ContenidoRestaurante() {
             {/* BANNER */}
             <div className="banner-restaurante">
                 <img src={restaurante.img} alt={restaurante.nombre} className="imagen-banner" />
+                <button
+                    className={`btn-favorito-banner${esFavorito ? ' activo' : ''}`}
+                    onClick={toggleFavorito}
+                    aria-label="Marcar como favorito"
+                    title={esFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                >
+                    <i className="ti ti-heart" />
+                </button>
                 <div className="overlay-banner">
                     <h1>{restaurante.nombre}</h1>
                     <div className="datos-restaurante">
