@@ -45,6 +45,7 @@ function Perfil() {
   const [cargando, setCargando]             = useState(true);
   const [editando, setEditando]             = useState(false);
   const [guardando, setGuardando]           = useState(false);
+  const [avisoGuardar, setAvisoGuardar]     = useState('');
   const [cancelando, setCancelando]         = useState(null);
   const [filtroReservas, setFiltroReservas] = useState('activas');
   const [prefijo, setPrefijo]               = useState('+51');
@@ -114,6 +115,7 @@ function Perfil() {
 
   const guardarCambios = async () => {
     setGuardando(true);
+    setAvisoGuardar('');
     try {
       const resp = await fetch(`/api/usuarios/${usuarioActual.id}`, {
         method: 'PUT',
@@ -123,9 +125,13 @@ function Perfil() {
       if (resp.ok) {
         actualizarPerfil({ ...form, telefono: `${prefijo} ${form.telefono}` });
         setEditando(false);
+      } else if (resp.status === 401) {
+        setAvisoGuardar('Tu sesión expiró. Cierra sesión y vuelve a entrar.');
+      } else {
+        setAvisoGuardar('No se pudo guardar. Intenta de nuevo.');
       }
     } catch {
-      // si falla la conexion mantenemos el modo edicion abierto
+      setAvisoGuardar('Error de conexión. Intenta de nuevo.');
     } finally {
       setGuardando(false);
     }
@@ -198,6 +204,9 @@ function Perfil() {
                     />
                   </div>
                 </div>
+                {avisoGuardar && (
+                  <p style={{ color: '#f87171', fontSize: '13px', margin: '0 0 4px' }}>{avisoGuardar}</p>
+                )}
                 <div className="pf-form-acciones">
                   <button className="pf-btn-guardar" onClick={guardarCambios} disabled={guardando}>
                     {guardando ? 'Guardando...' : <><i className="ti ti-check" /> Guardar</>}
