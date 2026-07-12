@@ -27,7 +27,7 @@ Object.values(modelos).forEach(m => { if (m.associate) m.associate(modelos); });
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '5mb' })); // margen para la foto de perfil en base64
 
 // Rutas publicas (login/registro y catalogo de restaurantes)
 app.use('/api/auth', authRoutes);

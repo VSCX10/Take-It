@@ -18,6 +18,10 @@ class UsuarioServicio {
         return await usuario.save();
     }
 
+    async guardarFoto(id, foto) {
+        return await Usuario.update({ foto }, { where: { id } });
+    }
+
     // Guarda el codigo y la nueva contraseña (ya hasheada) a la espera de confirmacion
     async guardarRecuperacion(id, codigo, passwordHasheada, expira) {
         return await Usuario.update(

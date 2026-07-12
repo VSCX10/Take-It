@@ -35,7 +35,7 @@ router.post('/register', async (req, res) => {
 
     return ResponseFactory.exito(res, {
       token,
-      usuario: { id: nuevoUsuario.id, nombre: nuevoUsuario.nombre, apellido: nuevoUsuario.apellido, email: nuevoUsuario.email, telefono: nuevoUsuario.telefono || '' }
+      usuario: { id: nuevoUsuario.id, nombre: nuevoUsuario.nombre, apellido: nuevoUsuario.apellido, email: nuevoUsuario.email, telefono: nuevoUsuario.telefono || '', foto: nuevoUsuario.foto || null }
     }, 'Usuario registrado exitosamente', 201);
 
   } catch (error) {
@@ -66,7 +66,7 @@ router.post('/login', async (req, res) => {
 
     return ResponseFactory.exito(res, {
       token,
-      usuario: { id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido, email: usuario.email, telefono: usuario.telefono || '' }
+      usuario: { id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido, email: usuario.email, telefono: usuario.telefono || '', foto: usuario.foto || null }
     }, 'Sesión iniciada exitosamente');
 
   } catch (error) {

@@ -24,6 +24,11 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  // Foto de perfil en base64 (se guarda en la cuenta, no solo en el navegador)
+  foto: {
+    type: DataTypes.TEXT,
+    defaultValue: null
+  },
   // Datos temporales del cambio de contraseña pendiente de confirmar por correo
   codigoRecuperacion: {
     type: DataTypes.STRING,

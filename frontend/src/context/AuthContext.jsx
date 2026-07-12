@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import { authHeaders } from '../utils/authHeaders';
 
 const AuthContext = createContext(null);
 const API_URL = '/api/auth';
@@ -10,7 +11,7 @@ export function AuthProvider({ children }) {
       const usuario = localStorage.getItem('usuario');
       if (token && usuario && usuario !== 'undefined') {
         const user = JSON.parse(usuario);
-        const foto = localStorage.getItem(`foto_${user.id}`);
+        const foto = user.foto || localStorage.getItem(`foto_${user.id}`);
         return foto ? { ...user, foto } : user;
       }
     } catch {
@@ -22,7 +23,7 @@ export function AuthProvider({ children }) {
 
   const setUserWithFoto = (user) => {
     if (!user) { setUsuarioActual(null); return; }
-    const foto = localStorage.getItem(`foto_${user.id}`);
+    const foto = user.foto || localStorage.getItem(`foto_${user.id}`);
     setUsuarioActual(foto ? { ...user, foto } : user);
   };
 
@@ -86,10 +87,21 @@ export function AuthProvider({ children }) {
     setUsuarioActual(merged);
   };
 
-  const actualizarFoto = (base64) => {
+  const actualizarFoto = async (base64) => {
     if (!usuarioActual) return;
-    localStorage.setItem(`foto_${usuarioActual.id}`, base64);
-    setUsuarioActual(prev => ({ ...prev, foto: base64 }));
+    // Se muestra de una y se guarda en la cuenta (persiste en cualquier dispositivo)
+    const merged = { ...usuarioActual, foto: base64 };
+    setUsuarioActual(merged);
+    localStorage.setItem('usuario', JSON.stringify(merged));
+    try {
+      await fetch(`/api/usuarios/${usuarioActual.id}/foto`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ foto: base64 }),
+      });
+    } catch {
+      // si falla el guardado, al menos queda en esta sesion
+    }
   };
 
   return (

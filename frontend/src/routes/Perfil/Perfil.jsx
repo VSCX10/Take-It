@@ -81,7 +81,20 @@ function Perfil() {
     const archivo = e.target.files[0];
     if (!archivo) return;
     const lector = new FileReader();
-    lector.onload = (ev) => { actualizarFoto(ev.target.result); };
+    lector.onload = (ev) => {
+      // Reducimos la imagen a máx 256px para que pese poco
+      const img = new Image();
+      img.onload = () => {
+        const max = 256;
+        const escala = Math.min(1, max / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * escala;
+        canvas.height = img.height * escala;
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        actualizarFoto(canvas.toDataURL('image/jpeg', 0.85));
+      };
+      img.src = ev.target.result;
+    };
     lector.readAsDataURL(archivo);
   };
 
