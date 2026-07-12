@@ -1,10 +1,10 @@
 const Usuario = require('../models/Usuario');
 
-const EMAIL = 'admingeneral@takeit.com';
-const PASSWORD = 'AdminGeneral123!';
+const EMAIL = 'admin@takeit.com';
+const PASSWORD = 'Admin123';
 
-// Crea la cuenta del administrador general si no existe todavia (idempotente).
-// Correo distinto del admin legado (admin@takeit.com) para no pisar esa cuenta.
+// Asegura que exista un unico administrador (rol admin_general).
+// Idempotente: si ya existe, solo garantiza el rol correcto.
 async function seedAdminGeneral() {
     const existente = await Usuario.findOne({ where: { email: EMAIL } });
     if (existente) {
@@ -13,12 +13,12 @@ async function seedAdminGeneral() {
     }
     await Usuario.create({
         nombre: 'Admin',
-        apellido: 'General',
+        apellido: 'TakeIt',
         email: EMAIL,
         password: PASSWORD,
         rol: 'admin_general'
     });
-    console.log(`Admin general creado -> correo: ${EMAIL} | contraseña: ${PASSWORD}`);
+    console.log(`Admin creado -> correo: ${EMAIL} | contraseña: ${PASSWORD}`);
 }
 
 module.exports = seedAdminGeneral;

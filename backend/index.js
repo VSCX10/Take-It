@@ -23,11 +23,8 @@ const reservasRoutes = require('./routes/reservas');
 const menuRoutes = require('./routes/menu');
 const usuariosRoutes = require('./routes/usuarios');
 const favoritosRoutes = require('./routes/favoritos');
-const adminRoutes = require('./routes/admin');
 const panelGeneralRoutes = require('./routes/panel/general');
-const panelRestauranteRoutes = require('./routes/panel/restaurante');
 const verificarToken = require('./middleware/verificarToken');
-const verificarAdmin = require('./middleware/verificarAdmin');
 const verificarRol = require('./middleware/verificarRol');
 
 // Relaciones entre modelos
@@ -49,12 +46,8 @@ app.use('/api/reservas', verificarToken, reservasRoutes);
 app.use('/api/usuarios', verificarToken, usuariosRoutes);
 app.use('/api/favoritos', verificarToken, favoritosRoutes);
 
-// Rutas solo para el administrador (panel legado: aprobar/rechazar reservas con preorden)
-app.use('/api/admin', verificarToken, verificarAdmin, adminRoutes);
-
-// Panel de administracion (nuevo): general (multi-restaurante) y restaurante (scoped)
+// Panel de administracion (unico): gestion de restaurantes y todas las reservas
 app.use('/api/panel/general', verificarToken, verificarRol('admin_general'), panelGeneralRoutes);
-app.use('/api/panel/restaurante', verificarToken, verificarRol('admin_restaurante'), panelRestauranteRoutes);
 
 
 // Solo arranca un servidor cuando se ejecuta directo (node index.js).

@@ -7,6 +7,7 @@ const dashboardServicio = ServicioFactory.crear('dashboard');
 const restauranteServicio = ServicioFactory.crear('restaurante');
 const usuarioServicio = ServicioFactory.crear('usuario');
 const adminGeneralServicio = ServicioFactory.crear('adminGeneral');
+const reservaServicio = ServicioFactory.crear('reserva');
 
 router.get('/dashboard', async (req, res) => {
     try {
@@ -16,6 +17,31 @@ router.get('/dashboard', async (req, res) => {
         return ResponseFactory.error(res, 'Error al obtener el resumen');
     }
 });
+
+// ── Reservas (todas las de la plataforma) ───────────────────────
+router.get('/reservas', async (req, res) => {
+    try {
+        const reservas = await reservaServicio.obtenerTodas(req.query);
+        return ResponseFactory.exito(res, reservas, 'Reservas obtenidas');
+    } catch (error) {
+        return ResponseFactory.error(res, 'Error al obtener las reservas');
+    }
+});
+
+// La reserva sin preorden ya llega confirmada; aqui el admin decide las que tienen platos
+const cambiarEstadoReserva = (estado) => async (req, res) => {
+    try {
+        const reserva = await reservaServicio.cambiarEstado(req.params.id, estado);
+        if (!reserva) return ResponseFactory.noEncontrado(res, 'Reserva no encontrada');
+        return ResponseFactory.exito(res, reserva, 'Reserva actualizada');
+    } catch (error) {
+        return ResponseFactory.error(res, 'Error al actualizar la reserva');
+    }
+};
+
+router.patch('/reservas/:id/confirmar', cambiarEstadoReserva('confirmada'));
+router.patch('/reservas/:id/completar', cambiarEstadoReserva('completada'));
+router.patch('/reservas/:id/cancelar', cambiarEstadoReserva('cancelada'));
 
 // ── Restaurantes ────────────────────────────────────────────────
 router.get('/restaurantes', async (req, res) => {

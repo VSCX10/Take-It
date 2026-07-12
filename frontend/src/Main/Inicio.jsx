@@ -177,8 +177,8 @@ function Inicio() {
                     <button onClick={() => { navigate('/favoritos'); setMenuAbierto(false); }}>
                       ❤️ Mis Favoritos
                     </button>
-                    {usuarioActual.rol === 'admin' && (
-                      <button onClick={() => { navigate('/admin'); setMenuAbierto(false); }}>
+                    {usuarioActual.rol === 'admin_general' && (
+                      <button onClick={() => { navigate('/panel/general/dashboard'); setMenuAbierto(false); }}>
                         🛠️ Panel Admin
                       </button>
                     )}

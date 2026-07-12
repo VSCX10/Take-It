@@ -35,6 +35,25 @@ class ReservaServicio {
         return reserva;
     }
 
+    // Todas las reservas de todos los restaurantes (para el panel admin), con filtros opcionales
+    async obtenerTodas({ fecha, estado, cliente } = {}) {
+        const where = {};
+        if (fecha) where.fecha = fecha;
+        if (estado) where.estado = estado;
+
+        const incluirUsuario = { model: Usuario, as: 'usuario', attributes: ['nombre', 'apellido', 'email'] };
+        if (cliente) incluirUsuario.where = { nombre: { [Op.iLike]: `%${cliente}%` } };
+
+        return await Reserva.findAll({
+            where,
+            include: [
+                { model: Restaurante, as: 'restaurante', attributes: ['nombre', 'img'] },
+                incluirUsuario
+            ],
+            order: [['fecha', 'DESC'], ['hora', 'DESC']]
+        });
+    }
+
     // Reservas con preorden a la espera del admin
     async obtenerPendientes() {
         return await Reserva.findAll({

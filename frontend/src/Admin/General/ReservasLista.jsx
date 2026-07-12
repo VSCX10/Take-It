@@ -2,29 +2,25 @@ import { useEffect, useState } from 'react';
 import { useAdminApi } from '../hooks/useAdminApi';
 import DataTable from '../components/DataTable';
 import StatusBadge from '../components/StatusBadge';
-import ConfirmDialog from '../components/ConfirmDialog';
 import AlertBanner from '../components/AlertBanner';
-import ReservaDetalleModal from './ReservaDetalleModal';
 
 const ESTADOS = ['', 'pendiente', 'confirmada', 'cancelada', 'completada'];
 
+// Todas las reservas de la plataforma. Las que tienen preorden llegan como
+// 'pendiente' para que el admin las confirme; las simples ya vienen confirmadas.
 function ReservasLista() {
   const api = useAdminApi();
   const [reservas, setReservas] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
   const [filtros, setFiltros] = useState({ fecha: '', estado: '', cliente: '' });
-  const [seleccion, setSeleccion] = useState(null);
-  const [modoEdicion, setModoEdicion] = useState(false);
-  const [porEliminar, setPorEliminar] = useState(null);
-  const [eliminando, setEliminando] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams();
     if (filtros.fecha) params.set('fecha', filtros.fecha);
     if (filtros.estado) params.set('estado', filtros.estado);
     if (filtros.cliente) params.set('cliente', filtros.cliente);
-    api.get(`/restaurante/reservas?${params.toString()}`)
+    api.get(`/general/reservas?${params.toString()}`)
       .then(setReservas)
       .catch((e) => setError(e.message))
       .finally(() => setCargando(false));
@@ -34,35 +30,17 @@ function ReservasLista() {
   const filtro = (name) => (e) => setFiltros((p) => ({ ...p, [name]: e.target.value }));
 
   const cambiarEstado = async (reserva, accion) => {
-    const actualizada = await api.patch(`/restaurante/reservas/${reserva.id}/${accion}`);
-    setReservas((prev) => prev.map((r) => (r.id === actualizada.id ? actualizada : r)));
-  };
-
-  const guardarEdicion = async (form) => {
-    const actualizada = await api.put(`/restaurante/reservas/${seleccion.id}`, form);
-    setReservas((prev) => prev.map((r) => (r.id === actualizada.id ? actualizada : r)));
-    setSeleccion(null);
-  };
-
-  const eliminar = async () => {
-    setEliminando(true);
-    try {
-      await api.del(`/restaurante/reservas/${porEliminar.id}`);
-      setReservas((prev) => prev.filter((r) => r.id !== porEliminar.id));
-      setPorEliminar(null);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setEliminando(false);
-    }
+    const actualizada = await api.patch(`/general/reservas/${reserva.id}/${accion}`);
+    setReservas((prev) => prev.map((r) => (r.id === actualizada.id ? { ...r, ...actualizada } : r)));
   };
 
   const columnas = [
     { key: 'id', label: 'Reserva', render: (r) => `RS-${String(r.id).padStart(4, '0')}` },
+    { key: 'restaurante', label: 'Restaurante', render: (r) => r.restaurante?.nombre || '—' },
     { key: 'cliente', label: 'Cliente', render: (r) => r.usuario ? `${r.usuario.nombre} ${r.usuario.apellido}` : '—' },
     { key: 'fecha', label: 'Fecha' },
     { key: 'hora', label: 'Hora', render: (r) => r.hora?.slice(0, 5) },
-    { key: 'personas', label: 'Personas' },
+    { key: 'total', label: 'Preorden', render: (r) => r.total > 0 ? `S/ ${Number(r.total).toFixed(2)}` : '—' },
     { key: 'estado', label: 'Estado', render: (r) => <StatusBadge value={r.estado} /> },
   ];
 
@@ -71,7 +49,7 @@ function ReservasLista() {
       <div className="am-page-header">
         <div>
           <h1 className="am-page-title">Reservas</h1>
-          <p className="am-page-sub">{reservas.length} reserva{reservas.length !== 1 ? 's' : ''}</p>
+          <p className="am-page-sub">{reservas.length} reserva{reservas.length !== 1 ? 's' : ''} en total</p>
         </div>
       </div>
 
@@ -96,12 +74,6 @@ function ReservasLista() {
         emptyText="No hay reservas con esos filtros"
         actions={(r) => (
           <>
-            <button className="am-btn-icono" title="Ver" onClick={() => { setSeleccion(r); setModoEdicion(false); }}>
-              <i className="ti ti-eye" />
-            </button>
-            <button className="am-btn-icono" title="Editar" onClick={() => { setSeleccion(r); setModoEdicion(true); }}>
-              <i className="ti ti-pencil" />
-            </button>
             {r.estado === 'pendiente' && (
               <button className="am-btn-icono" title="Confirmar" onClick={() => cambiarEstado(r, 'confirmar')}>
                 <i className="ti ti-check" />
@@ -113,35 +85,13 @@ function ReservasLista() {
               </button>
             )}
             {r.estado !== 'cancelada' && r.estado !== 'completada' && (
-              <button className="am-btn-icono" title="Cancelar" onClick={() => cambiarEstado(r, 'cancelar')}>
+              <button className="am-btn-icono am-btn-icono-peligro" title="Cancelar" onClick={() => cambiarEstado(r, 'cancelar')}>
                 <i className="ti ti-x" />
               </button>
             )}
-            <button className="am-btn-icono am-btn-icono-peligro" title="Eliminar" onClick={() => setPorEliminar(r)}>
-              <i className="ti ti-trash" />
-            </button>
           </>
         )}
       />
-
-      {seleccion && (
-        <ReservaDetalleModal
-          reserva={seleccion}
-          modoEdicion={modoEdicion}
-          onGuardar={guardarEdicion}
-          onClose={() => setSeleccion(null)}
-        />
-      )}
-
-      {porEliminar && (
-        <ConfirmDialog
-          titulo="Eliminar reserva"
-          mensaje={`¿Eliminar la reserva RS-${String(porEliminar.id).padStart(4, '0')}? Esta acción no se puede deshacer.`}
-          cargando={eliminando}
-          onConfirmar={eliminar}
-          onCancelar={() => setPorEliminar(null)}
-        />
-      )}
     </div>
   );
 }
