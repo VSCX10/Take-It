@@ -98,7 +98,7 @@ router.post('/recuperar', async (req, res) => {
     const token = jwt.sign(
       { id: usuario.id, hash },
       process.env.JWT_SECRET + usuario.password,
-      { expiresIn: '15m' }
+      { expiresIn: '3m' }
     );
 
     const origen = req.headers.origin || 'http://localhost:5173';

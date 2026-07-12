@@ -79,7 +79,7 @@ Express 5 en CommonJS con arquitectura por capas:
 |--------|------|-------------|
 | POST | `/api/auth/register` | Registro de usuario — devuelve JWT |
 | POST | `/api/auth/login` | Inicio de sesión — devuelve JWT |
-| POST | `/api/auth/recuperar` | Envía al correo un enlace de recuperación (válido 15 min, un solo uso) |
+| POST | `/api/auth/recuperar` | Envía al correo un enlace de recuperación (válido 3 min, un solo uso) |
 | POST | `/api/auth/restablecer` | Cambia la contraseña con el token del enlace |
 | GET | `/api/restaurantes` | Listado de restaurantes |
 | GET | `/api/restaurantes/promociones` | Platos con descuento agrupados por restaurante |
@@ -293,7 +293,7 @@ Platos agotados de demo: Lomo Saltado Nikkei (Maido), Alturas (Central), Cochini
 > HU-17 (Pagos Culqi) aplazada a Release 3.
 
 **HU-01 — detalle:** *Como cliente quiero que mi contraseña se almacene con hash bcrypt y poder recuperarla si la olvido mediante un correo con enlace temporal.* (Pendiente de R1 registrado en BACKLOG_DESPUES_SPRT1.docx)
-- Backend: `bcrypt.hash()` al registrar y al cambiar contraseña. Endpoint `POST /auth/recuperar` genera token temporal (válido 15 min, un solo uso) y envía email con Nodemailer.
+- Backend: `bcrypt.hash()` al registrar y al cambiar contraseña. Endpoint `POST /auth/recuperar` genera token temporal (válido 3 min, un solo uso) y envía email con Nodemailer.
 
 **HU-08 — detalle:** *Como cliente quiero ver una sección de promociones vigentes en el inicio (descuentos, 2×1, cortesías) que me lleven directamente al restaurante correspondiente.*
 - Implementado: 4 tarjetas con badge de oferta, condiciones, imagen y botón que navega al restaurante si existe en la DB.
