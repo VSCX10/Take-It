@@ -149,7 +149,9 @@ function ContenidoRestaurante() {
         try {
             const datos = await confirmarReserva('local');
             if (datos.ok) {
-                setMensajeExito('Reserva creada. Te llevamos a tu perfil...');
+                setMensajeExito(pedido.length > 0
+                    ? 'Reserva enviada. El restaurante confirmará tu preorden.'
+                    : 'Reserva confirmada. Te llevamos a tu perfil...');
                 setTimeout(() => navigate('/perfil'), 1800);
             } else {
                 alert(datos.mensaje || 'No se pudo crear la reserva');

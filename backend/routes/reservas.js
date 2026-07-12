@@ -20,8 +20,11 @@ router.post('/', async (req, res) => {
             return ResponseFactory.error(res, 'No hay mesas disponibles para ese horario', 409);
         }
 
+        // Sin preorden se confirma sola; con platos la revisa el admin primero
+        const estado = total > 0 ? 'pendiente' : 'confirmada';
+
         const reserva = await servicio.crear({
-            usuarioId, restauranteId, mesaId: mesa.id, fecha, hora, personas, total, metodoPago
+            usuarioId, restauranteId, mesaId: mesa.id, fecha, hora, personas, total, metodoPago, estado
         });
         return ResponseFactory.exito(res, reserva, 'Reserva creada', 201);
     } catch (error) {

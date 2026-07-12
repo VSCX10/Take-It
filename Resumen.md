@@ -73,7 +73,7 @@ Express 5 en CommonJS con arquitectura por capas:
 | Middleware | `middleware/` | `verificarToken` — valida el JWT (`Authorization: Bearer`) en las rutas privadas |
 | Pruebas | `tests/` | Jest: caja blanca (`MesaServicio`), caja negra (registro) y unitarias (`generarSlots`, `verificarToken`) |
 
-**Rutas API actuales** (🔒 = requiere JWT):
+**Rutas API actuales** (🔒 = requiere JWT · 👑 = solo rol admin):
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
@@ -85,18 +85,21 @@ Express 5 en CommonJS con arquitectura por capas:
 | GET | `/api/restaurantes/promociones` | Platos con descuento agrupados por restaurante |
 | GET | `/api/restaurantes/:id/disponibilidad` | Bloques de hora con mesas libres (`?fecha=&personas=`) |
 | GET | `/api/restaurantes/:id/menu` | Menú de un restaurante |
-| POST 🔒 | `/api/reservas` | Crear reserva (asigna mesa; 409 si el bloque está lleno) |
+| POST 🔒 | `/api/reservas` | Crear reserva (sin preorden se confirma sola; con platos queda pendiente del admin) |
 | GET 🔒 | `/api/reservas/:usuarioId` | Reservas de un usuario (incluye nombre del restaurante vía JOIN) |
 | PATCH 🔒 | `/api/reservas/:id/cancelar` | Cancelar reserva |
 | PUT 🔒 | `/api/usuarios/:id` | Actualizar perfil (nombre, apellido, teléfono) |
 | GET 🔒 | `/api/favoritos/:usuarioId` | Restaurantes favoritos de un usuario (incluye datos del restaurante vía JOIN) |
 | POST 🔒 | `/api/favoritos` | Marcar un restaurante como favorito (`usuarioId`, `restauranteId`) |
 | DELETE 🔒 | `/api/favoritos/:usuarioId/:restauranteId` | Quitar un restaurante de favoritos |
+| GET 🔒👑 | `/api/admin/reservas` | Reservas con preorden pendientes de aprobación |
+| PATCH 🔒👑 | `/api/admin/reservas/:id/confirmar` | Aprobar una reserva pendiente |
+| PATCH 🔒👑 | `/api/admin/reservas/:id/rechazar` | Rechazar una reserva pendiente |
 
 **Modelos y campos:**
 
 ```
-Usuario     → id, nombre, apellido, email, telefono, password
+Usuario     → id, nombre, apellido, email, telefono, password, rol, foto
 Restaurante → id, nombre, categoria, rating, img, descripcion, direccion
 Menu        → id, restauranteId, nombre, descripcion, precio, imagen, descuentoPct, stock
 Reserva     → id, usuarioId, restauranteId, fecha, hora, personas, estado, total, metodoPago

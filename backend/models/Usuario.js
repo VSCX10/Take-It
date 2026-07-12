@@ -24,6 +24,11 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  // 'cliente' o 'admin' (el admin confirma las reservas con preorden)
+  rol: {
+    type: DataTypes.STRING,
+    defaultValue: 'cliente'
+  },
   // Foto de perfil en base64 (se guarda en la cuenta, no solo en el navegador)
   foto: {
     type: DataTypes.TEXT,

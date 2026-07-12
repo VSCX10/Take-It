@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const Reserva = require('../models/Reserva');
 const Restaurante = require('../models/Restaurante');
+const Usuario = require('../models/Usuario');
 
 class ReservaServicio {
     async crear(datos) {
@@ -30,6 +31,26 @@ class ReservaServicio {
         const reserva = await Reserva.findByPk(id);
         if (!reserva) return null;
         reserva.estado = 'cancelada';
+        await reserva.save();
+        return reserva;
+    }
+
+    // Reservas con preorden a la espera del admin
+    async obtenerPendientes() {
+        return await Reserva.findAll({
+            where: { estado: 'pendiente' },
+            include: [
+                { model: Restaurante, as: 'restaurante', attributes: ['nombre', 'img'] },
+                { model: Usuario, as: 'usuario', attributes: ['nombre', 'apellido', 'email'] }
+            ],
+            order: [['fecha', 'ASC'], ['hora', 'ASC']]
+        });
+    }
+
+    async cambiarEstado(id, estado) {
+        const reserva = await Reserva.findByPk(id);
+        if (!reserva) return null;
+        reserva.estado = estado;
         await reserva.save();
         return reserva;
     }

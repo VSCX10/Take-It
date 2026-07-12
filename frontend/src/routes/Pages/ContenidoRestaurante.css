@@ -4,9 +4,9 @@
     color: #fff;
     color-scheme: dark;
     background:
-        radial-gradient(900px 620px at 8% 10%, rgba(194, 68, 14, 0.2), transparent 55%),
-        radial-gradient(950px 680px at 92% 92%, rgba(194, 68, 14, 0.13), transparent 55%),
-        linear-gradient(165deg, #241e19 0%, #1a1714 65%);
+        radial-gradient(900px 620px at 8% 10%, rgba(194, 68, 14, 0.32), transparent 55%),
+        radial-gradient(950px 680px at 92% 92%, rgba(194, 68, 14, 0.32), transparent 55%),
+        linear-gradient(165deg, #2f1f12 0%, #231710 65%);
     background-attachment: fixed;
 
     /* Re-mapeo de tokens a versión oscura (solo en esta página) */

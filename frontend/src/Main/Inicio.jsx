@@ -177,6 +177,11 @@ function Inicio() {
                     <button onClick={() => { navigate('/favoritos'); setMenuAbierto(false); }}>
                       ❤️ Mis Favoritos
                     </button>
+                    {usuarioActual.rol === 'admin' && (
+                      <button onClick={() => { navigate('/admin'); setMenuAbierto(false); }}>
+                        🛠️ Panel Admin
+                      </button>
+                    )}
                     <button onClick={() => { cerrarSesion(); navigate('/login'); }}>
                       🚪 Cerrar Sesión
                     </button>

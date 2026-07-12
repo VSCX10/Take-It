@@ -28,14 +28,14 @@ router.post('/register', async (req, res) => {
     const nuevoUsuario = await servicio.crear({ nombre, apellido, email, telefono: telefono || '', password });
 
     const token = jwt.sign(
-      { id: nuevoUsuario.id, email: nuevoUsuario.email },
+      { id: nuevoUsuario.id, email: nuevoUsuario.email, rol: nuevoUsuario.rol },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
     return ResponseFactory.exito(res, {
       token,
-      usuario: { id: nuevoUsuario.id, nombre: nuevoUsuario.nombre, apellido: nuevoUsuario.apellido, email: nuevoUsuario.email, telefono: nuevoUsuario.telefono || '', foto: nuevoUsuario.foto || null }
+      usuario: { id: nuevoUsuario.id, nombre: nuevoUsuario.nombre, apellido: nuevoUsuario.apellido, email: nuevoUsuario.email, telefono: nuevoUsuario.telefono || '', rol: nuevoUsuario.rol, foto: nuevoUsuario.foto || null }
     }, 'Usuario registrado exitosamente', 201);
 
   } catch (error) {
@@ -59,14 +59,14 @@ router.post('/login', async (req, res) => {
       return ResponseFactory.error(res, 'Correo o contraseña incorrectos', 401);
 
     const token = jwt.sign(
-      { id: usuario.id, email: usuario.email },
+      { id: usuario.id, email: usuario.email, rol: usuario.rol },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
     return ResponseFactory.exito(res, {
       token,
-      usuario: { id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido, email: usuario.email, telefono: usuario.telefono || '', foto: usuario.foto || null }
+      usuario: { id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido, email: usuario.email, telefono: usuario.telefono || '', rol: usuario.rol, foto: usuario.foto || null }
     }, 'Sesión iniciada exitosamente');
 
   } catch (error) {

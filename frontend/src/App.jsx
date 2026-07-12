@@ -5,6 +5,7 @@ import Recuperar from './routes/Recuperar/Recuperar.jsx';
 import Inicio from './Main/Inicio.jsx';
 import Perfil from './routes/Perfil/Perfil.jsx';
 import Favoritos from './routes/Favoritos/Favoritos.jsx';
+import Admin from './routes/Admin/Admin.jsx';
 import ContenidoRestaurante from './routes/Pages/ContenidoRestaurante.jsx';
 import SobreNosotros from './routes/SobreNosotros/SobreNosotros.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
@@ -36,6 +37,9 @@ function App() {
           } />
           <Route path="/favoritos" element={
             <PrivateRoute><Favoritos /></PrivateRoute>
+          } />
+          <Route path="/admin" element={
+            <PrivateRoute><Admin /></PrivateRoute>
           } />
           <Route path="/nosotros" element={
             <PrivateRoute><SobreNosotros /></PrivateRoute>
