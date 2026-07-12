@@ -1,13 +1,15 @@
+/* ===== LAYOUT BASE ===== */
 .login-contenedor {
   display: flex;
-  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  height: 100vh;
   width: 100%;
 }
 
-/* --- Lado Izquierdo (Naranja) --- */
+/* ===== LADO IZQUIERDO (Branding) ===== */
 .login-branding {
   flex: 1;
-  background-color: var(--naranja-brand, #F27427);
+  background: linear-gradient(150deg, rgba(194, 68, 14, 0.92), rgba(120, 38, 8, 0.95)),
+    url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80') center/cover;
   color: white;
   display: flex;
   flex-direction: column;
@@ -17,12 +19,13 @@
 }
 
 .login-branding h1 {
+  font-family: var(--fuente-titulo);
   font-size: 4rem;
   margin: 0;
 }
 
 .login-branding h1 span {
-  color: #333; /* El color del ampersand (&) */
+  color: #ffd9c0;
 }
 
 .login-branding p {
@@ -60,9 +63,10 @@
   align-items: center;
   border-radius: 50%;
   font-weight: bold;
+  flex-shrink: 0;
 }
 
-/* --- Lado Derecho (Blanco) --- */
+/* ===== LADO DERECHO (Formulario) ===== */
 .login-formulario-seccion {
   flex: 1;
   background-color: white;
@@ -70,14 +74,16 @@
   justify-content: center;
   align-items: center;
   padding: 40px;
+  overflow-y: auto;
 }
 
 .formulario-caja {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
 }
 
 .formulario-caja h2 {
+  font-family: var(--fuente-titulo);
   font-size: 2.5rem;
   color: #1E293B;
   margin: 0 0 10px 0;
@@ -85,27 +91,66 @@
 
 .subtitulo-form {
   color: #64748B;
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
-.grupo-input {
+/* ===== ALERTA ERROR GENERAL ===== */
+.alerta-error {
+  background: #FEE2E2;
+  border: 1px solid #FECACA;
+  color: #DC2626;
+  border-radius: 10px;
+  padding: 12px 16px;
   margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+.alerta-exito {
+  background: #DCFCE7;
+  border: 1px solid #BBF7D0;
+  color: #16A34A;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+/* ===== FILA DOBLE ===== */
+.fila-doble {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ===== GRUPOS DE INPUT ===== */
+.grupo-input {
+  margin-bottom: 18px;
 }
 
 .grupo-input label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 7px;
   font-weight: 500;
   color: #334155;
+  font-size: 0.95rem;
+}
+
+.etiqueta-opcional {
+  font-weight: 400;
+  color: #94A3B8;
+  font-size: 0.85rem;
 }
 
 .grupo-input input {
   width: 100%;
   padding: 12px 15px;
-  border: 1px solid #E2E8F0;
+  border: 1.5px solid #E2E8F0;
   border-radius: 10px;
   background-color: #F8FAFC;
   outline: none;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, background-color 0.2s;
+  box-sizing: border-box;
 }
 
 .grupo-input input:focus {
@@ -113,6 +158,84 @@
   background-color: white;
 }
 
+.grupo-input.con-error input {
+  border-color: #EF4444;
+  background-color: #FFF5F5;
+}
+
+.msg-error {
+  display: block;
+  color: #EF4444;
+  font-size: 0.82rem;
+  margin-top: 5px;
+}
+
+/* ===== INPUT CON ÍCONO (mostrar contraseña) ===== */
+.input-con-icono {
+  position: relative;
+}
+
+.input-con-icono input {
+  padding-right: 44px;
+}
+
+.btn-ver-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+  color: #94A3B8;
+}
+
+/* ===== INDICADOR DE FUERZA ===== */
+.indicador-fuerza {
+  margin-top: 10px;
+}
+
+.barras-fuerza {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.barra {
+  flex: 1;
+  height: 4px;
+  border-radius: 4px;
+  background: #E2E8F0;
+  transition: background-color 0.3s;
+}
+
+.barra.nivel-1 { background: #EF4444; }
+.barra.nivel-2 { background: #F59E0B; }
+.barra.nivel-3 { background: #22C55E; }
+
+.reglas-password {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.reglas-password li {
+  font-size: 0.8rem;
+  color: #94A3B8;
+  transition: color 0.2s;
+}
+
+.reglas-password li.cumplida {
+  color: #22C55E;
+}
+
+/* ===== LINK OLVIDÉ CONTRASEÑA ===== */
 .link-olvido {
   display: block;
   text-align: right;
@@ -120,29 +243,42 @@
   text-decoration: none;
   font-size: 0.9rem;
   margin-bottom: 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-weight: 500;
 }
 
+/* ===== BOTÓN PRINCIPAL ===== */
 .btn-principal {
   width: 100%;
-  padding: 15px;
+  padding: 14px;
   background-color: var(--naranja-brand, #F27427);
   color: white;
   border: none;
   border-radius: 10px;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, opacity 0.2s;
+  margin-top: 4px;
 }
 
-.btn-principal:hover {
+.btn-principal:hover:not(:disabled) {
   background-color: #d96520;
 }
 
+.btn-principal:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== TEXTO INFERIOR ===== */
 .texto-cambio {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 24px;
   color: #64748B;
+  font-size: 0.95rem;
 }
 
 .btn-texto {
@@ -151,5 +287,43 @@
   color: var(--naranja-brand, #F27427);
   font-weight: bold;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: inherit;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.btn-texto:hover {
+  text-decoration: underline;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .login-contenedor {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .login-branding {
+    padding: 40px 30px 30px;
+    flex: none;
+  }
+
+  .login-branding h1 {
+    font-size: 3rem;
+  }
+
+  .login-branding p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+  }
+
+  .login-formulario-seccion {
+    padding: 30px 24px;
+  }
+
+  .fila-doble {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 }
