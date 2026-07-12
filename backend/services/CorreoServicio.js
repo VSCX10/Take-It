@@ -1,11 +1,12 @@
 const nodemailer = require('nodemailer');
 
-// Envia el correo con el enlace para restablecer la contraseña.
-// Si no hay credenciales configuradas (EMAIL_USER / EMAIL_PASS),
-// imprime el enlace en consola para poder probar en desarrollo.
-async function enviarRecuperacion(destinatario, enlace) {
+// Envia el codigo de verificacion para confirmar el cambio de contraseña.
+// Sin enlaces: los correos con solo un codigo casi nunca caen en spam.
+// Si no hay credenciales (EMAIL_USER / EMAIL_PASS), imprime el codigo
+// en consola para poder probar en desarrollo.
+async function enviarRecuperacion(destinatario, codigo) {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.log('Enlace de recuperacion (modo desarrollo):', enlace);
+        console.log('Codigo de recuperacion (modo desarrollo):', codigo);
         return;
     }
 
@@ -20,18 +21,14 @@ async function enviarRecuperacion(destinatario, enlace) {
     await transporte.sendMail({
         from: `"Take&It" <${process.env.EMAIL_USER}>`,
         to: destinatario,
-        subject: 'Confirma el cambio de tu contraseña — Take&It',
-        // La version en texto plano mejora la entrega (menos chance de caer en spam)
-        text: `Recibimos una solicitud para cambiar la contraseña de tu cuenta Take&It.\n\nSi fuiste tú, confirma el cambio abriendo este enlace (vence en 3 minutos):\n${enlace}\n\nSi no fuiste tú, ignora este correo y tu contraseña seguirá igual.`,
+        subject: `${codigo} es tu código de verificación — Take&It`,
+        text: `Tu código para confirmar el cambio de contraseña es: ${codigo}\n\nEscríbelo en la página de recuperación. Vence en 3 minutos.\n\nSi no fuiste tú, ignora este correo y tu contraseña seguirá igual.`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
             <h2 style="color: #1a1714;">Take<span style="color: #c2440e;">&</span>It</h2>
-            <p>Recibimos una solicitud para cambiar la contraseña de tu cuenta.</p>
-            <p>Si fuiste tú, confirma el cambio con el botón. El enlace vence en <b>3 minutos</b> y solo puede usarse una vez.</p>
-            <a href="${enlace}"
-               style="display: inline-block; margin: 16px 0; padding: 12px 28px; background: #c2440e; color: #fff; text-decoration: none; border-radius: 10px; font-weight: bold;">
-              Sí, cambiar mi contraseña
-            </a>
+            <p>Tu código para confirmar el cambio de contraseña es:</p>
+            <p style="font-size: 34px; font-weight: bold; letter-spacing: 8px; color: #c2440e; margin: 16px 0;">${codigo}</p>
+            <p>Escríbelo en la página de recuperación. Vence en <b>3 minutos</b>.</p>
             <p style="color: #9a958e; font-size: 13px;">Si no fuiste tú, ignora este correo y tu contraseña seguirá igual.</p>
           </div>
         `,

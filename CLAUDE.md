@@ -79,8 +79,8 @@ Express 5 en CommonJS con arquitectura por capas:
 |--------|------|-------------|
 | POST | `/api/auth/register` | Registro de usuario — devuelve JWT |
 | POST | `/api/auth/login` | Inicio de sesión — devuelve JWT |
-| POST | `/api/auth/recuperar` | Envía al correo un enlace de recuperación (válido 3 min, un solo uso) |
-| POST | `/api/auth/restablecer` | Cambia la contraseña con el token del enlace |
+| POST | `/api/auth/recuperar` | Envía al correo un código de 6 dígitos (vence en 3 min, un solo uso) |
+| POST | `/api/auth/restablecer` | Aplica el cambio de contraseña verificando el código |
 | GET | `/api/restaurantes` | Listado de restaurantes |
 | GET | `/api/restaurantes/promociones` | Platos con descuento agrupados por restaurante |
 | GET | `/api/restaurantes/:id/disponibilidad` | Bloques de hora con mesas libres (`?fecha=&personas=`) |

@@ -91,20 +91,16 @@ router.post('/recuperar', async (req, res) => {
     if (!usuario)
       return ResponseFactory.error(res, 'No existe una cuenta con ese correo', 404);
 
-    // La nueva contraseña viaja ya hasheada dentro del token y el cambio
-    // recien se aplica cuando el usuario confirma desde su correo.
-    // Se firma con la contraseña actual: al aplicarse queda invalidado (un solo uso).
+    // El cambio queda pendiente: se aplica recien cuando el usuario
+    // escribe el codigo de 6 digitos que le llega al correo
     const hash = await bcrypt.hash(password, 10);
-    const token = jwt.sign(
-      { id: usuario.id, hash },
-      process.env.JWT_SECRET + usuario.password,
-      { expiresIn: '3m' }
-    );
+    const codigo = String(Math.floor(100000 + Math.random() * 900000));
+    const expira = new Date(Date.now() + 3 * 60 * 1000);
 
-    const origen = req.headers.origin || 'http://localhost:5173';
-    await enviarRecuperacion(email, `${origen}/restablecer?token=${token}`);
+    await servicio.guardarRecuperacion(usuario.id, codigo, hash, expira);
+    await enviarRecuperacion(email, codigo);
 
-    return ResponseFactory.exito(res, null, 'Te enviamos un correo para confirmar el cambio de contraseña');
+    return ResponseFactory.exito(res, null, 'Te enviamos un código a tu correo para confirmar el cambio');
 
   } catch (error) {
     return ResponseFactory.error(res, 'Error al enviar el correo de recuperación');
@@ -113,23 +109,22 @@ router.post('/recuperar', async (req, res) => {
 
 router.post('/restablecer', async (req, res) => {
   try {
-    const { token } = req.body;
+    const { email, codigo } = req.body;
 
-    if (!token)
-      return ResponseFactory.error(res, 'El enlace no es válido', 400);
+    if (!email || !codigo)
+      return ResponseFactory.error(res, 'Falta el código de verificación', 400);
 
-    const datos = jwt.decode(token);
-    const usuario = datos && await servicio.buscarPorId(datos.id);
-    if (!usuario)
-      return ResponseFactory.error(res, 'El enlace no es válido', 400);
+    const usuario = await servicio.buscarPorEmail(email);
+    if (!usuario || !usuario.codigoRecuperacion)
+      return ResponseFactory.error(res, 'No hay un cambio de contraseña pendiente', 400);
 
-    try {
-      jwt.verify(token, process.env.JWT_SECRET + usuario.password);
-    } catch {
-      return ResponseFactory.error(res, 'El enlace expiró o ya fue usado. Solicita uno nuevo.', 400);
-    }
+    if (new Date() > usuario.recuperacionExpira)
+      return ResponseFactory.error(res, 'El código expiró. Solicita uno nuevo.', 400);
 
-    await servicio.confirmarPassword(usuario.id, datos.hash);
+    if (usuario.codigoRecuperacion !== String(codigo).trim())
+      return ResponseFactory.error(res, 'Código incorrecto', 400);
+
+    await servicio.aplicarRecuperacion(usuario);
 
     return ResponseFactory.exito(res, null, 'Contraseña actualizada. Ya puedes iniciar sesión.');
 

@@ -43,6 +43,8 @@ function Recuperar() {
   const [exito, setExito] = useState('');
   const [mostrarPassword, setMostrarPassword] = useState(false);
   const [cargando, setCargando] = useState(false);
+  const [esperandoCodigo, setEsperandoCodigo] = useState(false);
+  const [codigo, setCodigo] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,10 +77,41 @@ function Recuperar() {
         return;
       }
 
-      setExito('Te enviamos un correo de confirmación. Ábrelo y dale a "Sí, cambiar mi contraseña" para completar el cambio.');
+      setEsperandoCodigo(true);
+      setErrorGeneral('');
     } catch {
       setErrorGeneral('Error de conexión. Intenta de nuevo.');
     } finally {
+      setCargando(false);
+    }
+  };
+
+  const confirmarCodigo = async (e) => {
+    e.preventDefault();
+    if (codigo.trim().length !== 6) {
+      setErrorGeneral('El código tiene 6 dígitos.');
+      return;
+    }
+
+    setCargando(true);
+    try {
+      const respuesta = await fetch(`${API_URL}/restablecer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: campos.email, codigo }),
+      });
+      const datos = await respuesta.json();
+
+      if (!datos.ok) {
+        setErrorGeneral(datos.mensaje);
+        setCargando(false);
+        return;
+      }
+
+      setExito('Contraseña actualizada. Redirigiendo al inicio de sesión...');
+      setTimeout(() => navigate('/login'), 1800);
+    } catch {
+      setErrorGeneral('Error de conexión. Intenta de nuevo.');
       setCargando(false);
     }
   };
@@ -100,12 +133,46 @@ function Recuperar() {
       <div className="login-formulario-seccion">
         <div className="formulario-caja">
           <h2>Recuperar contraseña</h2>
-          <p className="subtitulo-form">Define una nueva contraseña y confírmala desde tu correo</p>
+          <p className="subtitulo-form">
+            {esperandoCodigo
+              ? `Escribe el código de 6 dígitos que enviamos a ${campos.email}`
+              : 'Define una nueva contraseña y confírmala con el código que te enviaremos'}
+          </p>
 
           {errorGeneral && <div className="alerta-error">{errorGeneral}</div>}
           {exito && <div className="alerta-exito">{exito}</div>}
 
-          {!exito && (
+          {esperandoCodigo && !exito && (
+            <form onSubmit={confirmarCodigo} noValidate>
+              <div className="grupo-input">
+                <label htmlFor="codigo">Código de verificación</label>
+                <input
+                  id="codigo"
+                  name="codigo"
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="000000"
+                  value={codigo}
+                  onChange={(e) => { setCodigo(e.target.value.replace(/\D/g, '')); setErrorGeneral(''); }}
+                  style={{ textAlign: 'center', fontSize: '1.4rem', letterSpacing: '8px' }}
+                />
+              </div>
+
+              <button type="submit" className="btn-principal" disabled={cargando}>
+                {cargando ? 'Confirmando...' : 'Confirmar cambio'}
+              </button>
+
+              <p className="texto-cambio" style={{ marginTop: 14 }}>
+                ¿No te llegó? Revisa spam o{' '}
+                <button type="button" className="btn-texto" onClick={() => { setEsperandoCodigo(false); setCodigo(''); }}>
+                  vuelve a intentarlo
+                </button>
+              </p>
+            </form>
+          )}
+
+          {!esperandoCodigo && !exito && (
           <form onSubmit={handleSubmit} noValidate>
             <div className={`grupo-input ${errores.email ? 'con-error' : ''}`}>
               <label htmlFor="email">Correo electrónico</label>
@@ -180,7 +247,7 @@ function Recuperar() {
             </div>
 
             <button type="submit" className="btn-principal" disabled={cargando}>
-              {cargando ? 'Enviando correo...' : 'Enviar confirmación'}
+              {cargando ? 'Enviando código...' : 'Enviar código'}
             </button>
           </form>
           )}

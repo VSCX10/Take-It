@@ -18,12 +18,19 @@ class UsuarioServicio {
         return await usuario.save();
     }
 
-    // Aplica una contraseña que ya viene hasheada (confirmación por correo),
-    // por eso se desactivan los hooks para no volver a hashearla
-    async confirmarPassword(id, passwordHasheada) {
+    // Guarda el codigo y la nueva contraseña (ya hasheada) a la espera de confirmacion
+    async guardarRecuperacion(id, codigo, passwordHasheada, expira) {
         return await Usuario.update(
-            { password: passwordHasheada },
-            { where: { id }, hooks: false }
+            { codigoRecuperacion: codigo, passwordPendiente: passwordHasheada, recuperacionExpira: expira },
+            { where: { id } }
+        );
+    }
+
+    // Aplica la contraseña pendiente y limpia el codigo (hooks off: ya viene hasheada)
+    async aplicarRecuperacion(usuario) {
+        return await Usuario.update(
+            { password: usuario.passwordPendiente, codigoRecuperacion: null, passwordPendiente: null, recuperacionExpira: null },
+            { where: { id: usuario.id }, hooks: false }
         );
     }
 

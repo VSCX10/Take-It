@@ -23,6 +23,19 @@ const Usuario = sequelize.define('Usuario', {
   password: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  // Datos temporales del cambio de contraseña pendiente de confirmar por correo
+  codigoRecuperacion: {
+    type: DataTypes.STRING,
+    defaultValue: null
+  },
+  passwordPendiente: {
+    type: DataTypes.STRING,
+    defaultValue: null
+  },
+  recuperacionExpira: {
+    type: DataTypes.DATE,
+    defaultValue: null
   }
 }, {
   tableName: 'usuarios',
