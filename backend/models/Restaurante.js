@@ -49,7 +49,6 @@ Restaurante.associate = (modelos) => {
   Restaurante.hasMany(modelos.Usuario, { foreignKey: 'restauranteId', as: 'administradores' });
   Restaurante.hasMany(modelos.Mesa, { foreignKey: 'restauranteId', as: 'mesas' });
   Restaurante.hasMany(modelos.Promocion, { foreignKey: 'restauranteId', as: 'promociones' });
-  Restaurante.hasMany(modelos.Resena, { foreignKey: 'restauranteId', as: 'resenas' });
 };
 
 module.exports = Restaurante;

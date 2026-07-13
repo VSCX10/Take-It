@@ -9,7 +9,6 @@ const ETIQUETAS = {
   reservas: 'Reservas',
   mesas: 'Mesas',
   promociones: 'Promociones',
-  resenas: 'Reseñas',
 };
 
 function Breadcrumbs({ ambito }) {

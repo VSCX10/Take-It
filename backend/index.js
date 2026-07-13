@@ -12,7 +12,6 @@ const Reserva = require('./models/Reserva');
 const Favorito = require('./models/Favorito');
 const Mesa = require('./models/Mesa');
 const Promocion = require('./models/Promocion');
-const Resena = require('./models/Resena');
 
 const seedMesas = require('./seeders/seedMesas');
 const seedAdminGeneral = require('./seeders/seedAdminGeneral');
@@ -28,7 +27,7 @@ const verificarToken = require('./middleware/verificarToken');
 const verificarRol = require('./middleware/verificarRol');
 
 // Relaciones entre modelos
-const modelos = { Usuario, Restaurante, Menu, Reserva, Favorito, Mesa, Promocion, Resena };
+const modelos = { Usuario, Restaurante, Menu, Reserva, Favorito, Mesa, Promocion };
 Object.values(modelos).forEach(m => { if (m.associate) m.associate(modelos); });
 
 const app = express();

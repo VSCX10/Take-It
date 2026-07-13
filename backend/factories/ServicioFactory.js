@@ -5,7 +5,6 @@ const MenuServicio = require('../services/MenuServicio');
 const MesaServicio = require('../services/MesaServicio');
 const FavoritoServicio = require('../services/FavoritoServicio');
 const PromocionServicio = require('../services/PromocionServicio');
-const ResenaServicio = require('../services/ResenaServicio');
 const DashboardServicio = require('../services/DashboardServicio');
 const AdminGeneralServicio = require('../services/AdminGeneralServicio');
 
@@ -26,8 +25,6 @@ class ServicioFactory {
                 return new FavoritoServicio();
             case 'promocion':
                 return new PromocionServicio();
-            case 'resena':
-                return new ResenaServicio();
             case 'dashboard':
                 return new DashboardServicio();
             case 'adminGeneral':
