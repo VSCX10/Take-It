@@ -68,7 +68,6 @@ function ContenidoRestaurante() {
         }
     };
 
-    // Disponibilidad de mesas por bloque de hora (fecha + personas)
     const cargarDisponibilidad = useCallback(() => {
         fetch(`/api/restaurantes/${id}/disponibilidad?fecha=${fecha}&personas=${personas}`)
             .then(r => r.json())
@@ -166,7 +165,6 @@ function ContenidoRestaurante() {
     return (
         <div className="contenido-restaurante">
 
-            {/* BANNER */}
             <div className="banner-restaurante">
                 <img src={restaurante.img} alt={restaurante.nombre} className="imagen-banner" />
                 <button
@@ -193,7 +191,6 @@ function ContenidoRestaurante() {
 
             <div className="layout-restaurante">
 
-                {/* MENÚ */}
                 <div className="contenido-menu">
                     <div className="cabecera-menu">
                         <h2>Menú Disponible</h2>
@@ -275,7 +272,6 @@ function ContenidoRestaurante() {
                     </div>
                 </div>
 
-                {/* SIDEBAR RESERVA */}
                 <div className="sidebar-reserva">
                     <div className="card-reserva">
 
@@ -316,7 +312,6 @@ function ContenidoRestaurante() {
                             </div>
                         </div>
 
-                        {/* HORARIOS CON DISPONIBILIDAD DE MESAS */}
                         <div className="cr-horarios">
                             <label className="cr-campo-label"><i className="ti ti-clock" /> Hora</label>
                             {!fecha ? (

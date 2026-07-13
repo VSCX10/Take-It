@@ -1,6 +1,3 @@
-/* ═══════════════════════════════════════════
-   SOBRE NOSOTROS — tema oscuro full-bleed
-═══════════════════════════════════════════ */
 .sn-pagina {
   position: relative;
   min-height: 100vh;
@@ -9,7 +6,6 @@
   background: linear-gradient(165deg, #2f1f12 0%, #231710 65%);
   overflow-x: hidden;
 }
-/* Glows naranjas fijos que cubren todo el ancho/alto */
 .sn-pagina::before {
   content: '';
   position: fixed;
@@ -21,7 +17,6 @@
     radial-gradient(950px 680px at 92% 88%, rgba(194, 68, 14, 0.32), transparent 55%);
 }
 
-/* ── TOP BAR ─────────────────────────────── */
 .sn-topbar {
   position: sticky;
   top: 0;
@@ -61,7 +56,6 @@
 .sn-volver:hover { background: var(--naranja); border-color: var(--naranja); transform: translateY(-1px); }
 .sn-volver .ti { font-size: 16px; }
 
-/* ── WRAP (ancho casi total, sobre los glows) */
 .sn-wrap {
   position: relative;
   z-index: 1;
@@ -73,7 +67,6 @@
   gap: 80px;
 }
 
-/* ── HERO (centrado, alto) ───────────────── */
 .sn-hero {
   position: relative;
   min-height: 82vh;
@@ -152,7 +145,6 @@
 }
 .sn-chip .ti { font-size: 13px; color: #ff9a5c; }
 
-/* ── TÍTULOS de sección ──────────────────── */
 .sn-label {
   display: inline-block;
   font-size: 12px;
@@ -171,7 +163,6 @@
   margin-bottom: 24px;
 }
 
-/* ── ¿POR QUÉ? (2 columnas: texto + stats) ─ */
 .sn-porque {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
@@ -189,7 +180,6 @@
 
 .sn-stats { display: flex; flex-direction: column; gap: 16px; }
 
-/* ── Tarjeta glassy (reutilizable) ───────── */
 .sn-stat,
 .sn-feat,
 .sn-tech,
@@ -214,7 +204,6 @@
 }
 .sn-stat-label { font-size: 13.5px; color: rgba(255, 255, 255, 0.55); line-height: 1.45; }
 
-/* ── FUNCIONALIDADES (grid full width) ───── */
 .sn-bento {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -242,7 +231,6 @@
 .sn-feat h4 { font-size: 17px; font-weight: 600; color: #fff; margin-bottom: 9px; }
 .sn-feat p { font-size: 14px; line-height: 1.65; color: rgba(255, 255, 255, 0.55); }
 
-/* ── STACK (fila full width) ─────────────── */
 .sn-stack {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -258,7 +246,6 @@
 .sn-tech strong { display: block; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 2px; }
 .sn-tech span { font-size: 11.5px; color: rgba(255, 255, 255, 0.5); line-height: 1.3; }
 
-/* ── EQUIPO (heading lateral + grid) ─────── */
 .sn-equipo {
   position: relative;
   display: grid;
@@ -309,14 +296,9 @@
   font-family: 'Playfair Display', serif;
   font-size: 36px; font-weight: 700; color: #fff;
 }
-.sn-miembro-animal {
-  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
-  color: #ff9a5c; display: block; margin-bottom: 6px;
-}
 .sn-miembro-nombre { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.3; margin-bottom: 5px; }
 .sn-miembro-rol { font-size: 12px; color: rgba(255, 255, 255, 0.55); line-height: 1.45; }
 
-/* ── CTA (banda horizontal, glassy) ──────── */
 .sn-cta {
   position: relative;
   display: flex;
@@ -362,7 +344,6 @@
 .sn-cta-btn .ti { font-size: 18px; transition: transform 0.2s; }
 .sn-cta-btn:hover .ti { transform: translateX(4px); }
 
-/* ── Footer ──────────────────────────────── */
 .sn-foot {
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; flex-wrap: wrap;
@@ -371,7 +352,6 @@
 }
 .sn-foot .sn-logo { color: #fff; }
 
-/* ── RESPONSIVE ──────────────────────────── */
 @media (max-width: 1100px) {
   .sn-stack { grid-template-columns: repeat(3, 1fr); }
   .sn-bento { grid-template-columns: repeat(2, 1fr); }

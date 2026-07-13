@@ -1,8 +1,4 @@
-/* ═══════════════════════════════════════════
-   PANEL ADMIN — sistema de componentes compartido
-═══════════════════════════════════════════ */
 
-/* ── Página / toolbar genéricos (usados por todas las pantallas) ── */
 .am-page-header {
   display: flex;
   align-items: flex-end;
@@ -63,7 +59,6 @@
   margin-bottom: 28px;
 }
 
-/* ── Botones ─────────────────────────────── */
 .am-btn {
   display: inline-flex;
   align-items: center;
@@ -101,7 +96,6 @@
 .am-btn-icono:hover:not(:disabled) { background: var(--naranja); color: #fff; }
 .am-btn-icono.am-btn-icono-peligro:hover:not(:disabled) { background: #dc2626; }
 
-/* ── Tabla ───────────────────────────────── */
 .am-tabla-wrap {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -139,7 +133,6 @@
   border-radius: 18px;
 }
 
-/* ── Badges de estado ────────────────────── */
 .am-badge {
   display: inline-block;
   font-size: 11px;
@@ -155,7 +148,6 @@
 .am-badge-azul  { background: rgba(59, 130, 246, 0.16); color: #60a5fa; }
 .am-badge-gris  { background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.6); }
 
-/* ── Stat cards (dashboard) ──────────────── */
 .am-stat-card {
   display: flex;
   align-items: center;
@@ -181,7 +173,6 @@
 .am-stat-valor { font-size: 24px; font-weight: 700; line-height: 1.2; }
 .am-stat-etiqueta { font-size: 12px; color: rgba(255, 255, 255, 0.55); }
 
-/* ── Modal ───────────────────────────────── */
 .am-modal-overlay {
   position: fixed;
   inset: 0;
@@ -239,7 +230,6 @@
 .am-confirm-mensaje { font-size: 14px; color: rgba(255, 255, 255, 0.75); line-height: 1.5; }
 .am-confirm-acciones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
-/* ── Formulario ──────────────────────────── */
 .am-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .am-form-grid .am-campo-full { grid-column: 1 / -1; }
 
@@ -265,7 +255,6 @@
 
 textarea.am-input { resize: vertical; font-family: 'DM Sans', sans-serif; }
 
-/* ── Alertas ─────────────────────────────── */
 .am-alerta {
   padding: 12px 16px;
   border-radius: 12px;

@@ -5,7 +5,7 @@ import Topbar from './Topbar';
 import Breadcrumbs from './Breadcrumbs';
 import './AdminLayout.css';
 
-function AdminLayout({ ambito }) {
+function AdminLayout() {
   const [colapsado, setColapsado] = useState(false);
   const [abiertoMovil, setAbiertoMovil] = useState(false);
 
@@ -16,13 +16,13 @@ function AdminLayout({ ambito }) {
         onClick={() => setAbiertoMovil(false)}
       />
       <div className={`am-sidebar-wrap${abiertoMovil ? ' am-sidebar-wrap-abierto' : ''}`}>
-        <Sidebar ambito={ambito} colapsado={colapsado} onToggle={() => setColapsado((v) => !v)} />
+        <Sidebar colapsado={colapsado} onToggle={() => setColapsado((v) => !v)} />
       </div>
 
       <div className="am-contenido">
-        <Topbar ambito={ambito} onToggleMobile={() => setAbiertoMovil((v) => !v)} />
+        <Topbar onToggleMobile={() => setAbiertoMovil((v) => !v)} />
         <main className="am-main">
-          <Breadcrumbs ambito={ambito} />
+          <Breadcrumbs />
           <Outlet />
         </main>
       </div>

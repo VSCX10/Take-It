@@ -3,8 +3,6 @@ const Usuario = require('../models/Usuario');
 const EMAIL = 'admin@takeit.com';
 const PASSWORD = 'Admin123';
 
-// Asegura que exista un unico administrador (rol admin_general).
-// Idempotente: si ya existe, solo garantiza el rol correcto.
 async function seedAdminGeneral() {
     const existente = await Usuario.findOne({ where: { email: EMAIL } });
     if (existente) {

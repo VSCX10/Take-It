@@ -16,7 +16,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Promociones vigentes segun los descuentos reales de la carta
 router.get('/promociones', async (req, res) => {
     try {
         const promos = await menuServicio.promociones();

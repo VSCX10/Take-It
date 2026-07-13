@@ -1,6 +1,5 @@
 import './components.css';
 
-// Tabla generica y responsiva: columns=[{key,label,render?}], data=[], actions?=(row)=>node
 function DataTable({ columns, data, loading, emptyText = 'Sin resultados', actions }) {
   if (loading) {
     return <div className="am-tabla-estado">Cargando...</div>;

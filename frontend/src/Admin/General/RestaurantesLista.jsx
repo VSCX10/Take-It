@@ -42,7 +42,7 @@ function RestaurantesLista() {
     if (editando) {
       const actualizado = await api.put(`/general/restaurantes/${editando.id}`, {
         nombre: form.nombre, categoria: form.categoria, direccion: form.direccion,
-        telefono: form.telefono, img: form.img, descripcion: form.descripcion,
+        img: form.img, descripcion: form.descripcion,
       });
       setRestaurantes((prev) => prev.map((r) => (r.id === actualizado.id ? actualizado : r)));
     } else {

@@ -89,19 +89,14 @@ export function AuthProvider({ children }) {
 
   const actualizarFoto = async (base64) => {
     if (!usuarioActual) return;
-    // Se muestra de una y se guarda en la cuenta (persiste en cualquier dispositivo)
     const merged = { ...usuarioActual, foto: base64 };
     setUsuarioActual(merged);
     localStorage.setItem('usuario', JSON.stringify(merged));
-    try {
-      await fetch(`/api/usuarios/${usuarioActual.id}/foto`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', ...authHeaders() },
-        body: JSON.stringify({ foto: base64 }),
-      });
-    } catch {
-      // si falla el guardado, al menos queda en esta sesion
-    }
+    fetch(`/api/usuarios/${usuarioActual.id}/foto`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ foto: base64 }),
+    }).catch(() => {});
   };
 
   return (

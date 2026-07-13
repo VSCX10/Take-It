@@ -13,11 +13,6 @@ const Mesa = sequelize.define('Mesa', {
   codigo: {
     type: DataTypes.STRING,
     defaultValue: null
-  },
-  // disponible | ocupada | mantenimiento
-  estado: {
-    type: DataTypes.STRING,
-    defaultValue: 'disponible'
   }
 }, {
   tableName: 'mesas',

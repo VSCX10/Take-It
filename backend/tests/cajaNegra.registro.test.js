@@ -1,6 +1,3 @@
-// Prueba de caja negra sobre el registro de usuario (POST /api/auth/register).
-// La funcionalidad tiene 6 campos de entrada: nombre, apellido, email,
-// telefono, password y confirmar. Solo se valida entrada -> salida.
 jest.mock('../models/Usuario', () => ({
   findOne: jest.fn(),
   create: jest.fn(),

@@ -24,27 +24,14 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  // 'cliente' | 'admin' (legado) | 'admin_general' | 'admin_restaurante'
   rol: {
     type: DataTypes.STRING,
     defaultValue: 'cliente'
   },
-  // Solo para rol 'admin_restaurante': a que restaurante administra
-  restauranteId: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  // Habilita/deshabilita el acceso de una cuenta administradora
-  activo: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true
-  },
-  // Foto de perfil en base64 (se guarda en la cuenta, no solo en el navegador)
   foto: {
     type: DataTypes.TEXT,
     defaultValue: null
   },
-  // Datos temporales del cambio de contraseña pendiente de confirmar por correo
   codigoRecuperacion: {
     type: DataTypes.STRING,
     defaultValue: null
@@ -66,7 +53,6 @@ const Usuario = sequelize.define('Usuario', {
   }
 });
 
-// Hashea la contraseña solo si cambió (registro o actualización)
 async function hashearPassword(usuario) {
   if (usuario.changed('password')) {
     usuario.password = await bcrypt.hash(usuario.password, 10);
@@ -75,10 +61,6 @@ async function hashearPassword(usuario) {
 
 Usuario.prototype.compararPassword = function (passwordIngresada) {
   return bcrypt.compare(passwordIngresada, this.password);
-};
-
-Usuario.associate = (modelos) => {
-  Usuario.belongsTo(modelos.Restaurante, { foreignKey: 'restauranteId', as: 'restauranteAdmin' });
 };
 
 module.exports = Usuario;

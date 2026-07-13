@@ -1,9 +1,5 @@
 const nodemailer = require('nodemailer');
 
-// Envia el codigo de verificacion para confirmar el cambio de contraseña.
-// Sin enlaces: los correos con solo un codigo casi nunca caen en spam.
-// Si no hay credenciales (EMAIL_USER / EMAIL_PASS), imprime el codigo
-// en consola para poder probar en desarrollo.
 async function enviarRecuperacion(destinatario, codigo) {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
         console.log('Codigo de recuperacion (modo desarrollo):', codigo);

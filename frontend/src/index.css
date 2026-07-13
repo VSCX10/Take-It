@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Paleta (Negro / Blanco / Naranja) */
   --naranja:        #c2440e;
   --naranja-hover:  #a8370b;
   --naranja-suave:  #FFF7ED;
@@ -13,7 +12,6 @@
   --texto-muted:    #9a958e;
   --placeholder:    #b0aba4;
 
-  /* Alias de compatibilidad (tokens previos) */
   --naranja-brand:  var(--naranja);
   --texto-oscuro:   var(--negro);
   --texto-claro:    var(--texto-muted);
@@ -37,7 +35,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===== Loader reutilizable ===== */
 .cargando-pantalla {
   min-height: 60vh;
   display: flex;

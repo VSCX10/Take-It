@@ -52,9 +52,8 @@ function App() {
             <PrivateRoute><AccesoDenegado /></PrivateRoute>
           } />
 
-          {/* Panel de administracion (unico) */}
           <Route path="/panel/general" element={
-            <AdminRoute roles={['admin_general']}><AdminLayout ambito="general" /></AdminRoute>
+            <AdminRoute roles={['admin_general']}><AdminLayout /></AdminRoute>
           }>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />

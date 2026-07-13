@@ -1,6 +1,3 @@
-/* ═══════════════════════════════════════════
-   PERFIL — tema oscuro minimalista
-═══════════════════════════════════════════ */
 .pf-pagina {
   min-height: 100vh;
   font-family: 'DM Sans', sans-serif;
@@ -12,7 +9,6 @@
   background-attachment: fixed;
 }
 
-/* ── HEADER ──────────────────────────────── */
 .pf-header {
   position: sticky;
   top: 0;
@@ -53,7 +49,6 @@
 .pf-cerrar-sesion:hover { border-color: rgba(239, 68, 68, 0.6); color: #f87171; }
 .pf-volver .ti, .pf-cerrar-sesion .ti { font-size: 15px; }
 
-/* ── CUERPO (2 columnas) ─────────────────── */
 .pf-cuerpo {
   width: min(94%, 1240px);
   margin: 36px auto 64px;
@@ -63,7 +58,6 @@
   align-items: start;
 }
 
-/* ── TARJETA USUARIO ─────────────────────── */
 .pf-lateral { position: sticky; top: 90px; }
 
 .pf-card-usuario {
@@ -120,7 +114,6 @@
 }
 .pf-avatar-edit:hover { background: var(--naranja-hover); transform: scale(1.08); }
 
-/* Info en modo lectura */
 .pf-nombre {
   font-family: 'Playfair Display', serif;
   font-size: 24px;
@@ -160,7 +153,6 @@
 }
 .pf-btn-editar:hover { background: var(--naranja); border-color: var(--naranja); }
 
-/* Formulario de edición */
 .pf-form { text-align: left; display: flex; flex-direction: column; gap: 14px; }
 
 .pf-field label {
@@ -230,7 +222,6 @@
 }
 .pf-btn-cancelar:hover { border-color: rgba(255, 255, 255, 0.4); color: #fff; }
 
-/* ── RESERVAS ────────────────────────────── */
 .pf-reservas-header {
   display: flex;
   align-items: flex-end;
@@ -275,7 +266,6 @@
 .pf-filtro-btn:hover { color: #fff; }
 .pf-filtro-activo { background: var(--naranja); color: #fff !important; font-weight: 600; }
 
-/* Estados vacíos */
 .pf-estado-msg {
   padding: 48px 20px;
   text-align: center;
@@ -314,7 +304,6 @@
 }
 .pf-sin-reservas button:hover { background: var(--naranja-hover); transform: translateY(-1px); }
 
-/* Tarjetas de reserva */
 .pf-lista { display: flex; flex-direction: column; gap: 16px; }
 
 .pf-tarjeta {
@@ -373,7 +362,6 @@
 }
 .pf-dsct-label .ti { font-size: 12px; }
 
-/* Chips */
 .pf-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 
 .pf-chip {
@@ -395,7 +383,6 @@
   color: #ffb27a;
 }
 
-/* Badge cancelada */
 .pf-cancelada-badge {
   display: inline-flex;
   align-items: center;
@@ -409,7 +396,6 @@
   font-weight: 600;
 }
 
-/* Timeline de estado */
 .pf-timeline {
   display: flex;
   align-items: center;
@@ -470,7 +456,6 @@
 }
 .pf-linea-activa { background: #22c55e; }
 
-/* Footer de tarjeta */
 .pf-tarjeta-footer {
   display: flex;
   justify-content: flex-end;
@@ -498,7 +483,6 @@
 .pf-btn-cancelar-reserva:disabled { opacity: 0.5; cursor: not-allowed; }
 .pf-btn-cancelar-reserva .ti { font-size: 14px; }
 
-/* ── RESPONSIVE ──────────────────────────── */
 @media (max-width: 900px) {
   .pf-cuerpo { grid-template-columns: 1fr; }
   .pf-lateral { position: static; }

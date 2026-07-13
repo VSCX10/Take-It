@@ -22,7 +22,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Guarda la foto de perfil en la cuenta (base64)
 router.put('/:id/foto', async (req, res) => {
     try {
         await servicio.guardarFoto(req.params.id, req.body.foto);

@@ -7,11 +7,6 @@ class MenuServicio {
         return await Menu.findAll({ where: { restauranteId } });
     }
 
-    async crear(datos) {
-        return await Menu.create(datos);
-    }
-
-    // Promociones vigentes: platos con descuento agrupados por restaurante
     async promociones() {
         const platos = await Menu.findAll({
             where: { descuentoPct: { [Op.gt]: 0 } },

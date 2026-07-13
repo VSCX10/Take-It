@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { TITULO_AMBITO } from './navConfig';
 
-function Topbar({ ambito, onToggleMobile }) {
+function Topbar({ onToggleMobile }) {
   const { usuarioActual, cerrarSesion } = useAuth();
   const navigate = useNavigate();
 
@@ -15,7 +14,7 @@ function Topbar({ ambito, onToggleMobile }) {
         <i className="ti ti-menu-2" />
       </button>
 
-      <span className="am-topbar-titulo">{TITULO_AMBITO[ambito]}</span>
+      <span className="am-topbar-titulo">Administrador</span>
 
       <div className="am-topbar-usuario">
         <div className="am-topbar-avatar">{inicial}</div>

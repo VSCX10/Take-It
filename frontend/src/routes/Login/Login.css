@@ -1,11 +1,9 @@
-/* ===== LAYOUT BASE ===== */
 .login-contenedor {
   display: flex;
   height: 100vh;
   width: 100%;
 }
 
-/* ===== LADO IZQUIERDO (Branding) ===== */
 .login-branding {
   flex: 1;
   background-color: var(--negro);
@@ -67,7 +65,6 @@
   flex-shrink: 0;
 }
 
-/* ===== LADO DERECHO (Formulario) ===== */
 .login-formulario-seccion {
   flex: 1;
   background-color: var(--blanco);
@@ -95,7 +92,6 @@
   margin-bottom: 28px;
 }
 
-/* ===== ALERTAS ===== */
 .alerta-error {
   background: #FEE2E2;
   border: 1px solid #FECACA;
@@ -116,14 +112,12 @@
   font-size: 0.9rem;
 }
 
-/* ===== FILA DOBLE ===== */
 .fila-doble {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
-/* ===== GRUPOS DE INPUT ===== */
 .grupo-input {
   margin-bottom: 18px;
 }
@@ -176,7 +170,6 @@
   margin-top: 5px;
 }
 
-/* ===== INPUT CON ÍCONO ===== */
 .input-con-icono {
   position: relative;
 }
@@ -199,7 +192,6 @@
   color: var(--placeholder);
 }
 
-/* ===== INDICADOR DE FUERZA ===== */
 .indicador-fuerza {
   margin-top: 10px;
 }
@@ -241,7 +233,6 @@
   color: #22C55E;
 }
 
-/* ===== LINK OLVIDÉ CONTRASEÑA ===== */
 .link-olvido {
   display: block;
   text-align: right;
@@ -255,7 +246,6 @@
   font-weight: 500;
 }
 
-/* ===== BOTÓN PRINCIPAL ===== */
 .btn-principal {
   width: 100%;
   padding: 14px;
@@ -279,7 +269,6 @@
   cursor: not-allowed;
 }
 
-/* ===== TEXTO INFERIOR ===== */
 .texto-cambio {
   text-align: center;
   margin-top: 24px;
@@ -302,7 +291,6 @@
   text-decoration: underline;
 }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .login-contenedor {
     flex-direction: column;

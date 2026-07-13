@@ -1,6 +1,4 @@
 const { Sequelize } = require('sequelize');
-// Importamos pg explicitamente para que Vercel lo incluya en la funcion.
-// Sequelize lo carga de forma dinamica y el empaquetador no lo detecta solo.
 const pg = require('pg');
 
 if (process.env.NODE_ENV !== 'production') {
@@ -16,7 +14,6 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
             rejectUnauthorized: false
         }
     },
-    // Pool reducido: en serverless cada instancia abre pocas conexiones
     pool: { max: 2, min: 0, idle: 10000, acquire: 30000 },
     logging: false
 });

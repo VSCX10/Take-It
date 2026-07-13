@@ -5,8 +5,6 @@ const ResponseFactory = require('../../factories/ResponseFactory');
 
 const dashboardServicio = ServicioFactory.crear('dashboard');
 const restauranteServicio = ServicioFactory.crear('restaurante');
-const usuarioServicio = ServicioFactory.crear('usuario');
-const adminGeneralServicio = ServicioFactory.crear('adminGeneral');
 const reservaServicio = ServicioFactory.crear('reserva');
 
 router.get('/dashboard', async (req, res) => {
@@ -18,7 +16,6 @@ router.get('/dashboard', async (req, res) => {
     }
 });
 
-// ── Reservas (todas las de la plataforma) ───────────────────────
 router.get('/reservas', async (req, res) => {
     try {
         const reservas = await reservaServicio.obtenerTodas(req.query);
@@ -28,7 +25,6 @@ router.get('/reservas', async (req, res) => {
     }
 });
 
-// La reserva sin preorden ya llega confirmada; aqui el admin decide las que tienen platos
 const cambiarEstadoReserva = (estado) => async (req, res) => {
     try {
         const reserva = await reservaServicio.cambiarEstado(req.params.id, estado);
@@ -43,7 +39,6 @@ router.patch('/reservas/:id/confirmar', cambiarEstadoReserva('confirmada'));
 router.patch('/reservas/:id/completar', cambiarEstadoReserva('completada'));
 router.patch('/reservas/:id/cancelar', cambiarEstadoReserva('cancelada'));
 
-// ── Restaurantes ────────────────────────────────────────────────
 router.get('/restaurantes', async (req, res) => {
     try {
         const restaurantes = await restauranteServicio.buscar(req.query.q);
@@ -55,18 +50,15 @@ router.get('/restaurantes', async (req, res) => {
 
 router.post('/restaurantes', async (req, res) => {
     try {
-        const { nombre, categoria, direccion, telefono, img, descripcion, correoAdmin, passwordAdmin, nombreAdmin } = req.body;
-        if (!nombre || !categoria || !correoAdmin || !passwordAdmin) {
-            return ResponseFactory.error(res, 'Faltan datos del restaurante o del administrador', 400);
+        const { nombre, categoria, direccion, img, descripcion } = req.body;
+        if (!nombre || !categoria) {
+            return ResponseFactory.error(res, 'Nombre y categoría son obligatorios', 400);
         }
-        const { restaurante, admin } = await adminGeneralServicio.crearRestauranteConAdmin(
-            { nombre, categoria, direccion, telefono, img, descripcion },
-            { nombre: nombreAdmin || nombre, email: correoAdmin, password: passwordAdmin }
-        );
-        return ResponseFactory.exito(res, { restaurante, admin: { id: admin.id, email: admin.email } }, 'Restaurante creado', 201);
+        const restaurante = await restauranteServicio.crear({ nombre, categoria, direccion, img, descripcion });
+        return ResponseFactory.exito(res, restaurante, 'Restaurante creado', 201);
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
-            return ResponseFactory.error(res, 'Ya existe un restaurante o correo con esos datos', 409);
+            return ResponseFactory.error(res, 'Ya existe un restaurante con ese nombre', 409);
         }
         return ResponseFactory.error(res, 'Error al crear el restaurante');
     }
@@ -102,56 +94,6 @@ router.delete('/restaurantes/:id', async (req, res) => {
         return ResponseFactory.exito(res, null, 'Restaurante eliminado');
     } catch (error) {
         return ResponseFactory.error(res, 'Error al eliminar el restaurante');
-    }
-});
-
-// ── Administradores ─────────────────────────────────────────────
-router.get('/administradores', async (req, res) => {
-    try {
-        const admins = await usuarioServicio.obtenerAdmins(req.query.q);
-        return ResponseFactory.exito(res, admins, 'Administradores obtenidos');
-    } catch (error) {
-        return ResponseFactory.error(res, 'Error al obtener administradores');
-    }
-});
-
-router.put('/administradores/:id', async (req, res) => {
-    try {
-        const admin = await usuarioServicio.actualizarAdmin(req.params.id, req.body);
-        if (!admin) return ResponseFactory.noEncontrado(res, 'Administrador no encontrado');
-        return ResponseFactory.exito(res, admin, 'Administrador actualizado');
-    } catch (error) {
-        return ResponseFactory.error(res, 'Error al actualizar el administrador');
-    }
-});
-
-router.patch('/administradores/:id/estado', async (req, res) => {
-    try {
-        const admin = await usuarioServicio.cambiarEstadoUsuario(req.params.id, req.body.activo);
-        if (!admin) return ResponseFactory.noEncontrado(res, 'Administrador no encontrado');
-        return ResponseFactory.exito(res, admin, 'Estado actualizado');
-    } catch (error) {
-        return ResponseFactory.error(res, 'Error al cambiar el estado');
-    }
-});
-
-router.patch('/administradores/:id/password', async (req, res) => {
-    try {
-        const nuevaPassword = await usuarioServicio.resetPassword(req.params.id);
-        if (!nuevaPassword) return ResponseFactory.noEncontrado(res, 'Administrador no encontrado');
-        return ResponseFactory.exito(res, { password: nuevaPassword }, 'Contraseña restablecida');
-    } catch (error) {
-        return ResponseFactory.error(res, 'Error al restablecer la contraseña');
-    }
-});
-
-router.patch('/administradores/:id/restaurante', async (req, res) => {
-    try {
-        const admin = await usuarioServicio.asociarRestaurante(req.params.id, req.body.restauranteId);
-        if (!admin) return ResponseFactory.noEncontrado(res, 'Administrador no encontrado');
-        return ResponseFactory.exito(res, admin, 'Restaurante asociado');
-    } catch (error) {
-        return ResponseFactory.error(res, 'Error al asociar el restaurante');
     }
 });
 

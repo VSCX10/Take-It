@@ -1,13 +1,9 @@
-// Completa la carta de cada restaurante (8 platos) y aplica los descuentos de campana.
-// Es idempotente: solo crea los platos que faltan (por nombre + restaurante).
-// Uso: node seeders/seedPlatos.js
 const sequelize = require('../database');
 const Menu = require('../models/Menu');
 const Restaurante = require('../models/Restaurante');
 
 const img = (seed) => `https://picsum.photos/seed/${seed}/500/300`;
 
-// Platos nuevos por restaurante (los existentes no se tocan)
 const PLATOS_NUEVOS = {
   'Maido': [
     { nombre: 'Tiradito Nikkei',        precio: 46.9, descripcion: 'Láminas de pescado blanco con leche de tigre al ají amarillo y toques de shoyu.' },
@@ -61,9 +57,47 @@ const PLATOS_NUEVOS = {
     { nombre: 'Chicharrón de Costillas', precio: 56.0, descripcion: 'Costillas de cerdo confitadas y doradas con camote frito.' },
     { nombre: 'Arroz con Pato',         precio: 49.0, descripcion: 'Arroz al culantro y chicha de jora con pierna de pato.' },
   ],
+  'Panchita': [
+    { nombre: 'Anticuchos de Corazón',  precio: 42.0, descripcion: 'Anticuchos a la brasa con papa dorada, choclo y crema de rocoto.' },
+    { nombre: 'Seco de Cabrito',        precio: 52.0, descripcion: 'Cabrito al culantro con frejoles y arroz graneado.' },
+    { nombre: 'Causa Rellena',          precio: 34.0, descripcion: 'Causa de papa amarilla rellena de pollo con palta.' },
+    { nombre: 'Chicharrón de Cerdo',    precio: 48.0, descripcion: 'Chicharrón crocante con camote frito y sarza criolla.' },
+    { nombre: 'Ají de Gallina',         precio: 38.0, descripcion: 'Clásico ají de gallina con papa y aceituna botija.' },
+    { nombre: 'Mazamorra con Arroz',    precio: 18.0, descripcion: 'Clásico combinado de mazamorra morada y arroz con leche.' },
+  ],
+  'Osaka': [
+    { nombre: 'Tiradito Ají Amarillo',  precio: 49.0, descripcion: 'Pesca blanca con salsa cremosa de ají amarillo y camote crocante.' },
+    { nombre: 'Maki Furai',             precio: 44.0, descripcion: 'Rollo empanizado de salmón y queso crema con salsa de anguila.' },
+    { nombre: 'Gohan de Mariscos',      precio: 56.0, descripcion: 'Arroz japonés salteado con mariscos y toque de wok.' },
+    { nombre: 'Ceviche Osaka',          precio: 54.0, descripcion: 'Ceviche con leche de tigre al yuzu y toques nikkei.' },
+    { nombre: 'Ramen del Mar',          precio: 52.0, descripcion: 'Ramen con caldo de mariscos, langostinos y ají limo.' },
+    { nombre: 'Helado de Té Verde',     precio: 22.0, descripcion: 'Helado artesanal de matcha con crocante de ajonjolí.' },
+  ],
+  'Rafael': [
+    { nombre: 'Ravioles de Osobuco',    precio: 58.0, descripcion: 'Pasta fresca rellena de osobuco braseado con demi-glace.' },
+    { nombre: 'Atún en Costra',         precio: 62.0, descripcion: 'Atún sellado en costra de ajonjolí con puré de palta.' },
+    { nombre: 'Risotto de Hongos',      precio: 54.0, descripcion: 'Risotto cremoso con hongos andinos y parmesano.' },
+    { nombre: 'Asado de Tira',          precio: 68.0, descripcion: 'Costillar braseado por 12 horas con puré ahumado.' },
+    { nombre: 'Pesca al Curry',         precio: 56.0, descripcion: 'Pesca del día con curry suave de coco y arroz jazmín.' },
+    { nombre: 'Texturas de Chocolate',  precio: 28.0, descripcion: 'Postre de chocolate en tres texturas con helado de vainilla.' },
+  ],
+  'Siete Sopas': [
+    { nombre: 'Sopa Criolla',           precio: 24.0, descripcion: 'Sopa de carne con fideos, leche, huevo pochado y pan frito.' },
+    { nombre: 'Caldo de Gallina',       precio: 26.0, descripcion: 'Caldo reconfortante con presa de gallina, fideos y huevo.' },
+    { nombre: 'Chupe de Camarones',     precio: 38.0, descripcion: 'Chupe arequipeño con camarones, choclo y queso fresco.' },
+    { nombre: 'Aguadito de Pollo',      precio: 22.0, descripcion: 'Aguadito verde al culantro con pollo y arvejas.' },
+    { nombre: 'Lomo Saltado',           precio: 36.0, descripcion: 'Lomo saltado al wok con papas fritas y arroz.' },
+    { nombre: 'Arroz con Leche',        precio: 14.0, descripcion: 'Arroz con leche cremoso con canela y pasas.' },
+  ],
 };
 
-// Descuentos de campana (restaurante -> plato -> %). No todos tienen oferta.
+const RESTAURANTES_NUEVOS = [
+  { nombre: 'Panchita',    categoria: 'Criolla',              rating: 4.5, direccion: 'Av. 2 de Mayo 298, Miraflores',       descripcion: 'Sabores criollos de la tradición limeña en versión contemporánea.', img: img('panchita-restaurante') },
+  { nombre: 'Osaka',       categoria: 'Nikkei',               rating: 4.7, direccion: 'Av. Pardo y Aliaga 660, San Isidro',  descripcion: 'Cocina nikkei de autor con producto del Pacífico.', img: img('osaka-restaurante') },
+  { nombre: 'Rafael',      categoria: 'Fusión',               rating: 4.6, direccion: 'Calle San Martín 300, Miraflores',    descripcion: 'Alta cocina de fusión mediterránea y peruana.', img: img('rafael-restaurante') },
+  { nombre: 'Siete Sopas', categoria: 'Peruana',              rating: 4.3, direccion: 'Av. Arequipa 2394, Lince',            descripcion: 'Sopas y clásicos peruanos las 24 horas.', img: img('sietesopas-restaurante') },
+];
+
 const DESCUENTOS = {
   'Maido':           { 'Sushi Acevichado': 20, 'Tiradito Nikkei': 15 },
   'Tanta':           { 'Lomo Saltado': 10 },
@@ -71,9 +105,10 @@ const DESCUENTOS = {
   'Astrid & Gastón': { 'Suspiro Limeño': 25 },
   'La Mar':          { 'Ceviche Mixto': 15, 'Leche de Tigre': 15, 'Jalea Mixta': 15 },
   'Isolina':         { 'Anticuchos': 20 },
+  'Panchita':        { 'Anticuchos de Corazón': 15 },
+  'Osaka':           { 'Maki Furai': 20 },
 };
 
-// Platos agotados de demo
 const AGOTADOS = {
   'Maido':  ['Lomo Saltado Nikkei'],
   'La Mar': ['Sudado de Mero'],
@@ -81,6 +116,10 @@ const AGOTADOS = {
 
 (async () => {
   try {
+    for (const datos of RESTAURANTES_NUEVOS) {
+      await Restaurante.findOrCreate({ where: { nombre: datos.nombre }, defaults: datos });
+    }
+
     const restaurantes = await Restaurante.findAll();
     let creados = 0, conDescuento = 0, agotados = 0;
 
@@ -95,17 +134,14 @@ const AGOTADOS = {
         }
       }
 
-      // stock base de 10 para lo que quedo sin stock
       await Menu.update({ stock: 10 }, { where: { restauranteId: rest.id, stock: null } });
 
-      // descuentos
       const dsctos = DESCUENTOS[rest.nombre] || {};
       for (const [nombre, pct] of Object.entries(dsctos)) {
         const [n] = await Menu.update({ descuentoPct: pct }, { where: { restauranteId: rest.id, nombre } });
         if (n > 0) conDescuento++;
       }
 
-      // agotados
       for (const nombre of (AGOTADOS[rest.nombre] || [])) {
         const [n] = await Menu.update({ stock: 0 }, { where: { restauranteId: rest.id, nombre } });
         if (n > 0) agotados++;

@@ -6,8 +6,6 @@ import AlertBanner from '../components/AlertBanner';
 
 const ESTADOS = ['', 'pendiente', 'confirmada', 'cancelada', 'completada'];
 
-// Todas las reservas de la plataforma. Las que tienen preorden llegan como
-// 'pendiente' para que el admin las confirme; las simples ya vienen confirmadas.
 function ReservasLista() {
   const api = useAdminApi();
   const [reservas, setReservas] = useState([]);

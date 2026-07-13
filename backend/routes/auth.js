@@ -8,6 +8,26 @@ const { enviarRecuperacion } = require('../services/CorreoServicio');
 
 const servicio = ServicioFactory.crear('usuario');
 
+function armarSesion(usuario) {
+  const token = jwt.sign(
+    { id: usuario.id, email: usuario.email, rol: usuario.rol },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+  return {
+    token,
+    usuario: {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      apellido: usuario.apellido,
+      email: usuario.email,
+      telefono: usuario.telefono || '',
+      rol: usuario.rol,
+      foto: usuario.foto || null
+    }
+  };
+}
+
 router.post('/register', async (req, res) => {
   try {
     const { nombre, apellido, email, telefono, password, confirmar } = req.body;
@@ -27,16 +47,7 @@ router.post('/register', async (req, res) => {
 
     const nuevoUsuario = await servicio.crear({ nombre, apellido, email, telefono: telefono || '', password });
 
-    const token = jwt.sign(
-      { id: nuevoUsuario.id, email: nuevoUsuario.email, rol: nuevoUsuario.rol, restauranteId: nuevoUsuario.restauranteId },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    return ResponseFactory.exito(res, {
-      token,
-      usuario: { id: nuevoUsuario.id, nombre: nuevoUsuario.nombre, apellido: nuevoUsuario.apellido, email: nuevoUsuario.email, telefono: nuevoUsuario.telefono || '', rol: nuevoUsuario.rol, restauranteId: nuevoUsuario.restauranteId, activo: nuevoUsuario.activo, foto: nuevoUsuario.foto || null }
-    }, 'Usuario registrado exitosamente', 201);
+    return ResponseFactory.exito(res, armarSesion(nuevoUsuario), 'Usuario registrado exitosamente', 201);
 
   } catch (error) {
     return ResponseFactory.error(res, 'Error al registrar usuario');
@@ -58,19 +69,7 @@ router.post('/login', async (req, res) => {
     if (!passwordValida)
       return ResponseFactory.error(res, 'Correo o contraseña incorrectos', 401);
 
-    if (usuario.activo === false)
-      return ResponseFactory.error(res, 'Tu cuenta está desactivada, contacta al administrador', 403);
-
-    const token = jwt.sign(
-      { id: usuario.id, email: usuario.email, rol: usuario.rol, restauranteId: usuario.restauranteId },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    return ResponseFactory.exito(res, {
-      token,
-      usuario: { id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido, email: usuario.email, telefono: usuario.telefono || '', rol: usuario.rol, restauranteId: usuario.restauranteId, activo: usuario.activo, foto: usuario.foto || null }
-    }, 'Sesión iniciada exitosamente');
+    return ResponseFactory.exito(res, armarSesion(usuario), 'Sesión iniciada exitosamente');
 
   } catch (error) {
     return ResponseFactory.error(res, 'Error al iniciar sesión');
@@ -94,8 +93,6 @@ router.post('/recuperar', async (req, res) => {
     if (!usuario)
       return ResponseFactory.error(res, 'No existe una cuenta con ese correo', 404);
 
-    // El cambio queda pendiente: se aplica recien cuando el usuario
-    // escribe el codigo de 6 digitos que le llega al correo
     const hash = await bcrypt.hash(password, 10);
     const codigo = String(Math.floor(100000 + Math.random() * 900000));
     const expira = new Date(Date.now() + 3 * 60 * 1000);

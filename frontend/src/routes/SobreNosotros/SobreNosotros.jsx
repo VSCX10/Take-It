@@ -26,12 +26,12 @@ const STATS = [
 ];
 
 const EQUIPO = [
-  { nombre: 'Rodrigo Arrieta del Águila', rol: 'Líder de Proyecto & Diseño UI/UX', animal: 'Águila', img: 'https://images.unsplash.com/photo-1570481662006-a3a1374699e8?w=300&q=80', inicial: 'R' },
-  { nombre: 'Renato Santin Vilchez', rol: 'Product Owner & Frontend', animal: 'León', img: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=300&q=80', inicial: 'R' },
-  { nombre: 'Victor Sevillano Castro', rol: 'Desarrollador Backend & Base de Datos', animal: 'Búho', img: 'https://images.unsplash.com/photo-1543702571-acf7b1bb56b1?w=300&q=80', inicial: 'V' },
-  { nombre: 'Jairo Gutierrez Toribio', rol: 'Desarrollador Frontend & Preorden', animal: 'Zorro', img: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=300&q=80', inicial: 'J' },
-  { nombre: 'Antony Lopez Auqui', rol: 'Desarrollador Frontend & Pruebas', animal: 'Lobo', img: 'https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?w=300&q=80', inicial: 'A' },
-  { nombre: 'Jeremin Roman Gabriel', rol: 'Desarrollador Frontend & Preorden', animal: 'Tigre', img: 'https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=300&q=80', inicial: 'J' },
+  { nombre: 'Rodrigo Arrieta del Águila', rol: 'Líder de Proyecto & Diseño UI/UX', img: 'https://images.unsplash.com/photo-1570481662006-a3a1374699e8?w=300&q=80', inicial: 'R' },
+  { nombre: 'Renato Santin Vilchez', rol: 'Product Owner & Frontend', img: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=300&q=80', inicial: 'R' },
+  { nombre: 'Victor Sevillano Castro', rol: 'Desarrollador Backend & Base de Datos', img: 'https://images.unsplash.com/photo-1543702571-acf7b1bb56b1?w=300&q=80', inicial: 'V' },
+  { nombre: 'Jairo Gutierrez Toribio', rol: 'Desarrollador Frontend & Preorden', img: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=300&q=80', inicial: 'J' },
+  { nombre: 'Antony Lopez Auqui', rol: 'Desarrollador Frontend & Pruebas', img: 'https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?w=300&q=80', inicial: 'A' },
+  { nombre: 'Jeremin Roman Gabriel', rol: 'Desarrollador Frontend & Preorden', img: 'https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=300&q=80', inicial: 'J' },
 ];
 
 function SobreNosotros() {
@@ -40,7 +40,6 @@ function SobreNosotros() {
   return (
     <div className="sn-pagina">
 
-      {/* ── TOP BAR ───────────────────────────────────────── */}
       <header className="sn-topbar">
         <span className="sn-logo">Take<span>&amp;</span>It</span>
         <button className="sn-volver" onClick={() => navigate('/inicio')}>
@@ -51,7 +50,6 @@ function SobreNosotros() {
 
       <main className="sn-wrap">
 
-        {/* ── HERO ────────────────────────────────────────── */}
         <section className="sn-hero">
           <div className="sn-hero-glow" />
           <div className="sn-hero-texto">
@@ -75,7 +73,6 @@ function SobreNosotros() {
           </div>
         </section>
 
-        {/* ── ¿POR QUÉ TAKE&IT? (2 columnas) ──────────────── */}
         <section className="sn-porque">
           <div className="sn-porque-info">
             <span className="sn-label">El Problema</span>
@@ -103,7 +100,6 @@ function SobreNosotros() {
           </div>
         </section>
 
-        {/* ── FUNCIONALIDADES (bento) ─────────────────────── */}
         <section className="sn-bloque">
           <span className="sn-label">Lo que construimos</span>
           <h2 className="sn-titulo">Funcionalidades</h2>
@@ -120,7 +116,6 @@ function SobreNosotros() {
           </div>
         </section>
 
-        {/* ── STACK ───────────────────────────────────────── */}
         <section className="sn-bloque">
           <span className="sn-label">Tecnología</span>
           <h2 className="sn-titulo">El stack que nos impulsa</h2>
@@ -137,7 +132,6 @@ function SobreNosotros() {
           </div>
         </section>
 
-        {/* ── EQUIPO (heading lateral + grid) ─────────────── */}
         <section className="sn-equipo">
           <div className="sn-equipo-glow" />
           <div className="sn-equipo-head">
@@ -155,12 +149,11 @@ function SobreNosotros() {
                 <div className="sn-av">
                   <img
                     src={m.img}
-                    alt={m.animal}
+                    alt={m.nombre}
                     onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                   />
                   <div className="sn-av-fb" style={{ display: 'none' }}>{m.inicial}</div>
                 </div>
-                <span className="sn-miembro-animal">{m.animal}</span>
                 <h4 className="sn-miembro-nombre">{m.nombre}</h4>
                 <p className="sn-miembro-rol">{m.rol}</p>
               </div>
@@ -168,7 +161,6 @@ function SobreNosotros() {
           </div>
         </section>
 
-        {/* ── CTA (banda horizontal) ──────────────────────── */}
         <section className="sn-cta">
           <div className="sn-cta-glow" />
           <div className="sn-cta-texto">

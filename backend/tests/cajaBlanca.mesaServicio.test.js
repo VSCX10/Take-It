@@ -1,6 +1,3 @@
-// Prueba de caja blanca sobre MesaServicio.disponibilidad
-// (complejidad ciclomatica 5, ver npm run metricas).
-// Se simulan los modelos para no tocar la base de datos real.
 jest.mock('../models/Mesa', () => ({ findAll: jest.fn() }));
 jest.mock('../models/Reserva', () => ({ findAll: jest.fn() }));
 jest.mock('../models/Restaurante', () => ({ findByPk: jest.fn() }));
@@ -12,7 +9,6 @@ const MesaServicio = require('../services/MesaServicio');
 
 const servicio = new MesaServicio();
 
-// restaurante de prueba que atiende de 14:00 a 15:00 (2 bloques)
 const REST = { id: 1, horaApertura: '14:00', horaCierre: '15:00' };
 
 beforeEach(() => jest.clearAllMocks());

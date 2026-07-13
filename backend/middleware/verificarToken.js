@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
 const ResponseFactory = require('../factories/ResponseFactory');
 
-// Protege rutas privadas: exige un JWT valido en el header Authorization.
-// Si es valido, deja el payload en req.usuario para las siguientes capas.
 function verificarToken(req, res, next) {
     const header = req.headers.authorization || '';
     const token = header.startsWith('Bearer ') ? header.slice(7) : null;

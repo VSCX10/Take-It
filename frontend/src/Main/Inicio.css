@@ -11,9 +11,6 @@
   color: #fff;
 }
 
-/* ═══════════════════════════════════════════
-   NAV
-═══════════════════════════════════════════ */
 .ti-nav {
   display: flex;
   align-items: center;
@@ -61,7 +58,6 @@
   background: rgba(194, 68, 14, 0.15);
 }
 
-/* Variante botón para nav links que usan navigate */
 .ti-nav-link-btn {
   background: transparent;
   border: none;
@@ -75,7 +71,6 @@
   gap: 12px;
   flex-shrink: 0;
 }
-
 
 .ti-menu-wrap { position: relative; }
 
@@ -143,9 +138,6 @@
   margin-bottom: 4px;
 }
 
-/* ═══════════════════════════════════════════
-   HERO CAROUSEL
-═══════════════════════════════════════════ */
 .ti-hero {
   position: relative;
   height: 560px;
@@ -296,9 +288,6 @@
   border-radius: 4px;
 }
 
-/* ═══════════════════════════════════════════
-   BÚSQUEDA FLOTANTE
-═══════════════════════════════════════════ */
 .ti-search-float-wrap {
   display: flex;
   justify-content: center;
@@ -356,9 +345,6 @@
 }
 .ti-btn-buscar:hover { background: var(--naranja-hover); }
 
-/* ═══════════════════════════════════════════
-   MAIN — FILTROS + GRID
-═══════════════════════════════════════════ */
 .ti-main {
   max-width: 1240px;
   margin: 56px auto 0;
@@ -486,9 +472,6 @@
   color: #fff;
 }
 
-/* ═══════════════════════════════════════════
-   GRID DE TARJETAS
-═══════════════════════════════════════════ */
 .ti-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -611,9 +594,6 @@
   font-size: 15px;
 }
 
-/* ═══════════════════════════════════════════
-   PROMOCIONES
-═══════════════════════════════════════════ */
 .ti-promos {
   background: transparent;
   padding: 72px 0;
@@ -761,9 +741,6 @@
 }
 .ti-btn-reserva:hover { background: var(--naranja); color: var(--blanco); }
 
-/* ═══════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════ */
 @media (max-width: 1024px) {
   .ti-grid { grid-template-columns: repeat(3, 1fr); }
   .ti-hero-titulo { font-size: 40px; }

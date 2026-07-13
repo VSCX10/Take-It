@@ -82,7 +82,6 @@ function Registro() {
 
     setCargando(true);
 
-    
 setTimeout(async () => {
   const resultado = await registrar(campos);
   setCargando(false);

@@ -3,7 +3,6 @@ const Restaurante = require('../models/Restaurante');
 const Reserva = require('../models/Reserva');
 
 class RestauranteServicio {
-    // Catalogo publico: solo restaurantes activos
     async obtenerTodos() {
         return await Restaurante.findAll({ where: { activo: true } });
     }
@@ -16,7 +15,6 @@ class RestauranteServicio {
         return await Restaurante.create(datos);
     }
 
-    // Panel admin: todos, activos e inactivos, con busqueda opcional
     async buscar(q) {
         const where = q ? { nombre: { [Op.iLike]: `%${q}%` } } : {};
         return await Restaurante.findAll({ where, order: [['id', 'DESC']] });
@@ -33,7 +31,6 @@ class RestauranteServicio {
         return await this.actualizar(id, { activo });
     }
 
-    // No se destruye historial de reservas: bloquea el borrado si el restaurante ya tiene reservas
     async eliminar(id) {
         const tieneReservas = await Reserva.count({ where: { restauranteId: id } });
         if (tieneReservas > 0) return { bloqueado: true };

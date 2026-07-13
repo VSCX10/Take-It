@@ -1,4 +1,3 @@
-// Prueba unitaria de MesaServicio.generarSlots con 4 casos.
 jest.mock('../models/Mesa', () => ({}));
 jest.mock('../models/Reserva', () => ({}));
 jest.mock('../models/Restaurante', () => ({}));

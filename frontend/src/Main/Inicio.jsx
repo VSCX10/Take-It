@@ -31,7 +31,6 @@ const HERO_SLIDES = [
   },
 ];
 
-// Arma la frase "Descuento en A, B y C" a partir de los platos en oferta
 function describirPromo(platos) {
   const nombres = platos.map(p => p.nombre);
   const lista = nombres.length === 1
@@ -133,7 +132,6 @@ function Inicio() {
   return (
     <div className="ti-pagina" id="inicio">
 
-      {/* ── NAV ───────────────────────────────────────────────────────── */}
       <header className="ti-nav">
         <h1 className="ti-logo">Take<span>&</span>It</h1>
 
@@ -198,7 +196,6 @@ function Inicio() {
         </div>
       </header>
 
-      {/* ── HERO CAROUSEL ─────────────────────────────────────────────── */}
       <section className="ti-hero">
         <div
           className="ti-hero-slides"
@@ -236,7 +233,6 @@ function Inicio() {
         </div>
       </section>
 
-      {/* ── BÚSQUEDA FLOTANTE ─────────────────────────────────────────── */}
       <div className="ti-search-float-wrap">
         <div className="ti-search-float">
           <span className="ti-search-icon">🔍</span>
@@ -253,7 +249,6 @@ function Inicio() {
         </div>
       </div>
 
-      {/* ── RESTAURANTES ──────────────────────────────────────────────── */}
       <main className="ti-main" ref={restaurantesRef} id="restaurantes">
         <div className="ti-cabecera-filtros">
           <div>
@@ -343,7 +338,6 @@ function Inicio() {
         </div>
       </main>
 
-      {/* ── PROMOCIONES (desde la base de datos) ──────────────────────── */}
       {promos.length > 0 && (
         <section className="ti-promos" id="promociones">
           <div className="ti-promos-inner">

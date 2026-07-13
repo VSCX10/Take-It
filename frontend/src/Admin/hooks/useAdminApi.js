@@ -1,7 +1,5 @@
 import { authHeaders } from '../../utils/authHeaders';
 
-// Wrapper de fetch para el panel admin: arma la URL con el prefijo /api/panel,
-// inyecta el token y desempaqueta {ok, mensaje, data} lanzando error si ok=false.
 async function llamar(ruta, opciones = {}) {
   const headers = { ...authHeaders(), ...(opciones.headers || {}) };
   if (opciones.body && !(opciones.body instanceof FormData)) {

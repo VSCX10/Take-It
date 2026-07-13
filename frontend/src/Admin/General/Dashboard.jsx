@@ -5,11 +5,9 @@ import AlertBanner from '../components/AlertBanner';
 
 const TARJETAS = [
   { key: 'totalRestaurantes', label: 'Restaurantes registrados', icon: 'ti-building-store' },
-  { key: 'totalAdministradores', label: 'Administradores de restaurante', icon: 'ti-users' },
   { key: 'totalReservas', label: 'Reservas realizadas', icon: 'ti-calendar' },
   { key: 'reservasDelDia', label: 'Reservas de hoy', icon: 'ti-calendar-check' },
-  { key: 'restaurantesActivos', label: 'Restaurantes activos', icon: 'ti-circle-check' },
-  { key: 'promocionesActivas', label: 'Promociones activas', icon: 'ti-discount' },
+  { key: 'reservasPendientes', label: 'Reservas por confirmar', icon: 'ti-clock' },
 ];
 
 function Dashboard() {

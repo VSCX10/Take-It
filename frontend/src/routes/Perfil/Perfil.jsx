@@ -83,7 +83,6 @@ function Perfil() {
     if (!archivo) return;
     const lector = new FileReader();
     lector.onload = (ev) => {
-      // Reducimos la imagen a máx 256px para que pese poco
       const img = new Image();
       img.onload = () => {
         const max = 256;
@@ -101,16 +100,11 @@ function Perfil() {
 
   const cancelarReserva = async (id) => {
     setCancelando(id);
-    try {
-      const resp = await fetch(`/api/reservas/${id}/cancelar`, { method: 'PATCH', headers: authHeaders() });
-      if (resp.ok) {
-        setReservas(prev => prev.map(r => r.id === id ? { ...r, estado: 'Cancelada' } : r));
-      }
-    } catch {
-      // si falla la conexion no hacemos nada, el estado queda igual
-    } finally {
-      setCancelando(null);
+    const resp = await fetch(`/api/reservas/${id}/cancelar`, { method: 'PATCH', headers: authHeaders() }).catch(() => null);
+    if (resp && resp.ok) {
+      setReservas(prev => prev.map(r => r.id === id ? { ...r, estado: 'Cancelada' } : r));
     }
+    setCancelando(null);
   };
 
   const guardarCambios = async () => {
@@ -140,7 +134,6 @@ function Perfil() {
   const cerrar = () => { cerrarSesion(); navigate('/login'); };
   const inicial = (usuarioActual?.nombre?.[0] || '?').toUpperCase();
 
-  // Filtrado de reservas
   const reservasFiltradas = reservas.filter(r => {
     const s = (r.estado || '').toLowerCase();
     if (filtroReservas === 'canceladas')  return s === 'cancelada';
@@ -163,7 +156,6 @@ function Perfil() {
 
       <div className="pf-cuerpo">
 
-        {/* ── COLUMNA IZQUIERDA */}
         <aside className="pf-lateral">
           <div className="pf-card-usuario">
 
@@ -235,7 +227,6 @@ function Perfil() {
           </div>
         </aside>
 
-        {/* ── COLUMNA DERECHA */}
         <section className="pf-reservas">
 
           <div className="pf-reservas-header">
